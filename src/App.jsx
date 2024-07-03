@@ -8,6 +8,7 @@ function App() {
     <div className="">
 
     <Routes>
+      <Route path="/" element={<h1>Hello Penpal here</h1>} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
     </Routes>
