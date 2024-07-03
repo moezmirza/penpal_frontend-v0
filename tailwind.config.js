@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       backgroundImage: {
-        register: "url('src/assets/background/register.png')",
+        register: "url('https://penpal.musingsinc.co/wp-content/uploads/2024/07/register.png')",
       },
       colors: {
         "fr-blue": "#47C3F6",
