@@ -8,7 +8,7 @@ function App() {
     <div className="">
 
     <Routes>
-      <Route path="/" element={<h1>Hello Penpal here</h1>} />
+      <Route path="/" element={<div className="flex justify-center items-center bg-register h-screen w-screen">Hello Penpal here</div>} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
     </Routes>
