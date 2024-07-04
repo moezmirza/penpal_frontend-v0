@@ -29,12 +29,12 @@ const Login = () => {
   return (
     <div className="flex justify-center items-center bg-register h-screen w-screen">
       <div className="flex flex-col items-center gap-y-6  bg-gray-200 p-8 w-1/3 rounded-lg">
-        <h2 className="text-3xl font-bold text-gray-900">Welcome Back</h2>
-        <p className="text-gray-500">
-            Enter your credentionals to login
-        </p>
+        <h2 className="text-3xl font-bold text-gray-900 flex gap-x-3">
+          Welcome Back
+          <span>👋</span>{" "}
+        </h2>
+        <p className="text-gray-500">Enter your credentionals to login</p>
         <form onSubmit={handleSubmit} className="flex flex-col gap-y-6 w-full">
-    
           <label className="text-sm text-left text-lg">
             Email
             <input

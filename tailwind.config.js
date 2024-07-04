@@ -1,11 +1,14 @@
 /* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
-const plugin = require("tailwindcss/plugin"); 
+const plugin = require("tailwindcss/plugin");
 
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Poppins"],
+      },  
       backgroundImage: {
         register: "url('https://penpal.musingsinc.co/wp-content/uploads/2024/07/register.png')",
       },
@@ -20,10 +23,10 @@ export default {
     },
   },
   plugins: [
-    plugin(({ addBase, theme }) => {
-      addBase({
-        html: { color: theme("colors.gray.700") },
-      });
-    }),
+    // plugin(({ addBase, theme }) => {
+    //   addBase({
+    //     html: { color: theme("colors.gray.700") },
+    //   });
+    // }),
   ],
 };

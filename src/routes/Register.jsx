@@ -29,7 +29,10 @@ const Register = () => {
   return (
     <div className="flex justify-center items-center bg-register h-screen w-screen">
       <div className="flex flex-col items-center gap-y-6  bg-gray-200 p-8 w-1/3 rounded-lg">
-        <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
+        <h2 className="text-3xl font-bold text-gray-900 flex gap-x-4">
+          Create Account
+          <span className="text-3xl">📥</span>
+        </h2>
         <p className="text-gray-500">
           Fill in the details to create your Account
         </p>
@@ -68,7 +71,7 @@ const Register = () => {
             )}
           </label>
 
-          <label className=" text-sm text-left text-lg">
+          <label className="text-sm text-left text-lg">
             Password
             <input
               type="text"
@@ -89,7 +92,7 @@ const Register = () => {
             <input type="checkbox" />
             <p>
               I agree to the{" "}
-              <a className="text-gray-600 underline" href="">
+              <a className="underline" href="">
                 terms and privacy
               </a>
             </p>
