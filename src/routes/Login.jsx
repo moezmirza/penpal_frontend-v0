@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../state/slices/userSlice";
 import { setAuth } from "../state/slices/authSlice";
-import { useSetUserState } from "../hooks/useSetUserState";
 
 const Login = () => {
   const [formData, setFormData] = useState({
