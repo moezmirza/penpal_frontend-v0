@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import firebaseService from "../services/firebase";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -20,10 +22,23 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
     console.log(formData);
+    try {
+      const user = await signInWithEmailAndPassword(
+        firebaseService.auth,
+        formData.email,
+        formData.password
+      );
+      if (user) {
+        navigate("/");
+        console.log("Called");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    // Handle form submission
   };
 
   return (
@@ -71,7 +86,7 @@ const Login = () => {
 
           <button
             type="submit"
-            className="bg-fr-blue hover:bg-fr-blue-100 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="bg-fr-blue hover:bg-fr-blue-100 text-white font-bold py-2 px-4 rounded"
           >
             Login
           </button>
