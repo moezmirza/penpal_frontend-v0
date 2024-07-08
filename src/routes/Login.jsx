@@ -64,8 +64,8 @@ const Login = () => {
   };
   return (
     <div className="flex justify-center items-center bg-register h-screen w-screen">
-      <div className="flex flex-col items-center gap-y-6  bg-gray-200 p-8 w-1/3 rounded-lg">
-        <h2 className="text-3xl font-bold text-gray-900 flex gap-x-3">
+      <div className="flex flex-col items-center gap-y-6  bg-white p-8 w-1/3 rounded-lg">
+        <h2 className="text-web-heading-2 font-bold text-gray-900 flex gap-x-3">
           Welcome Back
           <span>👋</span>{" "}
         </h2>
@@ -79,7 +79,7 @@ const Login = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="block w-full mt-2 rounded-md p-2 outline-gray-200  outline-0.5 "
+              className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
               required
               placeholder="Enter your email"
             />
@@ -96,7 +96,7 @@ const Login = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="block w-full mt-2 rounded-md p-2 outline-gray-200  outline-0.5 "
+              className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
               required
               placeholder="Enter your password"
             />
