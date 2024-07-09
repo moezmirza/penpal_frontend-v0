@@ -6,10 +6,10 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../state/slices/userSlice";
 import { setAuth } from "../state/slices/authSlice";
+import mapAuthCodeToMessage from "../utils/authCodeMap";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: "",
   });
@@ -38,13 +38,10 @@ const Login = () => {
         navigate("/");
       }
     } catch (err) {
-      if (err.code == 400) {
-        setError("Invalid email or password.");
-      } else {
-        setError("An expected error occured.");
-      }
+      console.log(err);
+      const errString = mapAuthCodeToMessage(err.code);
+      setError(errString);
     }
-    // Handle form submission
   };
 
   const handleSignInWithGoogle = async () => {
@@ -70,6 +67,7 @@ const Login = () => {
           <span>👋</span>{" "}
         </h2>
         <p className="text-gray-500">Enter your credentionals to login</p>
+        {error && <p className="text-red-500 mt-1"> {error} </p>}
         <form onSubmit={handleSubmit} className="flex flex-col gap-y-6 w-full">
           <label className="text-sm text-left text-lg">
             Email
@@ -83,9 +81,6 @@ const Login = () => {
               required
               placeholder="Enter your email"
             />
-            {/* {formError["email"] && (
-              <p className="text-red-500 mt-1"> {formError["email"]} </p>
-            )} */}
           </label>
 
           <label className=" text-sm text-left text-lg">
@@ -100,9 +95,6 @@ const Login = () => {
               required
               placeholder="Enter your password"
             />
-            {/* {formError["password"] && (
-              <p className="text-red-500 mt-1"> {formError["password"]} </p>
-            )} */}
           </label>
 
           <button

@@ -1,17 +1,22 @@
 import { useState } from "react";
+import postRequest from "../api/post";
+import { useNavigate } from "react-router-dom";
+import mapAuthCodeToMessage from "../utils/authCodeMap";
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    fullname: "",
     email: "",
     password: "",
   });
 
   const [formError, setFormError] = useState({
-    name: "",
+    fullname: "",
     email: "",
     password: "",
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -20,10 +25,15 @@ const Register = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
     console.log(formData);
+    const { success, data, error } = await postRequest(formData);
+    if (success) {
+      navigate("/login");
+    } else {
+      setFormError(error);
+    }
   };
 
   return (
@@ -36,20 +46,22 @@ const Register = () => {
         <p className="text-gray-500">
           Fill in the details to create your Account
         </p>
+        {formError["general"] && (
+          <p className="text-red-500 m-1"> {mapAuthCodeToMessage(formError["general"])} </p>
+        )}
         <form onSubmit={handleSubmit} className="flex flex-col gap-y-6 w-full">
           <label className=" text-sm text-left text-lg">
             Name
             <input
               type="text"
-              id="name"
-              name="name"
+              name="fullname"
               value={formData.name}
               onChange={handleChange}
               className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700"
               required
               placeholder="Enter your name"
             />
-            {formError["name"] && (
+            {formError["fullname"] && (
               <p className="text-red-500 mt-1"> {formError["name"]} </p>
             )}
           </label>
@@ -58,7 +70,6 @@ const Register = () => {
             Email
             <input
               type="text"
-              id="name"
               name="email"
               value={formData.email}
               onChange={handleChange}
@@ -75,7 +86,6 @@ const Register = () => {
             Password
             <input
               type="text"
-              id="name"
               name="password"
               value={formData.password}
               onChange={handleChange}
