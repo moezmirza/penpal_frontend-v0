@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../state/slices/userSlice";
 import { setAuth } from "../state/slices/authSlice";
 import mapAuthCodeToMessage from "../utils/authCodeMap";
+import { LoadingSpinner } from "../components/LoadingSpinner";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ const Login = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -29,17 +31,20 @@ const Login = () => {
     e.preventDefault();
     console.log(formData);
     try {
+      setLoading(true);
       const user = await signInWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
       if (user) {
+        setLoading(false);
         navigate("/");
       }
     } catch (err) {
       console.log(err);
       const errString = mapAuthCodeToMessage(err.code);
+      setLoading(false);
       setError(errString);
     }
   };
@@ -61,7 +66,8 @@ const Login = () => {
   };
   return (
     <div className="flex justify-center items-center bg-register h-screen w-screen">
-      <div className="flex flex-col items-center gap-y-6  bg-white p-8 w-1/3 rounded-lg">
+      <div className="flex flex-col items-center gap-y-6  bg-white p-8 w-1/3 rounded-lg relative">
+        {loading && <LoadingSpinner />}
         <h2 className="text-web-heading-2 font-bold text-gray-900 flex gap-x-3">
           Welcome Back
           <span>👋</span>{" "}

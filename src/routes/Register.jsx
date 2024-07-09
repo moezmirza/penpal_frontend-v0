@@ -11,11 +11,8 @@ const Register = () => {
     password: "",
   });
 
-  const [formError, setFormError] = useState({
-    fullname: "",
-    email: "",
-    password: "",
-  });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -29,17 +26,21 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
+    setLoading(true);
     const { success, data, error } = await postRequest(formData);
     if (success) {
+      setLoading(false);
       navigate("/login");
     } else {
-      setFormError(error);
+      setLoading(false);
+      setError(error.message);
     }
   };
 
   return (
     <div className="flex justify-center items-center bg-register h-screen w-screen">
-      <div className="flex flex-col items-center gap-y-6 bg-white p-8 w-1/3 rounded-lg">
+      <div className="flex flex-col items-center gap-y-6 bg-white p-8 w-1/3 rounded-lg relative">
+        {loading && <LoadingSpinner />}
         <h2 className="text-web-heading-2 font-bold text-gray-900 flex gap-x-4">
           Create Account
           <span className="text-5xl">📥</span>
@@ -47,11 +48,8 @@ const Register = () => {
         <p className="text-gray-500">
           Fill in the details to create your Account
         </p>
-        {formError["general"] && (
-          <p className="text-red-500 m-1">
-            {" "}
-            {mapAuthCodeToMessage(formError["general"])}{" "}
-          </p>
+        {error && (
+          <p className="text-red-500 m-1">{mapAuthCodeToMessage(error)} </p>
         )}
         <form onSubmit={handleSubmit} className="flex flex-col gap-y-6 w-full">
           <label className=" text-sm text-left text-lg">
@@ -65,9 +63,6 @@ const Register = () => {
               required
               placeholder="Enter your name"
             />
-            {formError["fullname"] && (
-              <p className="text-red-500 mt-1"> {formError["name"]} </p>
-            )}
           </label>
           <label className=" text-sm text-left text-lg">
             Email
@@ -80,9 +75,6 @@ const Register = () => {
               required
               placeholder="Enter your email"
             />
-            {formError["email"] && (
-              <p className="text-red-500 mt-1"> {formError["email"]} </p>
-            )}
           </label>
           <label className="text-sm text-left text-lg">
             Password
@@ -95,9 +87,6 @@ const Register = () => {
               required
               placeholder="Enter your password"
             />
-            {formError["password"] && (
-              <p className="text-red-500 mt-1"> {formError["password"]} </p>
-            )}
           </label>
           <label className="flex gap-x-4 cursor-pointer">
             <input type="checkbox" />
