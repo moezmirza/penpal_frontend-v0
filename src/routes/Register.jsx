@@ -2,6 +2,7 @@ import { useState } from "react";
 import postRequest from "../api/post";
 import { useNavigate } from "react-router-dom";
 import mapAuthCodeToMessage from "../utils/authCodeMap";
+import { LoadingSpinner } from "../components/LoadingSpinner";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -47,7 +48,10 @@ const Register = () => {
           Fill in the details to create your Account
         </p>
         {formError["general"] && (
-          <p className="text-red-500 m-1"> {mapAuthCodeToMessage(formError["general"])} </p>
+          <p className="text-red-500 m-1">
+            {" "}
+            {mapAuthCodeToMessage(formError["general"])}{" "}
+          </p>
         )}
         <form onSubmit={handleSubmit} className="flex flex-col gap-y-6 w-full">
           <label className=" text-sm text-left text-lg">
@@ -65,7 +69,6 @@ const Register = () => {
               <p className="text-red-500 mt-1"> {formError["name"]} </p>
             )}
           </label>
-
           <label className=" text-sm text-left text-lg">
             Email
             <input
@@ -81,7 +84,6 @@ const Register = () => {
               <p className="text-red-500 mt-1"> {formError["email"]} </p>
             )}
           </label>
-
           <label className="text-sm text-left text-lg">
             Password
             <input
@@ -97,7 +99,6 @@ const Register = () => {
               <p className="text-red-500 mt-1"> {formError["password"]} </p>
             )}
           </label>
-
           <label className="flex gap-x-4 cursor-pointer">
             <input type="checkbox" />
             <p>
@@ -107,14 +108,12 @@ const Register = () => {
               </a>
             </p>
           </label>
-
           <button
             type="submit"
             className="bg-fr-blue hover:bg-fr-blue-100 text-white font-bold py-2 px-4 rounded"
           >
             Sign Up
           </button>
-
           <p className="m-auto ">
             Have an account?{" "}
             <a href="/login" className="underline text-fr-blue mx-1">
