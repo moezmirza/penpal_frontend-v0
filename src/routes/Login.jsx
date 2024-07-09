@@ -3,6 +3,10 @@ import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../services/firebase";
 import Separater from "../components/Separater";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "../state/slices/userSlice";
+import { setAuth } from "../state/slices/authSlice";
+import { useSetUserState } from "../hooks/useSetUserState";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +16,8 @@ const Login = () => {
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -44,7 +50,17 @@ const Login = () => {
 
   const handleSignInWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
-    console.log(result);
+    const user = result.user;
+    const currentUser = {
+      name: user.displayName,
+      email: user.email,
+    };
+    const authInfo = {
+      token: user.accessToken,
+      isAuth: true,
+    };
+    dispatch(setCurrentUser(currentUser));
+    dispatch(setAuth(authInfo));
     navigate("/");
   };
   return (
