@@ -23,7 +23,7 @@ export default {
         sans: ["Poppins"],
       },
       backgroundImage: {
-        register: "url('https://penpal.musingsinc.co/wp-content/uploads/2024/07/register.png')",
+        register: "url('/static/background/register.png')",
       },
       colors: {
         "fr-blue": "#47C3F6",
