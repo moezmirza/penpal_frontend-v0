@@ -1,17 +1,20 @@
 import { useState } from "react";
+import postRequest from "../api/post";
+import { useNavigate } from "react-router-dom";
+import mapAuthCodeToMessage from "../utils/authCodeMap";
+import { LoadingSpinner } from "../components/LoadingSpinner";
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    fullname: "",
     email: "",
     password: "",
   });
 
-  const [formError, setFormError] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -20,88 +23,86 @@ const Register = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
     console.log(formData);
+    setLoading(true);
+    const { success, data, error } = await postRequest(formData);
+    if (success) {
+      setLoading(false);
+      navigate("/login");
+    } else {
+      setLoading(false);
+      setError(error.message);
+    }
   };
 
   return (
     <div className="flex justify-center items-center bg-register h-screen w-screen">
-      <div className="flex flex-col items-center gap-y-6  bg-gray-200 p-8 w-1/3 rounded-lg">
-        <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
+      <div className="flex flex-col items-center gap-y-6 bg-white p-8 w-1/3 rounded-lg relative">
+        {loading && <LoadingSpinner />}
+        <h2 className="text-web-heading-2 font-bold text-gray-900 flex gap-x-4">
+          Create Account
+          <span className="text-5xl">📥</span>
+        </h2>
         <p className="text-gray-500">
           Fill in the details to create your Account
         </p>
+        {error && (
+          <p className="text-red-500 m-1">{mapAuthCodeToMessage(error)} </p>
+        )}
         <form onSubmit={handleSubmit} className="flex flex-col gap-y-6 w-full">
           <label className=" text-sm text-left text-lg">
             Name
             <input
               type="text"
-              id="name"
-              name="name"
+              name="fullname"
               value={formData.name}
               onChange={handleChange}
-              className="block w-full mt-2 rounded-md p-2 outline-gray-200  outline-0.5  "
+              className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700"
               required
               placeholder="Enter your name"
             />
-            {formError["name"] && (
-              <p className="text-red-500 mt-1"> {formError["name"]} </p>
-            )}
           </label>
-
           <label className=" text-sm text-left text-lg">
             Email
             <input
               type="text"
-              id="name"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="block w-full mt-2 rounded-md p-2 outline-gray-200  outline-0.5 "
+              className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700"
               required
               placeholder="Enter your email"
             />
-            {formError["email"] && (
-              <p className="text-red-500 mt-1"> {formError["email"]} </p>
-            )}
           </label>
-
-          <label className=" text-sm text-left text-lg">
+          <label className="text-sm text-left text-lg">
             Password
             <input
               type="text"
-              id="name"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="block w-full mt-2 rounded-md p-2 outline-gray-200  outline-0.5 "
+              className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700"
               required
               placeholder="Enter your password"
             />
-            {formError["password"] && (
-              <p className="text-red-500 mt-1"> {formError["password"]} </p>
-            )}
           </label>
-
           <label className="flex gap-x-4 cursor-pointer">
             <input type="checkbox" />
             <p>
               I agree to the{" "}
-              <a className="text-gray-600 underline" href="">
+              <a className="underline" href="">
                 terms and privacy
               </a>
             </p>
           </label>
-
           <button
             type="submit"
             className="bg-fr-blue hover:bg-fr-blue-100 text-white font-bold py-2 px-4 rounded"
           >
             Sign Up
           </button>
-
           <p className="m-auto ">
             Have an account?{" "}
             <a href="/login" className="underline text-fr-blue mx-1">
