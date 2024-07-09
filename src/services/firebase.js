@@ -4,13 +4,13 @@ import { getAuth } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBLFhSUrUPJ35DF-wfO0MVwRjg6lcs11Y8",
-  authDomain: "penpal-746c9.firebaseapp.com",
-  projectId: "penpal-746c9",
-  storageBucket: "penpal-746c9.appspot.com",
-  messagingSenderId: "74833205641",
-  appId: "1:74833205641:web:0b49  f86ccad3e972826958",
-  measurementId: "G-F6CE8R8TYW",
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_Project_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
 initializeApp(firebaseConfig);
