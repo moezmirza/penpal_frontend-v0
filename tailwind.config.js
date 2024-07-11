@@ -23,12 +23,13 @@ export default {
         sans: ["Poppins"],
       },
       backgroundImage: {
-        register: "url('/static/background/register.png')",
+        general: "url('/static/background/general.png')",
+        "gradient-1": "linear-gradient(to bottom, #0B344D, #0F6B9E)",
       },
       colors: {
         "fr-blue": "#47C3F6",
         "fr-blue-100": "rgb(96 165 250)",
-        "fr-red-": "rgb(239 68 68)",
+        "fr-red": "rgb(239 68 68)",
       },
       textColor: {
         DEFAULT: "rgb(107 114 128)",

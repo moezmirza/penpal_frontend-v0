@@ -1,5 +1,5 @@
 import { useState } from "react";
-import postRequest from "../api/post";
+import { post } from "../api/post";
 import { useNavigate } from "react-router-dom";
 import mapAuthCodeToMessage from "../utils/authCodeMap";
 import { LoadingSpinner } from "../components/LoadingSpinner";
@@ -27,7 +27,7 @@ const Register = () => {
     e.preventDefault();
     console.log(formData);
     setLoading(true);
-    const { success, data, error } = await postRequest(formData);
+    const { success, data, error } = await post(formData);
     if (success) {
       setLoading(false);
       navigate("/login");
@@ -38,7 +38,7 @@ const Register = () => {
   };
 
   return (
-    <div className="flex justify-center items-center bg-register h-screen w-screen">
+    <div className="flex justify-center items-center bg-general h-screen w-screen">
       <div className="flex flex-col items-center gap-y-6 bg-white p-8 w-1/3 rounded-lg relative">
         {loading && <LoadingSpinner />}
         <h2 className="text-web-heading-2 font-bold text-gray-900 flex gap-x-4">

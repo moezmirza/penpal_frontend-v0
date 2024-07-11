@@ -1,7 +1,6 @@
 import axios from "axios";
 
-
-export default async function post(body) {
+async function post(body) {
   try {
     const response = await axios.post(
       "https://penpal-prod.vercel.app/api/v1/user",
@@ -18,7 +17,8 @@ export default async function post(body) {
     return {
       success: false,
       error: error.response ? error.response.data : error.message,
-    }; 
+    };
   }
 }
 
+export { post };
