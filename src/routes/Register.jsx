@@ -6,7 +6,8 @@ import { LoadingSpinner } from "../components/LoadingSpinner";
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    fullname: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
   });
@@ -25,6 +26,13 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError
+    for (const key in formData) {
+      if (formData[key] === "") {
+        setError("All fields are  required");
+        return;
+      }
+    }
     console.log(formData);
     setLoading(true);
     const { success, data, error } = await post(formData);
@@ -53,11 +61,23 @@ const Register = () => {
         )}
         <form onSubmit={handleSubmit} className="flex flex-col gap-y-6 w-full">
           <label className=" text-sm text-left text-lg">
-            Name
+            First Name
             <input
               type="text"
-              name="fullname"
-              value={formData.name}
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700"
+              required
+              placeholder="Enter your name"
+            />
+          </label>
+          <label className=" text-sm text-left text-lg">
+            Last Name
+            <input
+              type="text"
+              name="lastName"
+              value={formData.lastName}
               onChange={handleChange}
               className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700"
               required
