@@ -5,7 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import mapAuthCodeToMessage, { baseUrl } from "../../utils/authCodeMap";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { setCurrentUser } from "../../state/slices/userSlice";
-
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "../../services/firebase";
+import { v4 } from "uuid";
 function BasicInfo() {
   const imageRef = useRef(null);
   const authToken = useSelector((state) => state.auth.token);
@@ -43,33 +45,48 @@ function BasicInfo() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("formDetails", basicInfo);
+    setError("");
     for (const key in basicInfo) {
-      console.log(key, basicInfo[key], !basicInfo[key]);
       if (!basicInfo[key] && key != "imageUrl") {
-        console.log("here");
         setError("All fields are required!");
         return;
       }
     }
-
+    setLoading(true);
+    const uploadedImg = imageRef.current.files[0];
     try {
-      setLoading(true);
-      const { success, data, error } = await put(
-        "/user",
-        basicInfo,
-        authToken
-      );
-      setLoading(false);
-      dispatch(setCurrentUser(data));
+      if (uploadedImg) {
+        const userProfileImgRef = ref(storage, `images/${uploadedImg.name}`);
+        const snapshot = await uploadBytes(userProfileImgRef, uploadedImg);
+        const downloadUrl = await getDownloadURL(snapshot.ref);
+
+        basicInfo.imageUrl = downloadUrl;
+        const { success, data, error } = await put(
+          "/user",
+          basicInfo,
+          authToken
+        );
+        if (success) {
+          console.log("data", data);
+          dispatch(setCurrentUser(data));
+        } else {
+          console.log(error);
+          setLoading(false);
+          setError(mapAuthCodeToMessage(error));
+        }
+
+        setLoading(false);
+      }
     } catch (err) {
+      console.log(err);
       setLoading(false);
       setError(mapAuthCodeToMessage(err));
-      console.log(err);
     }
   };
+
   useEffect(() => {
     if (currentUser && basicInfo.firstName == "") {
+      // only set the fields in state
       const updatedFields = Object.keys(basicInfo).reduce((acc, key) => {
         if (key in currentUser) {
           acc[key] = currentUser[key];

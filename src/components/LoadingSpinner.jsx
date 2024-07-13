@@ -11,7 +11,7 @@ export const LoadingSpinner = () => {
   //   return () => clearTimeout(timeoutId);
   // }, [done]);
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
       <div className="h-20 w-20 bg-gray-300 rounded-lg p-6 flex justify-center items-center relative">
         <div
           role="status"

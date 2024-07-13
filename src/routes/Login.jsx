@@ -40,7 +40,6 @@ const Login = () => {
       );
       console.log("user", user);
       if (user) {
-        setLoading(false);
         user = user.user;
         console.log("user.user", user);
         const currentUser = {
@@ -53,13 +52,13 @@ const Login = () => {
         };
 
         let { success, data, error } = await get("/user", authInfo.token);
-        console.log(success, "UserData", data)
+        console.log(success, "UserData", data);
         if (success) {
-
           dispatch(setCurrentUser(data));
+          dispatch(setAuth(authInfo));
+          navigate("/user-profile");
         }
-        dispatch(setAuth(authInfo));
-        navigate("/user-profile");
+        setLoading(false);
       }
     } catch (err) {
       console.log(err);
