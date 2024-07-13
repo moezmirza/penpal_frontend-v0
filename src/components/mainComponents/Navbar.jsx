@@ -1,20 +1,22 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
+  const user = useSelector((state) => state.user.currentUser);
   return (
-    <ul className="bg-fr-blue-200 flex items-center justify-between w-full p-5 mb-10">
+    <ul className="bg-fr-blue-200 flex items-center justify-between w-full p-5">
       <li className="text-2xl text-white font-medium flex items-baseline ">
-        Shane
+        {user?.firstName}
         <p className="text-4xl">.</p>
       </li>
       <div className="flex gap-x-6 items-center">
         <li>
           <img
-            src="/static/default.jpg"
+            src={user.imageUrl || "/static/default.jpg"}
             alt=""
-            className="h-10 rounded-full  outline outline-4 outline-white"
+            className="h-10 w-10 rounded-full object-cover object-top  outline outline-4 outline-white"
           />
         </li>
         <li>
@@ -31,7 +33,7 @@ function Navbar() {
                 className="icon block cursor-pointer"
               >
                 <img
-                  src="/static/icons/settings.svg"
+                  src={"/static/icons/settings.svg"}
                   alt=""
                   className="h-8 cursor-pointer transition-transform duration-300"
                 />

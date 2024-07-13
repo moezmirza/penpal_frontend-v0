@@ -6,13 +6,12 @@ import PersonalityInfo from "./PersonaliltyInfo";
 function UserProfile() {
   const [showTab, setShowTab] = useState(true);
   return (
-    <div className="bg-c-basic">
-      <Navbar />
+    <div className="bg-c-basic py-12">
       <div className="flex justify-center">
         <div className="w-1/2">
           <div id="tabs" className="flex cursor-pointer">
             <div
-              className={`rounded border p-2 text-lg  ${
+              className={`rounded border px-3 py-2 text-lg  ${
                 showTab ? "bg-fr-blue-200 text-white" : "bg-white text-black"
               }`}
               onClick={() => setShowTab(true)}
@@ -20,7 +19,7 @@ function UserProfile() {
               Basic Info
             </div>
             <div
-              className={`rounded border p-2 text-lg ${
+              className={`rounded border px-3 py-2 text-lg ${
                 !showTab ? "bg-fr-blue-200 text-white" : "bg-white text-black"
               }`}
               onClick={() => setShowTab(false)}

@@ -14,6 +14,7 @@ function BasicInfo() {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const [error, setError] = useState("");
   const [basicInfo, setBasicInfo] = useState({
     firstName: "",
     lastName: "",
@@ -35,7 +36,6 @@ function BasicInfo() {
     "LBGTQ+ ",
     "Other",
   ];
-  const [error, setError] = useState("");
   const handleChange = (e) => {
     setBasicInfo({
       ...basicInfo,
@@ -52,31 +52,30 @@ function BasicInfo() {
         return;
       }
     }
-    setLoading(true);
-    const uploadedImg = imageRef.current.files[0];
     try {
+      setLoading(true);
+      const uploadedImg = imageRef.current.files[0];
       if (uploadedImg) {
-        const userProfileImgRef = ref(storage, `images/${uploadedImg.name}`);
+        console.log("uploading img...", uploadedImg);
+        const userProfileImgRef = ref(
+          storage,
+          `images/${currentUser.firebaseUid}`
+        );
         const snapshot = await uploadBytes(userProfileImgRef, uploadedImg);
         const downloadUrl = await getDownloadURL(snapshot.ref);
 
         basicInfo.imageUrl = downloadUrl;
-        const { success, data, error } = await put(
-          "/user",
-          basicInfo,
-          authToken
-        );
-        if (success) {
-          console.log("data", data);
-          dispatch(setCurrentUser(data));
-        } else {
-          console.log(error);
-          setLoading(false);
-          setError(mapAuthCodeToMessage(error));
-        }
-
-        setLoading(false);
       }
+      const { success, data, error } = await put("/user", basicInfo, authToken);
+      if (success) {
+        console.log("data", data);
+        dispatch(setCurrentUser(data));
+      } else {
+        console.log(error);
+        setLoading(false);
+        setError(mapAuthCodeToMessage(error));
+      }
+      setLoading(false);
     } catch (err) {
       console.log(err);
       setLoading(false);
