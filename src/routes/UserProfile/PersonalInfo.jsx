@@ -1,0 +1,235 @@
+import React, { useEffect, useRef, useState } from "react";
+import { get } from "../../api/get";
+import { post } from "../../api/post";
+import { put } from "../../api/put";
+import { Navbar } from "../../components/mainComponents/Navbar";
+import { RequiredFieldLabel } from "../../components/mainComponents/RequiredFieldLabel";
+import { useDispatch, useSelector } from "react-redux";
+import mapAuthCodeToMessage, { baseUrl } from "../../utils/authCodeMap";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
+import { setCurrentUser } from "../../state/slices/userSlice";
+
+function PersonalInfo() {
+  const imageRef = useRef(null);
+  const authToken = useSelector((state) => state.auth.token);
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const [profileDetails, setProfileDetails] = useState({
+    firstName: "",
+    lastName: "",
+    age: "",
+    gender: "",
+    state: "",
+    email: "",
+    bio: "",
+    imageUrl: "",
+  });
+  const genderList = [
+    "Male",
+    "Female",
+    "Gay",
+    "Bisexual",
+    "Lesbian",
+    "Straight",
+    "Transgender",
+    "LBGTQ+ ",
+    "Other",
+  ];
+  const [error, setError] = useState("");
+  const handleChange = (e) => {
+    setProfileDetails({
+      ...profileDetails,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("formDetails", profileDetails);
+    for (const key in profileDetails) {
+      console.log(key, profileDetails[key], !profileDetails[key]);
+      if (!profileDetails[key] && key != "imageUrl") {
+        console.log("here");
+        setError("All fields are required!");
+        return;
+      }
+    }
+
+    try {
+      setLoading(true);
+      const { success, data, error } = await put(
+        "/user",
+        profileDetails,
+        authToken
+      );
+      setLoading(false);
+      dispatch(setCurrentUser(data));
+    } catch (err) {
+      setLoading(false);
+      setError(mapAuthCodeToMessage(err));
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    if (currentUser && profileDetails.firstName == "") {
+      const updatedFields = Object.keys(profileDetails).reduce((acc, key) => {
+        if (key in currentUser) {
+          acc[key] = currentUser[key];
+        }
+        return acc;
+      }, {});
+
+      setProfileDetails({ ...updatedFields });
+    }
+  }, []);
+  const handleClick = () => {
+    console.log(imageRef.current.click());
+  };
+  const handleImageChange = () => {
+    const files = imageRef.current.files;
+    console.log("imageFile", files);
+
+    if (files.length > 0) {
+      const src = URL.createObjectURL(files[0]);
+      const preview = document.getElementById("avatar-preview");
+      preview.src = src;
+    }
+  };
+  return (
+    <div
+      id="card"
+      className="bg-white flex flex-col gap-y-8 pb-10 items-center m-auto rounded-lg relative"
+    >
+      {loading && <LoadingSpinner />}
+      <div className="bg-gray-300 w-full rounded-lg p-6 flex flex-col items-center gap-y-6">
+        <div className="w-fit m-auto relative">
+          <div className="rounded-full w-48 h-48 md:w-52 md:h-52 overflow-hidden flex justify-center  ">
+            <img
+              className="rounded-full w-full h-full object-cover object-top"
+              src={profileDetails.imageUrl || "/static/default.jpg"}
+              alt="user avatar"
+              id="avatar-preview"
+            />
+          </div>
+          <input
+            ref={imageRef}
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={handleImageChange}
+          />
+          <button
+            className="absolute bottom-4 right-4 bg-white p-1.5 rounded-full"
+            onClick={handleClick}
+          >
+            <img src="/static/icons/edit.svg" alt="auth" className="h-6 " />
+          </button>
+        </div>
+      </div>
+
+      <form className="flex flex-col gap-y-6  " onSubmit={handleSubmit}>
+        <div className="m-auto font-semibold text-2xl">Edit Info</div>
+        {error && <p className="text-fr-red m-auto">{error}</p>}
+        <div className="flex flex-col gap-y-4">
+          <div className="flex gap-x-6">
+            <label>
+              <RequiredFieldLabel labelText={"First Name"} />
+              <input
+                type="text"
+                name="firstName"
+                placeholder="Shane"
+                value={profileDetails.firstName}
+                onChange={handleChange}
+                className="bg-transparent block w-full mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
+              />
+            </label>
+            <label>
+              <RequiredFieldLabel labelText={"Last Name"} />
+              <input
+                name="lastName"
+                type="text"
+                placeholder="Edwards"
+                value={profileDetails.lastName}
+                onChange={handleChange}
+                className="bg-transparent block w-full mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
+              />
+            </label>
+          </div>
+          <label>
+            <RequiredFieldLabel labelText={"Email"} />
+            <input
+              value={profileDetails.email}
+              onChange={handleChange}
+              placeholder="shane@gmail.com"
+              type="email"
+              name="email"
+              className="bg-transparent block w-full mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
+            />
+          </label>
+          <label>
+            <RequiredFieldLabel labelText={"Age"} />
+            <input
+              name="age"
+              type="text"
+              placeholder="40"
+              value={profileDetails.age}
+              onChange={handleChange}
+              className=" bg-transparent block w-full mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
+            />
+          </label>
+          <div className="relative inline-block w-full">
+            <RequiredFieldLabel labelText={"Gender"} />
+
+            <select
+              id="gender"
+              name="gender"
+              value={profileDetails.gender}
+              onChange={handleChange}
+              className={`mt-1 w-full p-2 border border-gray-400  outline-none focus:border-gray-700 rounded-md bg-transparent cursor-pointer ${
+                profileDetails.gender == "" ? "text-[#a9a9a9]" : "text-black"
+              }`}
+            >
+              <option value="" disabled className="">
+                Select Gender
+              </option>
+              {genderList.map((gender) => (
+                <option key={gender} value={gender}>
+                  {gender}
+                </option>
+              ))}
+              genderList
+            </select>
+          </div>
+          <label>
+            <RequiredFieldLabel labelText={"State"} />
+            <input
+              name="state"
+              type="text"
+              placeholder="London"
+              value={profileDetails.state}
+              onChange={handleChange}
+              className=" bg-transparent block w-full mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
+            />
+          </label>
+          <label className="flex flex-col ">
+            <RequiredFieldLabel labelText={"Bio"} />
+            <textarea
+              name="bio"
+              value={profileDetails.bio}
+              onChange={handleChange}
+              placeholder="Hello, I like to watch football."
+              rows={5}
+              className="bg-transparent block w-full mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
+            ></textarea>
+          </label>
+        </div>
+        <button className="ml-auto mt-4 bg-fr-blue-200 w-1/5  text-white p-1.5 rounded hover:opacity-90">
+          Update
+        </button>
+      </form>
+    </div>
+  );
+}
+
+export default PersonalInfo;

@@ -8,6 +8,7 @@ import { setCurrentUser } from "../state/slices/userSlice";
 import { setAuth } from "../state/slices/authSlice";
 import mapAuthCodeToMessage from "../utils/authCodeMap";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { get } from "../api/get";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -32,13 +33,32 @@ const Login = () => {
     console.log(formData);
     try {
       setLoading(true);
-      const user = await signInWithEmailAndPassword(
+      let user = await signInWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
+      console.log("user", user);
       if (user) {
         setLoading(false);
+        user = user.user;
+        console.log("user.user", user);
+        const currentUser = {
+          name: user.displayName,
+          email: user.email,
+        };
+        const authInfo = {
+          token: user.accessToken,
+          isAuth: true,
+        };
+
+        let { success, data, error } = await get("/user", authInfo.token);
+        console.log(success, "UserData", data)
+        if (success) {
+
+          dispatch(setCurrentUser(data));
+        }
+        dispatch(setAuth(authInfo));
         navigate("/");
       }
     } catch (err) {
@@ -62,10 +82,10 @@ const Login = () => {
     };
     dispatch(setCurrentUser(currentUser));
     dispatch(setAuth(authInfo));
-    navigate("/");
+    navigate("/user-profile");
   };
   return (
-    <div className="flex justify-center items-center bg-general h-screen w-screen">
+    <div className="flex justify-center items-center bg-b-general h-screen w-screen">
       <div className="flex flex-col items-center gap-y-6  bg-white p-8 w-1/3 rounded-lg relative">
         {loading && <LoadingSpinner />}
         <h2 className="text-web-heading-2 font-bold text-gray-900 flex gap-x-3">

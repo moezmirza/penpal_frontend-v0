@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { post } from "../api/post";
 import { useNavigate } from "react-router-dom";
-import mapAuthCodeToMessage from "../utils/authCodeMap";
+import mapAuthCodeToMessage, { baseUrl } from "../utils/authCodeMap";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 
 const Register = () => {
@@ -10,6 +10,7 @@ const Register = () => {
     lastName: "",
     email: "",
     password: "",
+    terms: "false",
   });
 
   const [error, setError] = useState("");
@@ -18,36 +19,46 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
+    console.log(e, e.target.value);
+    let updateValue = e.target.value;
+    if (e.target.name == "terms") {
+      updateValue = updateValue == "false" ? "true" : "false";
+    }
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: updateValue,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError
+    setError("");
     for (const key in formData) {
+      console.log(key, formData[key], key == "terms", formData[key] == "false");
+      if (key == "terms" && formData[key] == "false") {
+        setError("All fields are required");
+        return;
+      }
       if (formData[key] === "") {
-        setError("All fields are  required");
+        setError("All fields are required");
         return;
       }
     }
     console.log(formData);
     setLoading(true);
-    const { success, data, error } = await post(formData);
+    const { success, data, error } = await post("/user", formData);
     if (success) {
       setLoading(false);
       navigate("/login");
     } else {
       setLoading(false);
-      setError(error.message);
+      setError(mapAuthCodeToMessage(error.message));
     }
   };
 
   return (
-    <div className="flex justify-center items-center bg-general h-screen w-screen">
-      <div className="flex flex-col items-center gap-y-6 bg-white p-8 w-1/3 rounded-lg relative">
+    <div className="flex justify-center items-center bg-b-general p-12">
+      <div className="flex flex-col items-center gap-y-6 bg-white p-8 w-2/5 rounded-lg relative">
         {loading && <LoadingSpinner />}
         <h2 className="text-web-heading-2 font-bold text-gray-900 flex gap-x-4">
           Create Account
@@ -56,9 +67,7 @@ const Register = () => {
         <p className="text-gray-500">
           Fill in the details to create your Account
         </p>
-        {error && (
-          <p className="text-red-500 m-1">{mapAuthCodeToMessage(error)} </p>
-        )}
+        {error && <p className="text-red-500 m-1">{error} </p>}
         <form onSubmit={handleSubmit} className="flex flex-col gap-y-6 w-full">
           <label className=" text-sm text-left text-lg">
             First Name
@@ -68,7 +77,6 @@ const Register = () => {
               value={formData.firstName}
               onChange={handleChange}
               className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700"
-              required
               placeholder="Enter your name"
             />
           </label>
@@ -80,7 +88,6 @@ const Register = () => {
               value={formData.lastName}
               onChange={handleChange}
               className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700"
-              required
               placeholder="Enter your name"
             />
           </label>
@@ -92,7 +99,6 @@ const Register = () => {
               value={formData.email}
               onChange={handleChange}
               className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700"
-              required
               placeholder="Enter your email"
             />
           </label>
@@ -104,12 +110,16 @@ const Register = () => {
               value={formData.password}
               onChange={handleChange}
               className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700"
-              required
               placeholder="Enter your password"
             />
           </label>
           <label className="flex gap-x-4 cursor-pointer">
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              name="terms"
+              value={formData.terms}
+              onChange={handleChange}
+            />
             <p>
               I agree to the{" "}
               <a className="underline" href="">

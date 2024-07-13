@@ -1,10 +1,11 @@
-import { Outlet, Route, Routes } from 'react-router-dom';
-import './App.css';
-import Login from './routes/Login';
-import Register from './routes/Register';
+import { Outlet, Route, Routes } from "react-router-dom";
+import "./App.css";
+import Login from "./routes/Login";
+import Register from "./routes/Register";
 
-import { useLoginState } from './hooks/useLoginState';
-import UserProfile from "./routes/UserProfile";
+import { useLoginState } from "./hooks/useLoginState";
+import UserProfile from "./routes/UserProfile/UserProfile";
+import { Navbar } from "./components/mainComponents/Navbar";
 
 function App() {
   const isAuth = useLoginState();
@@ -19,10 +20,7 @@ function App() {
         <Route element={<AuthenticatedRoutes />}>
           <Route path="/user-profile" element={<UserProfile />} />
 
-          <Route
-            path="/"
-            element={<h1>Hello Penpal here, Preview changes</h1>}
-          />
+          <Route path="/" element={<Navbar />} />
         </Route>
       </Routes>
     </div>
