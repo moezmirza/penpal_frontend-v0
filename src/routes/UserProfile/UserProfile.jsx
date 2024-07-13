@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Navbar } from "../../components/mainComponents/Navbar";
-import Questionnaire from "./Questionnaire";
-import PersonalInfo from "./PersonalInfo";
+import BasicInfo from "./BasicInfo";
+import PersonalityInfo from "./PersonaliltyInfo";
 
 function UserProfile() {
-  const [showTab, setShowTab] = useState(false);
+  const [showTab, setShowTab] = useState(true);
   return (
     <div className="bg-c-basic">
       <Navbar />
@@ -29,7 +29,7 @@ function UserProfile() {
             </div>
           </div>
 
-          {showTab ? <PersonalInfo /> : <Questionnaire />}
+          {showTab ? <BasicInfo /> : <PersonalityInfo />}
         </div>
       </div>
     </div>

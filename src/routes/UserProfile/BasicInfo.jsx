@@ -1,21 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
-import { get } from "../../api/get";
-import { post } from "../../api/post";
 import { put } from "../../api/put";
-import { Navbar } from "../../components/mainComponents/Navbar";
 import { RequiredFieldLabel } from "../../components/mainComponents/RequiredFieldLabel";
 import { useDispatch, useSelector } from "react-redux";
 import mapAuthCodeToMessage, { baseUrl } from "../../utils/authCodeMap";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { setCurrentUser } from "../../state/slices/userSlice";
 
-function PersonalInfo() {
+function BasicInfo() {
   const imageRef = useRef(null);
   const authToken = useSelector((state) => state.auth.token);
   const currentUser = useSelector((state) => state.user.currentUser);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const [profileDetails, setProfileDetails] = useState({
+  const [basicInfo, setBasicInfo] = useState({
     firstName: "",
     lastName: "",
     age: "",
@@ -38,18 +35,18 @@ function PersonalInfo() {
   ];
   const [error, setError] = useState("");
   const handleChange = (e) => {
-    setProfileDetails({
-      ...profileDetails,
+    setBasicInfo({
+      ...basicInfo,
       [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("formDetails", profileDetails);
-    for (const key in profileDetails) {
-      console.log(key, profileDetails[key], !profileDetails[key]);
-      if (!profileDetails[key] && key != "imageUrl") {
+    console.log("formDetails", basicInfo);
+    for (const key in basicInfo) {
+      console.log(key, basicInfo[key], !basicInfo[key]);
+      if (!basicInfo[key] && key != "imageUrl") {
         console.log("here");
         setError("All fields are required!");
         return;
@@ -60,7 +57,7 @@ function PersonalInfo() {
       setLoading(true);
       const { success, data, error } = await put(
         "/user",
-        profileDetails,
+        basicInfo,
         authToken
       );
       setLoading(false);
@@ -72,15 +69,15 @@ function PersonalInfo() {
     }
   };
   useEffect(() => {
-    if (currentUser && profileDetails.firstName == "") {
-      const updatedFields = Object.keys(profileDetails).reduce((acc, key) => {
+    if (currentUser && basicInfo.firstName == "") {
+      const updatedFields = Object.keys(basicInfo).reduce((acc, key) => {
         if (key in currentUser) {
           acc[key] = currentUser[key];
         }
         return acc;
       }, {});
 
-      setProfileDetails({ ...updatedFields });
+      setBasicInfo({ ...updatedFields });
     }
   }, []);
   const handleClick = () => {
@@ -107,7 +104,7 @@ function PersonalInfo() {
           <div className="rounded-full w-48 h-48 md:w-52 md:h-52 overflow-hidden flex justify-center  ">
             <img
               className="rounded-full w-full h-full object-cover object-top"
-              src={profileDetails.imageUrl || "/static/default.jpg"}
+              src={basicInfo.imageUrl || "/static/default.jpg"}
               alt="user avatar"
               id="avatar-preview"
             />
@@ -139,7 +136,7 @@ function PersonalInfo() {
                 type="text"
                 name="firstName"
                 placeholder="Shane"
-                value={profileDetails.firstName}
+                value={basicInfo.firstName}
                 onChange={handleChange}
                 className="bg-transparent block w-full mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
               />
@@ -150,7 +147,7 @@ function PersonalInfo() {
                 name="lastName"
                 type="text"
                 placeholder="Edwards"
-                value={profileDetails.lastName}
+                value={basicInfo.lastName}
                 onChange={handleChange}
                 className="bg-transparent block w-full mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
               />
@@ -159,7 +156,7 @@ function PersonalInfo() {
           <label>
             <RequiredFieldLabel labelText={"Email"} />
             <input
-              value={profileDetails.email}
+              value={basicInfo.email}
               onChange={handleChange}
               placeholder="shane@gmail.com"
               type="email"
@@ -173,7 +170,7 @@ function PersonalInfo() {
               name="age"
               type="text"
               placeholder="40"
-              value={profileDetails.age}
+              value={basicInfo.age}
               onChange={handleChange}
               className=" bg-transparent block w-full mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
             />
@@ -184,10 +181,10 @@ function PersonalInfo() {
             <select
               id="gender"
               name="gender"
-              value={profileDetails.gender}
+              value={basicInfo.gender}
               onChange={handleChange}
               className={`mt-1 w-full p-2 border border-gray-400  outline-none focus:border-gray-700 rounded-md bg-transparent cursor-pointer ${
-                profileDetails.gender == "" ? "text-[#a9a9a9]" : "text-black"
+                basicInfo.gender == "" ? "text-[#a9a9a9]" : "text-black"
               }`}
             >
               <option value="" disabled className="">
@@ -207,7 +204,7 @@ function PersonalInfo() {
               name="state"
               type="text"
               placeholder="London"
-              value={profileDetails.state}
+              value={basicInfo.state}
               onChange={handleChange}
               className=" bg-transparent block w-full mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
             />
@@ -216,7 +213,7 @@ function PersonalInfo() {
             <RequiredFieldLabel labelText={"Bio"} />
             <textarea
               name="bio"
-              value={profileDetails.bio}
+              value={basicInfo.bio}
               onChange={handleChange}
               placeholder="Hello, I like to watch football."
               rows={5}
@@ -232,4 +229,4 @@ function PersonalInfo() {
   );
 }
 
-export default PersonalInfo;
+export default BasicInfo;

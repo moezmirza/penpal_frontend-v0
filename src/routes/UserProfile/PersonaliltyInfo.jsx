@@ -9,7 +9,7 @@ import {
   musicGenres,
   personality,
   sports,
-} from "./questionnaireOptions";
+} from "./personalityInfoOptions";
 import { useDispatch, useSelector } from "react-redux";
 import { get } from "../../api/get";
 import mapAuthCodeToMessage from "../../utils/authCodeMap";
@@ -17,7 +17,7 @@ import { put } from "../../api/put";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { setUserPersonality } from "../../state/slices/userPersonalitySlice";
 
-function Questionnaire() {
+function PersonalityInfo() {
   const personalityInfoState = useSelector(
     (state) => state.userPersonality.info
   );
@@ -181,4 +181,4 @@ function Questionnaire() {
   );
 }
 
-export default Questionnaire;
+export default PersonalityInfo;

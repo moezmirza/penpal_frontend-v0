@@ -59,7 +59,7 @@ const Login = () => {
           dispatch(setCurrentUser(data));
         }
         dispatch(setAuth(authInfo));
-        navigate("/");
+        navigate("/user-profile");
       }
     } catch (err) {
       console.log(err);
