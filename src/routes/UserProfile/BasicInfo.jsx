@@ -136,7 +136,7 @@ function BasicInfo() {
             className="absolute bottom-4 right-4 bg-white p-1.5 rounded-full"
             onClick={handleClick}
           >
-            <img src="/static/icons/edit.svg" alt="auth" className="h-6 " />
+            <img src="/static/icons/edit.svg" alt="auth" className="h-6" />
           </button>
         </div>
       </div>
