@@ -2,12 +2,13 @@ import { useState } from "react";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../services/firebase";
 import Separater from "../components/Separater";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../state/slices/userSlice";
 import { setAuth } from "../state/slices/authSlice";
 import mapAuthCodeToMessage from "../utils/authCodeMap";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { get } from "../api/get";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -32,14 +33,32 @@ const Login = () => {
     console.log(formData);
     try {
       setLoading(true);
-      const user = await signInWithEmailAndPassword(
+      let user = await signInWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
+      console.log("user", user);
       if (user) {
+        user = user.user;
+        console.log("user.user", user);
+        const currentUser = {
+          name: user.displayName,
+          email: user.email,
+        };
+        const authInfo = {
+          token: user.accessToken,
+          isAuth: true,
+        };
+
+        let { success, data, error } = await get("/user", authInfo.token);
+        console.log(success, "UserData", data);
+        if (success) {
+          dispatch(setCurrentUser(data));
+          dispatch(setAuth(authInfo));
+          navigate("/user-profile");
+        }
         setLoading(false);
-        navigate("/");
       }
     } catch (err) {
       console.log(err);
@@ -62,20 +81,24 @@ const Login = () => {
     };
     dispatch(setCurrentUser(currentUser));
     dispatch(setAuth(authInfo));
-    navigate("/");
+    navigate("/user-profile");
   };
   return (
-    <div className="flex justify-center items-center bg-register h-screen w-screen">
-      <div className="flex flex-col items-center gap-y-6  bg-white p-8 w-1/3 rounded-lg relative">
+    <div className="flex justify-center items-center bg-b-general pt-6 md: pt-3 pb-3 px-3">
+      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-1/3 w-full rounded-lg relative text-sm md:text-base">
         {loading && <LoadingSpinner />}
-        <h2 className="text-web-heading-2 font-bold text-gray-900 flex gap-x-3">
+        <h2 className="text-2xl md:text-5xl font-bold text-gray-900 flex gap-x-3">
           Welcome Back
-          <span>👋</span>{" "}
+          <span className="text-2xl md:text-4xl">👋</span>{" "}
         </h2>
-        <p className="text-gray-500">Enter your credentionals to login</p>
-        {error && <p className="text-red-500 mt-1"> {error} </p>}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-y-6 w-full">
-          <label className="text-sm text-left text-lg">
+        <p className="text-gray-500  text-center">
+          Enter your credentionals to login
+        </p>
+        {error && (
+          <p className="text-red-500 mt-1 "> {error} </p>
+        )}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-y-6 w-full ">
+          <label className="text-left">
             Email
             <input
               type="text"
@@ -83,13 +106,13 @@ const Login = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
+              className="block w-full mt-2 rounded-md p-1.5 md:p-2 border border-gray-400 outline-none focus:border-gray-700 "
               required
               placeholder="Enter your email"
             />
           </label>
 
-          <label className=" text-sm text-left text-lg">
+          <label className=" text-left">
             Password
             <input
               type="text"
@@ -97,7 +120,7 @@ const Login = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
+              className="block w-full mt-2 rounded-md p-1.5 md:p-2 border border-gray-400 outline-none focus:border-gray-700 "
               required
               placeholder="Enter your password"
             />
@@ -130,9 +153,9 @@ const Login = () => {
 
         <p className="m-auto ">
           Don't have an account?
-          <a href="/register" className="underline text-fr-blue mx-1">
+          <Link className="underline text-fr-blue mx-1" to={"/register"}>
             Create Account
-          </a>
+          </Link>
         </p>
       </div>
     </div>

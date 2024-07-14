@@ -13,3 +13,5 @@ export default function mapAuthCodeToMessage(authCode) {
       return "An unexpected error occured!";
   }
 }
+
+export const baseUrl="https://penpal-prod.vercel.app/api/v1";

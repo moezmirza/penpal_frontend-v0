@@ -1,29 +1,28 @@
-import { Outlet, Route, Routes } from 'react-router-dom';
-import './App.css';
-import Login from './routes/Login';
-import Register from './routes/Register';
-import { useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './services/firebase';
-import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentUser } from './state/slices/userSlice';
-import { setAuth } from './state/slices/authSlice';
-import { useLoginState } from './hooks/useLoginState';
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import "./App.css";
+import Login from "./routes/Login";
+import Register from "./routes/Register";
+
+import { useLoginState } from "./hooks/useLoginState";
+import UserProfile from "./routes/UserProfile/UserProfile";
+import { Navbar } from "./components/mainComponents/Navbar";
 
 function App() {
-  const isAuth = useLoginState();
   const AuthenticatedRoutes = () => {
-    return isAuth ? <Outlet /> : <Login />;
+    const isAuth = useLoginState();
+    return isAuth ? <Outlet /> : <Navigate to="/login" />;
   };
   return (
-    <div className=''>
+    <div className="">
+      <Navbar />
       <Routes>
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route element={<AuthenticatedRoutes />}>
+          <Route path="/user-profile" element={<UserProfile />} />
           <Route
-            path='/'
-            element={<h1>Hello Penpal here, Preview changes</h1>}
+            path="/"
+            element={<p className="w-fit m-auto mt-12">this the home page</p>}
           />
         </Route>
       </Routes>

@@ -1,0 +1,3 @@
+.peer:checked ~ .icon {
+  @apply rotate-90; /* Adjust rotation angle as needed */
+}

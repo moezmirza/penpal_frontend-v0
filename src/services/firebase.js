@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCt85fVlUhP8DQdFf4Mua4OUSPTP0Q4ilI",
@@ -11,19 +12,12 @@ const firebaseConfig = {
   messagingSenderId: "149411277678",
   appId: "1:149411277678:web:3b54182d8907f8f35daf7f",
   measurementId: "G-E3P0XKCC6W",
-
-  // apiKey: process.env.FIREBASE_API_KEY,
-  // authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  // projectId: process.env.FIREBASE_Project_ID,
-  // storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  // messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  // appId: process.env.FIREBASE_APP_ID,
-  // measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-const auth = getAuth();
+const auth = getAuth(app);
+const storage = getStorage(app);
 const provider = new GoogleAuthProvider();
 
-export { auth, provider };
+export { auth, storage, provider };

@@ -9,17 +9,16 @@ export const useLoginState = () => {
   const isAuth = useSelector((state) => state.auth.isAuth);
   const dispatch = useDispatch();
   useEffect(() => {
+    console.log("here inside")
     const refreshService = onAuthStateChanged(auth, (user) => {
+      console.log("user", user);
       if (user) {
-        const currentUser = {
-          name: user.displayName,
-          email: user.email,
-        };
+       
         const authInfo = {
           token: user.accessToken,
           isAuth: true,
         };
-        dispatch(setCurrentUser(currentUser));
+        console.log("authInfo", user.accessToken);
         dispatch(setAuth(authInfo));
       }
     });

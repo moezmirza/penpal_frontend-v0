@@ -1,23 +1,24 @@
 import axios from "axios";
 import { baseUrl } from "../utils/authCodeMap";
 
-async function post(url, body, authToken) {
+async function put(url, body, authToken) {
   try {
     console.log(url, body, authToken);
     const completeUrl = baseUrl + url;
-    
+
     let headers = {
       "Content-Type": "application/json",
     };
     if (authToken) {
       headers.Authorization = `Bearer ${authToken}`;
     }
-    const response = await axios.post(completeUrl, body, {
+    console.log("body", body, "headers", headers);
+    const response = await axios.put(completeUrl, (body), {
       headers,
     });
-    return { success: true, data: response.data };
+    return { success: true, data: response.data.data };
   } catch (error) {
-    console.error("Error posting data:", error);
+    console.error("Error updating data:", error);
     return {
       success: false,
       error: error.response ? error.response.data : error.message,
@@ -25,4 +26,4 @@ async function post(url, body, authToken) {
   }
 }
 
-export { post };
+export { put };
