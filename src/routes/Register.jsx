@@ -63,9 +63,9 @@ const Register = () => {
     <div className="flex justify-center items-center bg-b-general py-6 px-4 md:px-8">
       <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 w-full md:w-2/5 rounded-lg relative">
         {loading && <LoadingSpinner />}
-        <h2 className="md:text-5xl text-2xl font-bold text-gray-900 flex gap-x-4">
+        <h2 className="md:text-4xl text-2xl font-bold text-gray-900 flex gap-x-4">
           Create Account
-          <span className="md:text-4xl text-2xl">📥</span>
+          <span className="md:text-3xl text-2xl">📥</span>
         </h2>
         <p className="text-gray-500 text-sm md:text-base text-center">
           Fill in the details to create your Account

@@ -44,7 +44,7 @@ function Navbar() {
         {user && (
           <li>
             <img
-              src={user.imageUrl || "/static/default.jpg"}
+              src={user.imageUrl || "/assets/default.jpg"}
               alt=""
               className="md:h-10 md:w-10 h-8 w-8 rounded-full object-cover object-top  outline outline-4 outline-white"
             />
@@ -64,7 +64,7 @@ function Navbar() {
                 className="icon block cursor-pointer"
               >
                 <img
-                  src={"/static/icons/settings.svg"}
+                  src={"/assets/icons/settings.svg"}
                   alt=""
                   className="h-5 md:h-8 cursor-pointer transition-transform duration-300"
                 />

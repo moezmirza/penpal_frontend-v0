@@ -44,7 +44,10 @@ const MultiSelectField = memo(
       [modifiedOptions]
     );
     return (
-      <div className="w-full relative  text-sm md:text-base" ref={customSelectContainerRef}>
+      <div
+        className="w-full relative  text-sm md:text-base"
+        ref={customSelectContainerRef}
+      >
         <RequiredFieldLabel labelText={labelText} />
         <div
           id="wrapper"
@@ -67,7 +70,7 @@ const MultiSelectField = memo(
                   <img
                     className="h-3 md:h-4 cursor-pointer"
                     onClick={(e) => handleTagRemove(e, val)}
-                    src="/static/icons/xMark.svg"
+                    src="/assets/icons/xMark.svg"
                     alt=""
                   />
                 </div>
@@ -83,7 +86,7 @@ const MultiSelectField = memo(
               className="w-full h-full flex items-center justify-center"
             >
               <img
-                src="/static/icons/angleDown.svg"
+                src="/assets/icons/angleDown.svg"
                 className="h-6 font-bold"
                 alt=""
               />
