@@ -23,7 +23,7 @@ export default {
         sans: ["Poppins"],
       },
       backgroundImage: {
-        "b-general": "url('/static/background/general.png')",
+        "b-general": "url('/assets/background/general.png')",
         "b-gradient-1": "linear-gradient(to bottom, #0B344D, #0F6B9E)",
       },
       colors: {

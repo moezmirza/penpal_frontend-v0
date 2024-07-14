@@ -119,7 +119,7 @@ function BasicInfo() {
         <div className="w-fit m-auto relative">
           <img
             className="rounded-full md:w-52 md:h-52 w-36 h-36 object-cover object-top"
-            src={basicInfo.imageUrl || "/static/default.jpg"}
+            src={basicInfo.imageUrl || "/assets/default.jpg"}
             alt="user avatar"
             id="avatar-preview"
           />
@@ -135,7 +135,7 @@ function BasicInfo() {
             onClick={handleClick}
           >
             <img
-              src="/static/icons/edit.svg"
+              src="/assets/icons/edit.svg"
               alt="auth"
               className="md:h-6 h-3"
             />
@@ -143,8 +143,13 @@ function BasicInfo() {
         </div>
       </div>
 
-      <form className="flex flex-col gap-y-6 text-sm p-2 md:text-base md:p-0 " onSubmit={handleSubmit}>
-        <div className="m-auto font-semibold text-xl md:text-2xl">Edit Info</div>
+      <form
+        className="flex flex-col gap-y-6 text-sm p-2 md:text-base md:p-0 "
+        onSubmit={handleSubmit}
+      >
+        <div className="m-auto font-semibold text-xl md:text-2xl">
+          Edit Info
+        </div>
         {error && <p className="text-fr-red m-auto">{error}</p>}
         <div className="flex flex-col gap-y-4">
           <div className="flex gap-x-6 flex-col gap-y-4 md:flex-row">
