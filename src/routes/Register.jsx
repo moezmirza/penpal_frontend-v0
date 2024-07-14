@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { post } from "../api/post";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import mapAuthCodeToMessage, { baseUrl } from "../utils/authCodeMap";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 
@@ -55,61 +55,69 @@ const Register = () => {
       setError(mapAuthCodeToMessage(error.message));
     }
   };
+  // useEffect(()=>{
+  //   window.addEventListener("click", handleWindowClick)
+  // },[])
 
   return (
-    <div className="flex justify-center items-center bg-b-general p-12">
-      <div className="flex flex-col items-center gap-y-6 bg-white p-8 w-2/5 rounded-lg relative">
+    <div className="flex justify-center items-center bg-b-general py-6 px-4 md:px-8">
+      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 w-full md:w-2/5 rounded-lg relative">
         {loading && <LoadingSpinner />}
-        <h2 className="text-web-heading-2 font-bold text-gray-900 flex gap-x-4">
+        <h2 className="md:text-5xl text-2xl font-bold text-gray-900 flex gap-x-4">
           Create Account
-          <span className="text-5xl">📥</span>
+          <span className="md:text-4xl text-2xl">📥</span>
         </h2>
-        <p className="text-gray-500">
+        <p className="text-gray-500 text-sm md:text-base text-center">
           Fill in the details to create your Account
         </p>
-        {error && <p className="text-red-500 m-1">{error} </p>}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-y-6 w-full">
-          <label className=" text-sm text-left text-lg">
+        {error && (
+          <p className="text-red-500 m-1 text-sm md:text-base">{error} </p>
+        )}
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-y-6 w-full text-sm md:text-base"
+        >
+          <label className="  text-left">
             First Name
             <input
               type="text"
               name="firstName"
               value={formData.firstName}
               onChange={handleChange}
-              className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700"
+              className="block w-full mt-2 rounded-md p-1.5 md:p-2 border border-gray-400 outline-none focus:border-gray-700"
               placeholder="Enter your name"
             />
           </label>
-          <label className=" text-sm text-left text-lg">
+          <label className="  text-left ">
             Last Name
             <input
               type="text"
               name="lastName"
               value={formData.lastName}
               onChange={handleChange}
-              className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700"
+              className="block w-full mt-2 rounded-md p-1.5 md:p-2 border border-gray-400 outline-none focus:border-gray-700"
               placeholder="Enter your name"
             />
           </label>
-          <label className=" text-sm text-left text-lg">
+          <label className="  text-left ">
             Email
             <input
               type="text"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700"
+              className="block w-full mt-2 rounded-md p-1.5 md:p-2 border border-gray-400 outline-none focus:border-gray-700"
               placeholder="Enter your email"
             />
           </label>
-          <label className="text-sm text-left text-lg">
+          <label className=" text-left ">
             Password
             <input
               type="text"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="block w-full mt-2 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700"
+              className="block w-full mt-2 rounded-md p-1.5 md:p-2 border border-gray-400 outline-none focus:border-gray-700"
               placeholder="Enter your password"
             />
           </label>
@@ -135,9 +143,9 @@ const Register = () => {
           </button>
           <p className="m-auto ">
             Have an account?{" "}
-            <a href="/login" className="underline text-fr-blue mx-1">
+            <Link className="underline text-fr-blue mx-1" to={"/login"}>
               Login here
-            </a>{" "}
+            </Link>
           </p>
         </form>
       </div>

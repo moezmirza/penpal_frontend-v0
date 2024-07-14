@@ -13,7 +13,7 @@ function App() {
     return isAuth ? <Outlet /> : <Navigate to="/login" />;
   };
   return (
-    <div>
+    <div className="">
       <Navbar />
       <Routes>
         <Route path="/login" element={<Login />} />

@@ -26,19 +26,17 @@ function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleSignout = () => {
     signOut(auth);
     dispatch(setCurrentUser(null));
     dispatch(resetAuth());
     setShowDropdown(false);
-    location.replace("/login")
-    // location.herf = "/login"; //refresh the pages
+    location.replace("/login");
   };
   return (
-    <ul className="bg-fr-blue-200 flex items-center justify-between w-full p-5">
-      <li className="text-2xl text-white font-medium flex items-baseline ">
+    <ul className="bg-fr-blue-200 flex items-baseline justify-between w-full p-5">
+      <li className="text-2xl md:text-2xl text-white font-medium flex items-baseline ">
         {user?.firstName || "Welcome Pal"}
         <p className="text-4xl">.</p>
       </li>
@@ -48,7 +46,7 @@ function Navbar() {
             <img
               src={user.imageUrl || "/static/default.jpg"}
               alt=""
-              className="h-10 w-10 rounded-full object-cover object-top  outline outline-4 outline-white"
+              className="h-10 w-10  rounded-full object-cover object-top  outline outline-4 outline-white"
             />
           </li>
         )}
@@ -68,7 +66,7 @@ function Navbar() {
                 <img
                   src={"/static/icons/settings.svg"}
                   alt=""
-                  className="h-8 cursor-pointer transition-transform duration-300"
+                  className="h-6 md:h-8 cursor-pointer transition-transform duration-300"
                 />
               </label>
             </div>
@@ -76,7 +74,7 @@ function Navbar() {
             {showDropdown && (
               <div
                 id="dropdown"
-                className="absolute right-0.5 top-11 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+                className="absolute z-20 right-0.5 top-11 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
               >
                 <ul
                   className="py-2 text-sm text-gray-700 dark:text-gray-200"
@@ -98,7 +96,7 @@ function NavbarOptions({ user, onSignout, onLinkClick }) {
     return (
       <>
         {Object.keys(userNavbarLinkMap).map((linkName) => (
-          <li onClick={() => onLinkClick(false)}>
+          <li key={linkName} onClick={() => onLinkClick(false)}>
             <Link
               to={userNavbarLinkMap[linkName]}
               className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
