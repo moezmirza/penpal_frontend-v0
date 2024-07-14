@@ -44,28 +44,28 @@ const MultiSelectField = memo(
       [modifiedOptions]
     );
     return (
-      <div className="w-full relative " ref={customSelectContainerRef}>
+      <div className="w-full relative  text-sm md:text-base" ref={customSelectContainerRef}>
         <RequiredFieldLabel labelText={labelText} />
         <div
           id="wrapper"
-          className="mt-1 border cursor-text p-2 flex justify-between gap-x-2 items-center"
+          className="rounded mt-1 border cursor-text p-1 md:p-2 flex justify-between gap-x-2 items-center"
           onClick={toggleDropdown}
         >
           <div
             id="selectedValues"
-            className="w-full flex flex-wrap gap-x-4  gap-y-2 "
+            className="w-full flex flex-wrap gap-x-2 md:gap-x-3 gap-y-2 "
           >
             {selectedValues.length !== 0 ? (
               selectedValues.map((val) => (
                 <div
                   key={val.value}
-                  className="w-fit flex gap-x-3 py-1 p-2 rounded-lg flex items-center text-t-option bg-b-option border border-[#0372B2]"
+                  className="w-fit flex gap-x-1.5 md:gap-x-3 py-0.5 px-1 rounded-md flex items-center text-t-option bg-b-option border border-[#0372B2]"
                 >
                   <div className="item-label" data-value={val.value}>
                     {val.label}
                   </div>
                   <img
-                    className="h-4 cursor-pointer"
+                    className="h-3 md:h-4 cursor-pointer"
                     onClick={(e) => handleTagRemove(e, val)}
                     src="/static/icons/xMark.svg"
                     alt=""

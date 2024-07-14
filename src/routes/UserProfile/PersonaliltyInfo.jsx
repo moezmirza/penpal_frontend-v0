@@ -154,9 +154,9 @@ function PersonalityInfo() {
     <div
       ref={customSelectContainerRef}
       id="card"
-      className="bg-white flex flex-col py-6 gap-y-8 pb-10 items-center m-auto rounded-lg mb-6 p-6 relative"
+      className="bg-white flex flex-col py-6 gap-y-6 md:gap-y-8 pb-10 items-center m-auto rounded-lg mb-6 p-2 md:p-6 relative"
     >
-      <div className="m-auto font-semibold text-2xl">Edit Info</div>
+      <div className="m-auto font-semibold text-xl md:text-2xl">Edit Info</div>
       {error && <p className="text-red-500 mt-1"> {error} </p>}
       {loading && <LoadingSpinner />}
 
@@ -172,7 +172,7 @@ function PersonalityInfo() {
         />
       ))}
       <button
-        className="ml-auto  bg-fr-blue-200 w-1/5  text-white p-1.5 rounded hover:opacity-90"
+        className="ml-auto  bg-fr-blue-200 w-1/3 md:w-1/5  text-white p-1.5 rounded hover:opacity-90"
         onClick={handleUpdate}
       >
         Update

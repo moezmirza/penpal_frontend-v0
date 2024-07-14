@@ -117,14 +117,12 @@ function BasicInfo() {
       {loading && <LoadingSpinner />}
       <div className="bg-gray-300 w-full rounded-lg p-6 flex flex-col items-center gap-y-6">
         <div className="w-fit m-auto relative">
-          <div className="rounded-full w-48 h-48 md:w-52 md:h-52 overflow-hidden flex justify-center  ">
-            <img
-              className="rounded-full w-full h-full object-cover object-top"
-              src={basicInfo.imageUrl || "/static/default.jpg"}
-              alt="user avatar"
-              id="avatar-preview"
-            />
-          </div>
+          <img
+            className="rounded-full md:w-52 md:h-52 w-36 h-36 object-cover object-top"
+            src={basicInfo.imageUrl || "/static/default.jpg"}
+            alt="user avatar"
+            id="avatar-preview"
+          />
           <input
             ref={imageRef}
             type="file"
@@ -133,19 +131,23 @@ function BasicInfo() {
             onChange={handleImageChange}
           />
           <button
-            className="absolute bottom-4 right-4 bg-white p-1.5 rounded-full"
+            className="absolute md:bottom-2 md:right-2 bottom-4 right-1  z-20 bg-white p-1.5 rounded-full"
             onClick={handleClick}
           >
-            <img src="/static/icons/edit.svg" alt="auth" className="h-6" />
+            <img
+              src="/static/icons/edit.svg"
+              alt="auth"
+              className="md:h-6 h-3"
+            />
           </button>
         </div>
       </div>
 
-      <form className="flex flex-col gap-y-6  " onSubmit={handleSubmit}>
-        <div className="m-auto font-semibold text-2xl">Edit Info</div>
+      <form className="flex flex-col gap-y-6 text-sm p-2 md:text-base md:p-0 " onSubmit={handleSubmit}>
+        <div className="m-auto font-semibold text-xl md:text-2xl">Edit Info</div>
         {error && <p className="text-fr-red m-auto">{error}</p>}
         <div className="flex flex-col gap-y-4">
-          <div className="flex gap-x-6">
+          <div className="flex gap-x-6 flex-col gap-y-4 md:flex-row">
             <label>
               <RequiredFieldLabel labelText={"First Name"} />
               <input
@@ -199,7 +201,7 @@ function BasicInfo() {
               name="gender"
               value={basicInfo.gender}
               onChange={handleChange}
-              className={`mt-1 w-full p-2 border border-gray-400  outline-none focus:border-gray-700 rounded-md bg-transparent cursor-pointer ${
+              className={`mt-1 w-full p-1.5 border border-gray-400  outline-none focus:border-gray-700 rounded-md bg-transparent cursor-pointer ${
                 basicInfo.gender == "" ? "text-[#a9a9a9]" : "text-black"
               }`}
             >
@@ -237,7 +239,7 @@ function BasicInfo() {
             ></textarea>
           </label>
         </div>
-        <button className="ml-auto mt-4 bg-fr-blue-200 w-1/5  text-white p-1.5 rounded hover:opacity-90">
+        <button className="ml-auto mt-4 bg-fr-blue-200 w-1/3 md:w-1/5  text-white p-1.5 rounded hover:opacity-90">
           Update
         </button>
       </form>

@@ -8,10 +8,10 @@ function UserProfile() {
   return (
     <div className="bg-c-basic py-12">
       <div className="flex justify-center">
-        <div className="w-1/2">
+        <div className="md:w-1/2 w-full px-3">
           <div id="tabs" className="flex cursor-pointer">
             <div
-              className={`rounded border px-3 py-2 text-lg  ${
+              className={`rounded border md:px-3 md:py-2 md:text-lg text-sm px-2 py-1.5  ${
                 showTab ? "bg-fr-blue-200 text-white" : "bg-white text-black"
               }`}
               onClick={() => setShowTab(true)}
@@ -19,7 +19,7 @@ function UserProfile() {
               Basic Info
             </div>
             <div
-              className={`rounded border px-3 py-2 text-lg ${
+              className={`rounded border md:px-3 md:py-2 md:text-lg text-sm px-2 py-1.5  ${
                 !showTab ? "bg-fr-blue-200 text-white" : "bg-white text-black"
               }`}
               onClick={() => setShowTab(false)}
