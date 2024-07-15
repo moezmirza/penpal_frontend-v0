@@ -84,8 +84,8 @@ const Login = () => {
     navigate("/user-profile");
   };
   return (
-    <div className="flex justify-center items-center bg-b-general pt-6 md:pt-3 md:pb-3.5 px-3">
-      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-1/3 w-full rounded-lg relative text-sm md:text-base">
+    <div className="flex  justify-center bg-b-general pt-20 pb-44 md:pt-3 md:pb-3.5 px-3 h-full ">
+      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-1/3 w-full h-fit rounded-lg relative text-sm md:text-base">
         {loading && <LoadingSpinner />}
         <h2 className="text-2xl md:text-4xl font-bold text-gray-900 flex gap-x-3">
           Welcome Back
