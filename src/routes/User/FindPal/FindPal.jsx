@@ -151,30 +151,31 @@ function FindPal() {
 
   return (
     <div className="bg-c-basic flex flex-col gap-y-12 ">
-      <div id="sect-header" className="flex flex-col gap-y-32 p-20">
-        <div className="flex">
-          <div className="flex flex-col gap-y-6">
-            <h1 className="text-5xl font-bold">
-              Connect with Skilled Penpals Ready to Tackle Your Projects
-            </h1>
-            <h3>
-              Find dedicated and talented individuals who are eager to help you
-              achieve your goals and complete your
-              <br /> tasks efficiently.
-            </h3>
+      <div className="flex justify-between bg-fr-blue-200 p-3 mt-16 w-10/12 m-auto rounded">
+        <div className="text-white my-auto ml-6 flex flex-col gap-y-4">
+          <h2 className="text-7xl font-bold">
+            CONNECT <br /> BEYOND BARS
+          </h2>
+          <div className="text-xl ">
+            Discover friendship, support, and a new perspective with
+            <p className="font-semibold ">A Way Out PenPals</p>
           </div>
-          <img src="/assets/penpals.jpg" className="h-54 w-72 " alt="" />
+          <div className="flex items-center gap-x-4 ">
+            <button
+              className=" flex items-center gap-x-4 text-xl w-fit  text-[#47C3F6]  rounded-md hover:opacity-90"
+              onClick={handleBtnClick}
+            >
+              Get Started
+              <img
+                src="/assets/icons/circularArrow.svg"
+                className="h-6"
+                alt=""
+              />
+            </button>
+            {/* Complete profile to find best matches. */}
+          </div>
         </div>
-        <div className="flex items-center gap-x-4 ">
-          <button
-            className=" flex items-center  gap-x-4 bg-fr-blue-200 text-xl w-fit  text-white px-4 py-3 rounded-md hover:opacity-90"
-            onClick={handleBtnClick}
-          >
-            Get Started
-            <img src="/assets/icons/circularArrow.svg" className="h-6" alt="" />
-          </button>
-          {/* Complete profile to find best matches. */}
-        </div>
+        <img src="/assets/heroImage.png" alt="" />
       </div>
       <div
         ref={searchSectRef}
@@ -241,7 +242,7 @@ function CustomerCard({ customer }) {
               <img src="/assets/icons/star.svg" alt="" className="h-4" />{" "}
               {customer?.rating || 0}
             </span>
-            <p className="underline">{customer?.reviews || "N/A"} Reviews</p>
+            <p className="underline">{customer?.numRatings || "N/A"} Reviews</p>
           </div>
         </div>
         <p>

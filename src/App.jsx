@@ -16,13 +16,12 @@ function App() {
   };
   return (
     <div className="">
-      <Navbar />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route element={<AuthenticatedRoutes />}>
+          <Route path="/" element={<FindPal />} />
           <Route path="/user-profile" element={<UserProfile />} />
-          <Route path="/find-pal" element={<FindPal />} />
           <Route path="/customer/:id" element={<Customer />} />
         </Route>
       </Routes>

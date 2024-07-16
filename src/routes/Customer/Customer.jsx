@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { get } from "../../api/get";
+import { post } from "../../api/post";
+import { put } from "../../api/put";
+import { useSelector } from "react-redux";
 
 function Customer() {
   const { id } = useParams();
   const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [ratingVal, setRatingVal] = useState("");
-  console.log("id", id);
+  // const [ratingVal, setRatingVal] = useState("");
+  const authToken = useSelector((state) => state.auth.token);
   useEffect(() => {
     const fetchCustomer = async () => {
       setLoading(true);
       const { success, data, error } = await get(`/customer/test?id=${id}`);
       if (success) {
-        console.log("data", data);
+        console.log("customer data", data);
         setCustomer(data[0]);
         setLoading(false);
       } else {
@@ -25,13 +28,49 @@ function Customer() {
     };
     fetchCustomer();
   }, []);
+  const handleRatingUpdate = async (rating) => {
+    const { success, data, error } = await post(
+      `/customer/review/test?id=${id}`,
+      { rating },
+      authToken
+    );
+    if (success) {
+      console.log("rating data", data);
+    } else {
+      console.log("error updating rating", error);
+    }
+  };
+
+  const handleFavouriteUpdate = async (e) => {
+    // console.log(e.tagert.textContent, e.target.textContent);
+    const target =
+      e.target.tagName === "IMG" ? e.target.parentElement : e.target;
+    const buttonText = target.innerText; // or target.textContent
+    console.log(buttonText);
+    const newText =
+      buttonText.trim() === "Add to Favorites" ? "Added" : "Add to Favorites";
+
+    target.innerHTML = `<img src="/assets/icons/bookmark.svg" alt="" class="h-6 mr-2" /> ${newText}`;
+    const { success, data, error } = await put(
+      `/user/favorite?id=${id}`,
+      {
+        fav: buttonText === "Added" ? false : true,
+      },
+      authToken
+    );
+    if (success) {
+      console.log("Favorite data", data);
+    } else {
+      console.log("error updating rating", error);
+    }
+  };
   return (
-    <div className="bg-c-basic h-full p-6 py-12 flex gap-x-8">
+    <div className="bg-c-basic h-full p-6 py-12 flex gap-x-8 pb-32">
       <div
         id="profile-details"
         className=" bg-white w-8/12 rounded-lg  flex flex-col gap-y-12 p-6"
       >
-        <div className="flex gap-x-4  ">
+        <div className="flex gap-x-4">
           <img src="/assets/default.jpg" alt="" className="h-44 w-44 rounded" />
           <div className="flex flex-col gap-y-3 w-7/12">
             <div className="">
@@ -48,7 +87,7 @@ function Customer() {
                   {customer?.rating || 0}
                 </span>
                 <p className="underline">
-                  {customer?.reviews || "N/A"} Reviews
+                  {customer?.numRatings || "N/A"} Reviews
                 </p>
               </div>
             </div>
@@ -68,6 +107,7 @@ function Customer() {
           <button
             type="button"
             className="flex items-center h-fit  border text-white text px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap my-auto"
+            onClick={handleFavouriteUpdate}
           >
             <img src="/assets/icons/bookmark.svg" alt="" className="h-6 mr-2" />
             Add to Favorites
@@ -103,7 +143,7 @@ function Customer() {
             <div className="flex items-center gap-x-4">
               <RatingScale
                 initialRating={customer?.rating}
-                onRatingChange={setRatingVal}
+                onRatingChange={handleRatingUpdate}
               />
               {/* <p className="mt-2"> {ratingVal}</p> */}
             </div>
