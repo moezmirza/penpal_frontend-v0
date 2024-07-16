@@ -56,7 +56,7 @@ const Login = () => {
         if (success) {
           dispatch(setCurrentUser(data));
           dispatch(setAuth(authInfo));
-          navigate("/user-profile");
+          navigate("/");
         }
         setLoading(false);
       }
