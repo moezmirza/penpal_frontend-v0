@@ -9,6 +9,7 @@ const MultiSelectField = memo(
     selectedOptions,
     onChange,
     collapseDropdown,
+    required,
   }) => {
     const modifiedOptions = dropdownOptions.map((op, ind) => {
       if (selectedOptions.includes(op)) {
@@ -18,9 +19,7 @@ const MultiSelectField = memo(
     console.log("re-rendered");
 
     const [isOpen, setIsOpen] = useState(false);
-    const customSelectContainerRef = useRef(null);
     useEffect(() => {
-      console.log("now thern");
       if (collapseDropdown) {
         setIsOpen(false);
       }
@@ -44,11 +43,12 @@ const MultiSelectField = memo(
       [modifiedOptions]
     );
     return (
-      <div
-        className="w-full relative  text-sm md:text-base"
-        ref={customSelectContainerRef}
-      >
-        <RequiredFieldLabel labelText={labelText} />
+      <div className="w-full relative  text-sm md:text-base">
+        {required ? (
+          <RequiredFieldLabel labelText={labelText} />
+        ) : (
+          <label>{labelText}</label>
+        )}
         <div
           id="wrapper"
           className="rounded mt-1 border cursor-text p-1 md:p-2 flex justify-between gap-x-2 items-center"
@@ -82,7 +82,6 @@ const MultiSelectField = memo(
           <div id="dropdown-toggle" className="btn-container border-l pl-2">
             <button
               type="button"
-              onClick={toggleDropdown}
               className="w-full h-full flex items-center justify-center"
             >
               <img
@@ -102,6 +101,7 @@ const MultiSelectField = memo(
 );
 
 const Dropdown = ({ options, onSelect }) => {
+  console.log("dropdown rendered");
   const [inputVal, seInputVal] = useState("");
   const filteredOptions = options.filter((option) =>
     option.label.toLowerCase().includes(inputVal.toLowerCase())

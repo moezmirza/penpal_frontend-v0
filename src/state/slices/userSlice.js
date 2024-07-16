@@ -15,8 +15,14 @@ const userSlice = createSlice({
       localStorage.setItem("user", JSON.stringify(action.payload));
       state.currentUser = action.payload;
     },
+    setCurrentUserProfileStatus: (state, action) => {
+      let currUser = JSON.parse(localStorage.getItem("user"));
+      currUser.profileComplete = action.payload;
+      state.currentUser = currUser;
+      localStorage.setItem("user", JSON.stringify(currUser));
+    },
   },
 });
 
-export const { setCurrentUser, clearCurrentUser } = userSlice.actions;
+export const { setCurrentUser, setCurrentUserProfileStatus } = userSlice.actions;
 export default userSlice.reducer;

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { RequiredFieldLabel } from "../../components/mainComponents/RequiredFieldLabel";
-import { MultiSelectField } from "../../components/mainComponents/MultiSelectField";
+import { RequiredFieldLabel } from "../../../components/mainComponents/RequiredFieldLabel";
+import { MultiSelectField } from "../../../components/mainComponents/MultiSelectField";
 import {
   bookGenres,
   hobbies,
@@ -11,22 +11,29 @@ import {
   sports,
 } from "./personalityInfoOptions";
 import { useDispatch, useSelector } from "react-redux";
-import { get } from "../../api/get";
-import mapAuthCodeToMessage from "../../utils/authCodeMap";
-import { put } from "../../api/put";
-import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { setUserPersonality } from "../../state/slices/userPersonalitySlice";
+import mapAuthCodeToMessage from "../../../utils/authCodeMap";
+import { put } from "../../../api/put";
+import { LoadingSpinner } from "../../../components/LoadingSpinner";
+import { setUserPersonality } from "../../../state/slices/userPersonalitySlice";
+import { get } from "../../../api/get";
+import { useNavigate } from "react-router-dom";
+import {
+  setCurrentUser,
+  setCurrentUserProfileStatus,
+} from "../../../state/slices/userSlice";
 
 function PersonalityInfo() {
   const personalityInfoState = useSelector(
     (state) => state.userPersonality.info
   );
+  const currentUser = useSelector((state) => state.user.currentUser);
   const authToken = useSelector((state) => state.auth.token);
   const customSelectContainerRef = useRef(null);
   const [collapseDropdown, setCollapseDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [personalityInfo, setPersonalityInfo] = useState({
     hobbies: [],
     sports: [],
@@ -77,6 +84,17 @@ function PersonalityInfo() {
       console.log(data);
 
       dispatch(setUserPersonality(data.personality));
+      dispatch(setCurrentUserProfileStatus(true));
+      console.log(
+        "cur",
+        currentUser,
+        currentUser.profileComplete,
+        !currentUser.profileComplete
+      );
+      if (!currentUser.profileComplete) {
+        console.log("isnide navigate");
+        navigate("/find-pal");
+      }
     } else {
       console.log(error);
       setLoading(false);
@@ -91,8 +109,8 @@ function PersonalityInfo() {
     if (remove) {
       updatedArr = updatedArr.filter((item) => item != value);
     } else {
-      console.log("UpdatedArr", updatedArr, "value", value)
-      updatedArr=[...updatedArr, value]
+      console.log("UpdatedArr", updatedArr, "value", value);
+      updatedArr = [...updatedArr, value];
     }
     setPersonalityInfo({
       ...personalityInfo,

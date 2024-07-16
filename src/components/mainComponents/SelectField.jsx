@@ -1,9 +1,21 @@
 import React from "react";
 
-function SelectField({ labelText, name, value, onChange, options }) {
+function SelectField({
+  labelText,
+  placeholderText,
+  name,
+  value,
+  onChange,
+  dropdownOptions,
+  required,
+}) {
   return (
     <div className="relative inline-block w-full">
-      <RequiredFieldLabel text={labelText} />
+      {required ? (
+        <RequiredFieldLabel text={labelText} />
+      ) : (
+        <label>{labelText}</label>
+      )}
 
       <select
         id="gender"
@@ -14,10 +26,10 @@ function SelectField({ labelText, name, value, onChange, options }) {
           value == "" ? "text-[#a9a9a9]" : "text-black"
         }`}
       >
-        <option value={[]} disabled>
-          Select Gender
+        <option value="" disabled>
+          {placeholderText}
         </option>
-        {options.map((option) => (
+        {dropdownOptions.map((option) => (
           <option key={option} value={option}>
             {option}
           </option>
