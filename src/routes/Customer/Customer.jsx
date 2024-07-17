@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { get } from "../../api/get";
-import { post } from "../../api/post";
 import { put } from "../../api/put";
 import { useSelector } from "react-redux";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
 
 function Customer() {
   const { id } = useParams();
   const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  console.log("customer", customer);
   // const [ratingVal, setRatingVal] = useState("");
   const authToken = useSelector((state) => state.auth.token);
   useEffect(() => {
     const fetchCustomer = async () => {
       setLoading(true);
-      const { success, data, error } = await get(`/customer/test?id=${id}`);
+      const { success, data, error } = await get(
+        `/customer/test?id=${id}`,
+        authToken
+      );
       if (success) {
         console.log("customer data", data);
         setCustomer(data[0]);
@@ -27,10 +31,10 @@ function Customer() {
       }
     };
     fetchCustomer();
-  }, []);
+  }, [authToken, id]);
   const handleRatingUpdate = async (rating) => {
-    const { success, data, error } = await post(
-      `/customer/review/test?id=${id}`,
+    const { success, data, error } = await put(
+      `/customer/rate?id=${id}`,
       { rating },
       authToken
     );
@@ -65,12 +69,15 @@ function Customer() {
     }
   };
   return (
-    <div className="bg-c-basic h-full p-6 py-12 flex gap-x-8 pb-32">
+    <div className="bg-c-basic min-h-screen p-6 py-12 flex gap-x-4 pb-32">
       <div
         id="profile-details"
         className=" bg-white w-8/12 rounded-lg  flex flex-col gap-y-12 p-6"
       >
-        <div className="flex gap-x-4">
+        <div className={`top-1/2 left-1/3 relative`}>
+          {loading && <LoadingSpinner />}
+        </div>
+        <div className="flex gap-x-4 relative">
           <img src="/assets/default.jpg" alt="" className="h-44 w-44 rounded" />
           <div className="flex flex-col gap-y-3 w-7/12">
             <div className="">
@@ -110,24 +117,28 @@ function Customer() {
             onClick={handleFavouriteUpdate}
           >
             <img src="/assets/icons/bookmark.svg" alt="" className="h-6 mr-2" />
-            Add to Favorites
+            {customer?.isFavorite ? "Added" : "Add to Favorites"}
           </button>
         </div>
-        <div className="flex flex-col gap-y-6">
+        <div className="flex flex-col gap-y-10">
           <div>
             <h2 className="font-semibold text-2xl my-4 underline">
               Personality Details
             </h2>
 
-            <div className="flex flex-wrap gap-9">
+            <div className="grid grid-cols-4 gap-8">
               {Object.keys(customer?.personality || []).map(
                 (key) =>
                   key != "_id" && (
-                    <div>
-                      <p className="font-semibold">{key.toUpperCase()}</p>
+                    <div key={key}>
+                      <p className="font-semibold text-lg ">
+                        {key.toUpperCase()}
+                      </p>
                       <ul className="">
                         {customer?.personality[key].map((value) => (
-                          <li>{value}</li>
+                          <li className="text-nowrap" key={value}>
+                            {value}
+                          </li>
                         ))}
                       </ul>
                     </div>
@@ -142,7 +153,7 @@ function Customer() {
             </h1>
             <div className="flex items-center gap-x-4">
               <RatingScale
-                initialRating={customer?.rating}
+                initialRating={customer?.prevRating}
                 onRatingChange={handleRatingUpdate}
               />
               {/* <p className="mt-2"> {ratingVal}</p> */}
@@ -152,7 +163,7 @@ function Customer() {
       </div>
       <div
         id="send-msgs"
-        className="bg-white p-8 rounded-lg h-fit flex  flex-col grow gap-y-8"
+        className="bg-white px-4 py-6 rounded-lg h-fit flex  flex-col grow gap-y-8"
       >
         <p className="font-bold text-2xl text-center">
           Send {customer?.firstName} a message
@@ -162,7 +173,7 @@ function Customer() {
           id=""
           className="outline-none border focus:border-fr-blue-200 rounded p-3"
           rows={6}
-          value={`Hi ${customer?.firstName}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`}
+          defaultValue={`Hi, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`}
         ></textarea>
         <button
           type="button"
@@ -178,7 +189,6 @@ function Customer() {
 const RatingScale = ({ initialRating = 0, onRatingChange }) => {
   const [rating, setRating] = useState(initialRating);
   const [hoverRating, setHoverRating] = useState(null);
-
   const handleMouseEnter = (value) => setHoverRating(value);
   const handleMouseLeave = () => setHoverRating(null);
   const handleClick = (value) => {
@@ -191,7 +201,7 @@ const RatingScale = ({ initialRating = 0, onRatingChange }) => {
       {[1, 2, 3, 4, 5].map((value) => (
         <Star
           key={value}
-          filled={value <= (hoverRating || rating)}
+          filled={value <= (hoverRating || rating || initialRating)}
           onClick={() => handleClick(value)}
           onMouseEnter={() => handleMouseEnter(value)}
           onMouseLeave={handleMouseLeave}

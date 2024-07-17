@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function Footer() {
   return (
-    <div className="bg-fr-blue-200 flex justify-between p-4 px-8">
+    <div className="bg-fr-blue-200 flex justify-between p-4 px-8 w-full">
       <img src="/assets/penpap-logo.png" alt="" className="h-16" />
       <ul className="flex flex-col md:items-center md:flex-row gap-6 text-white text-lg">
         <li>

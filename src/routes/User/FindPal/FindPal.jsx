@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import SelectField from "../../../components/mainComponents/SelectField";
 import { MultiSelectField } from "../../../components/mainComponents/MultiSelectField";
+import { LoadingSpinner } from "../../../components/LoadingSpinner";
 import {
   ageGrpList,
   educationList,
@@ -17,6 +17,12 @@ function FindPal() {
   const user = useSelector((state) => state.user.currentUser);
   const [customers, setCustomers] = useState([]);
   const [collapseDropdown, setCollapseDropdown] = useState(false);
+  const [matchesAlert, setMatchesAlert] = useState("");
+  const authToken = useSelector((state) => state.auth.token);
+  const [loading, setLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  console.log("authToken", authToken);
+  const itemsPerPage = 5;
 
   const customSelectContainerRef = useRef(null);
   const searchSectRef = useRef(null);
@@ -28,6 +34,7 @@ function FindPal() {
     gender: [],
     race: [],
     education: [],
+    isApplied: false,
   });
   const filterStateNameMap = {
     State: "state",
@@ -61,6 +68,7 @@ function FindPal() {
   };
   console.log("it rendered");
   const handleFilterChange = (key, value, remove) => {
+    console.log("filter changed occcured");
     const stateKey = key.toLowerCase();
     console.log("key", stateKey, key);
     let updatedArr = filter[stateKey];
@@ -74,10 +82,15 @@ function FindPal() {
       }
       updatedArr = [...updatedArr, value];
     }
-    setFilter({
+    const updatedFilter = {
       ...filter,
       [stateKey]: updatedArr,
-    });
+    };
+    const checkIfApplied = Object.values(updatedFilter).some(
+      (value) => value.length > 0
+    );
+    updatedFilter.isApplied = checkIfApplied; // to check whether filter is applied or not
+    setFilter(updatedFilter);
   };
 
   const handleClickOutside = (e) => {
@@ -105,17 +118,52 @@ function FindPal() {
   }, [collapseDropdown]);
 
   useEffect(() => {
+    console.log("this gets caled");
     const fetchCustomers = async () => {
-      const { success, data, error } = await get("/customer/test");
+      setLoading(true);
+      const { success, data, error } = await get(
+        `/user/matches?p=0&l=${itemsPerPage}`,
+        authToken
+      );
       console.log(data);
       if (success) {
+        setLoading(false);
         setCustomers(data);
+      } else {
+        setLoading(false);
       }
     };
     fetchCustomers();
-  }, []);
+  }, [authToken]);
 
   const handleFetchMoreCustomers = () => {
+    if (user.profileComplete) {
+      //  page start from zero
+      const page =
+        customers.length === itemsPerPage
+          ? 1
+          : Math.floor(customers.length / itemsPerPage) + 1;
+      const fetchMoreCustomers = async () => {
+        setIsLoadingMore(true);
+        const { success, data, error } = await get(
+          `/user/matches?p=${page}&l=${itemsPerPage}`,
+          authToken
+        );
+        if (success) {
+          setIsLoadingMore(false);
+          if (data.length == 0) {
+            setMatchesAlert("No more matches found.");
+          }
+          console.log("more customers data", data);
+          setCustomers([...customers, ...data]);
+        } else {
+          setIsLoadingMore(false);
+        }
+      };
+      fetchMoreCustomers();
+    } else {
+      navigate("/user-profile");
+    }
     console.log("more");
   };
 
@@ -130,11 +178,12 @@ function FindPal() {
   }
 
   const filterCustomers = () => {
+    console.log("filter", filter);
     return customers.filter((customer) => {
       const ageGroup = getAgeGroup(customer.age);
       return (
         (!filter?.state.length || filter.state.includes(customer.state)) &&
-        (!filter?.age.length || filter.ageGroup.includes(ageGroup)) &&
+        (!filter?.age.length || filter.age.includes(ageGroup)) &&
         (!filter?.gender.length || filter.gender.includes(customer.gender)) &&
         (!filter?.race.length || filter.race.includes(customer.race)) &&
         (!filter?.education.length ||
@@ -152,7 +201,7 @@ function FindPal() {
   return (
     <div className="bg-c-basic flex flex-col gap-y-12 ">
       <div className="flex justify-between bg-fr-blue-200 p-3 mt-16 w-10/12 m-auto rounded">
-        <div className="text-white my-auto ml-6 flex flex-col gap-y-4">
+        <div className="text-white my-auto ml-6 flex flex-col gap-y-8">
           <h2 className="text-7xl font-bold">
             CONNECT <br /> BEYOND BARS
           </h2>
@@ -182,8 +231,12 @@ function FindPal() {
         style={{ marginTop: "-50px", height: "50px", visibility: "hidden" }}
       ></div>
 
-      <div id="sect-search" className="flex flex-col gap-y-12 bg-white p-6">
+      <div
+        id="sect-search"
+        className="flex flex-col gap-y-12 bg-white p-6 relative"
+      >
         <div className="text-4xl font-bold">Find your best pal.</div>
+        {loading && <LoadingSpinner />}
         <div
           id="filters"
           className="grid grid-cols-3 gap-6"
@@ -207,14 +260,21 @@ function FindPal() {
             <CustomerCard customer={customer} />
           ))}
         </div>
-
-        <button
-          type="button"
-          className="mx-auto mt-4 border text-white px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"
-          onClick={handleFetchMoreCustomers}
-        >
-          View More ...
-        </button>
+        {isLoadingMore ? (
+          <p className="text-center">Loading...</p>
+        ) : matchesAlert || filter.isApplied ? (
+          <div className="text-center ">
+            {matchesAlert || "No more matches found."}
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="mx-auto mt-4 border text-white px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"
+            onClick={handleFetchMoreCustomers}
+          >
+            View More ...
+          </button>
+        )}
       </div>
     </div>
   );

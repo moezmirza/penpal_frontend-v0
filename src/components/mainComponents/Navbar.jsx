@@ -7,8 +7,9 @@ import { setCurrentUser } from "../../state/slices/userSlice";
 import { resetAuth } from "../../state/slices/authSlice";
 
 const userNavbarLinkMap = {
-  "Find Pal": "/find-pal",
+  "Find Pal": "/",
   Profile: "/user-profile",
+  Chat: "/chat",
   Subscription: "/",
 };
 const unAuthNavbarLinkMap = {

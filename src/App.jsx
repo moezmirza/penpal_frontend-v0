@@ -8,6 +8,7 @@ import UserProfile from "./routes/User/Profile/Profile";
 import { Navbar } from "./components/mainComponents/Navbar";
 import FindPal from "./routes/User/FindPal/FindPal";
 import Customer from "./routes/Customer/Customer";
+import Chat from "./routes/User/Chat";
 
 function App() {
   const AuthenticatedRoutes = () => {
@@ -23,6 +24,8 @@ function App() {
           <Route path="/" element={<FindPal />} />
           <Route path="/user-profile" element={<UserProfile />} />
           <Route path="/customer/:id" element={<Customer />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="*" element={<FindPal />} />
         </Route>
       </Routes>
     </div>
