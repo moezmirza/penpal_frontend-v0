@@ -76,7 +76,7 @@ function Customer() {
   };
   const handleMsgSend = async (e) => {
     e.target.disabled = true;
-    e.target.innerText = "Sent";
+    e.target.innerText="Sending..."
     console.log("msg text", msgText);
     if (msgText != "") {
       const { success, data, error } = await post(
@@ -88,6 +88,7 @@ function Customer() {
       );
       if (success) {
         console.log("msg send data", data);
+        e.target.innerText = "Sent";
       }
     }
   };
@@ -111,6 +112,7 @@ function Customer() {
               <div className="flex gap-x-4">
                 <p>{customer?.age || "N/A"} yrs</p>
                 <p>{customer?.gender || "N/A"}</p>
+                <p>{customer?.orientation || "N/A"}</p>
                 <p>{customer?.race || "N/A"}</p>
                 <span className="flex gap-x-1 items-baseline">
                   <img src="/assets/icons/star.svg" alt="" className="h-4" />{" "}

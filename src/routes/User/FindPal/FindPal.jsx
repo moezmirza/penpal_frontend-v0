@@ -7,6 +7,7 @@ import {
   ageGrpList,
   educationList,
   genderList,
+  orientationList,
   raceList,
   stateList,
 } from "./findPalState";
@@ -32,6 +33,7 @@ function FindPal() {
     state: [],
     age: [],
     gender: [],
+    orientation: [],
     race: [],
     education: [],
     isApplied: false,
@@ -40,6 +42,7 @@ function FindPal() {
     State: "state",
     Age: "age",
     Gender: "gender",
+    Orientation: "orientation",
     Race: "race",
     Education: "education",
   };
@@ -48,6 +51,7 @@ function FindPal() {
     State: stateList,
     Age: ageGrpList,
     Gender: genderList,
+    Orientation: orientationList,
     Race: raceList,
     Education: educationList,
   };
@@ -185,6 +189,8 @@ function FindPal() {
         (!filter?.state.length || filter.state.includes(customer.state)) &&
         (!filter?.age.length || filter.age.includes(ageGroup)) &&
         (!filter?.gender.length || filter.gender.includes(customer.gender)) &&
+        (!filter?.orientation.length ||
+          filter.orientation.includes(customer.orientation)) &&
         (!filter?.race.length || filter.race.includes(customer.race)) &&
         (!filter?.education.length ||
           filter.education.includes(customer.education))
@@ -256,8 +262,8 @@ function FindPal() {
         </div>
 
         <div id="customers" className="flex flex-col gap-y-6">
-          {filteredCustomers.map((customer) => (
-            <CustomerCard customer={customer} />
+          {filteredCustomers.map((customer, index) => (
+            <CustomerCard key={index} customer={customer} />
           ))}
         </div>
         {isLoadingMore ? (
@@ -297,12 +303,13 @@ function CustomerCard({ customer }) {
           <div className="flex gap-x-4">
             <p>{customer?.age || "N/A"} yrs</p>
             <p>{customer?.gender || "N/A"}</p>
+            <p>{customer?.orientation || "N/A"}</p>
             <p>{customer?.race || "N/A"}</p>
             <span className="flex gap-x-1 items-baseline">
               <img src="/assets/icons/star.svg" alt="" className="h-4" />{" "}
               {customer?.rating || 0}
             </span>
-            <p className="underline">{customer?.numRatings || "N/A"} Reviews</p>
+            <p className="underline">{customer?.numRatings || 0} Reviews</p>
           </div>
         </div>
         <p>

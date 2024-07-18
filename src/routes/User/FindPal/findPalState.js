@@ -64,15 +64,15 @@ export const ageGrpList = [
   "100-109",
 ];
 
-export const genderList = [
-  "Male",
-  "Female",
-  "Gay",
-  "Bisexual",
-  "Lesbian",
-  "Straight",
+export const genderList = ["Male", "Female", "Other"];
+
+export const orientationList = [
+  "LGBTQ+",
   "Transgender",
-  "LBGTQ+ ",
+  "Straight",
+  "Lesbian",
+  "Gay",
+  "Bi-Sexual",
   "Other",
 ];
 
