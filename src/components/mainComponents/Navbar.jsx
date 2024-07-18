@@ -13,7 +13,7 @@ const userNavbarLinkMap = {
   Subscription: "/",
 };
 const unAuthNavbarLinkMap = {
-  "Admin Login": "/",
+  // "Admin Login": "/",
   Register: "/register",
   Login: "/login",
 };

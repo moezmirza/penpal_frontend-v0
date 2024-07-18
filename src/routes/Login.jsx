@@ -84,7 +84,7 @@ const Login = () => {
     navigate("/");
   };
   return (
-    <div className="flex  justify-center bg-b-general pt-20 pb-44 md:pt-3 md:pb-6 px-3 h-full ">
+    <div className="flex  justify-center bg-b-general  h-screen items-center ">
       <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-1/3 w-full h-fit rounded-lg relative text-sm md:text-base">
         {loading && <LoadingSpinner />}
         <h2 className="text-2xl md:text-4xl font-bold text-gray-900 flex gap-x-3">
@@ -94,9 +94,7 @@ const Login = () => {
         <p className="text-gray-500  text-center">
           Enter your credentionals to login
         </p>
-        {error && (
-          <p className="text-red-500 mt-1 "> {error} </p>
-        )}
+        {error && <p className="text-red-500 mt-1 "> {error} </p>}
         <form onSubmit={handleSubmit} className="flex flex-col gap-y-6 w-full ">
           <label className="text-left">
             Email
