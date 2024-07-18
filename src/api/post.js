@@ -12,6 +12,7 @@ async function post(url, body, authToken) {
     if (authToken) {
       headers.Authorization = `Bearer ${authToken}`;
     }
+    console.log("complete url and auth token", completeUrl, headers.Authorization)
     const response = await axios.post(completeUrl, body, {
       headers,
     });

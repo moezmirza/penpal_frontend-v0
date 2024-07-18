@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { get } from "../../api/get";
 import { put } from "../../api/put";
+import { post } from "../../api/post";
 import { useSelector } from "react-redux";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 
@@ -10,6 +11,7 @@ function Customer() {
   const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [msgText, setMsgText] = useState("");
   console.log("customer", customer);
   // const [ratingVal, setRatingVal] = useState("");
   const authToken = useSelector((state) => state.auth.token);
@@ -23,6 +25,9 @@ function Customer() {
       if (success) {
         console.log("customer data", data);
         setCustomer(data[0]);
+        setMsgText(
+          `Hi ${data[0].firstName}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`
+        );
         setLoading(false);
       } else {
         setLoading(false);
@@ -31,7 +36,8 @@ function Customer() {
       }
     };
     fetchCustomer();
-  }, [authToken, id]);
+  }, [authToken]);
+
   const handleRatingUpdate = async (rating) => {
     const { success, data, error } = await put(
       `/customer/rate?id=${id}`,
@@ -66,6 +72,23 @@ function Customer() {
       console.log("Favorite data", data);
     } else {
       console.log("error updating rating", error);
+    }
+  };
+  const handleMsgSend = async (e) => {
+    e.target.disabled = true;
+    e.target.innerText = "Sent";
+    console.log("msg text", msgText);
+    if (msgText != "") {
+      const { success, data, error } = await post(
+        `/user/chat?id=${id}`,
+        {
+          messageText: msgText,
+        },
+        authToken
+      );
+      if (success) {
+        console.log("msg send data", data);
+      }
     }
   };
   return (
@@ -173,11 +196,13 @@ function Customer() {
           id=""
           className="outline-none border focus:border-fr-blue-200 rounded p-3"
           rows={6}
-          defaultValue={`Hi, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`}
+          value={msgText}
+          onChange={(e) => setMsgText(e.target.value)}
         ></textarea>
         <button
           type="button"
           className="mx-auto mt-4 border w-full text-white text px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"
+          onClick={handleMsgSend}
         >
           Send Message
         </button>

@@ -10,7 +10,7 @@ import { Navbar } from "./components/mainComponents/Navbar.jsx";
 import LayoutProvider from "./providers/LayoutProvider.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
         <LayoutProvider>
@@ -18,5 +18,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </LayoutProvider>
       </Provider>
     </BrowserRouter>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
