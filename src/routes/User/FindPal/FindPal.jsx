@@ -13,6 +13,7 @@ import {
 } from "./findPalState";
 
 import { get } from "../../../api/get";
+import CompleteProfilePopup from "../../../components/CompleteProfilePopup";
 
 function FindPal() {
   const user = useSelector((state) => state.user.currentUser);
@@ -22,6 +23,9 @@ function FindPal() {
   const authToken = useSelector((state) => state.auth.token);
   const [loading, setLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [getStartedPopup, setGetStartedPopup] = useState(false);
+  const [viewMorePopup, setViewMorePopup] = useState(false);
+
   console.log("authToken", authToken);
   const itemsPerPage = 5;
 
@@ -58,8 +62,8 @@ function FindPal() {
   console.log(filterOptionsMap["State"][0]);
   const oneChoiceField = ["age", "gender", "race", "education"];
 
-  const handleBtnClick = () => {
-    if (user.profileComplete) {
+  const handleGetStartedClick = () => {
+    if (!user.profileComplete) {
       if (searchSectRef.current) {
         searchSectRef.current.scrollIntoView({
           behavior: "smooth",
@@ -67,7 +71,7 @@ function FindPal() {
         });
       }
     } else {
-      navigate("/user-profile");
+      setGetStartedPopup(true);
     }
   };
   console.log("it rendered");
@@ -171,7 +175,8 @@ function FindPal() {
       };
       fetchMoreCustomers();
     } else {
-      navigate("/user-profile");
+      setViewMorePopup(true);
+      // navigate("/user-profile");
     }
     console.log("more");
   };
@@ -187,7 +192,6 @@ function FindPal() {
   }
 
   const filterCustomers = () => {
-    console.log("filter", filter);
     return customers.filter((customer) => {
       const ageGroup = getAgeGroup(customer.age);
       return (
@@ -207,11 +211,13 @@ function FindPal() {
     () => filterCustomers(),
     [customers, filter]
   );
-  console.log("filetredCustomers", filteredCustomers);
 
   return (
     <div className="bg-c-basic flex flex-col gap-y-12 ">
-      <div className="flex justify-between bg-fr-blue-200 p-3 mt-16 w-10/12 m-auto rounded">
+      <div className="flex justify-between bg-fr-blue-200 p-3 mt-16 w-10/12 m-auto rounded relative">
+        {getStartedPopup && (
+          <CompleteProfilePopup onCloseClick={setGetStartedPopup} />
+        )}
         <div className="text-white my-auto ml-6 flex flex-col gap-y-8">
           <h2 className="text-7xl font-bold">
             CONNECT <br /> BEYOND BARS
@@ -223,7 +229,7 @@ function FindPal() {
           <div className="flex items-center gap-x-4 ">
             <button
               className=" flex items-center gap-x-4 text-xl w-fit  text-[#47C3F6]  rounded-md hover:opacity-90"
-              onClick={handleBtnClick}
+              onClick={handleGetStartedClick}
             >
               Get Started
               <img
@@ -248,6 +254,7 @@ function FindPal() {
       >
         <div className="text-4xl font-bold">Find your best pal.</div>
         {loading && <LoadingSpinner />}
+
         <div
           id="filters"
           className="grid grid-cols-3 gap-6"
@@ -266,10 +273,16 @@ function FindPal() {
           ))}
         </div>
 
-        <div id="customers" className="flex flex-col gap-y-6">
+        <div id="customers" className="flex flex-col gap-y-6 relative">
           {filteredCustomers.map((customer, index) => (
             <CustomerCard key={index} customer={customer} />
           ))}
+          {viewMorePopup && (
+            <CompleteProfilePopup
+              atEnd={true}
+              onCloseClick={setViewMorePopup}
+            />
+          )}
         </div>
         {isLoadingMore ? (
           <p className="text-center">Loading...</p>
