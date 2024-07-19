@@ -39,7 +39,7 @@ function Navbar() {
     location.replace("/login");
   };
   return (
-    <ul className="bg-fr-blue-200 flex items-center justify-between w-full p-5 sticky top-0 z-50">
+    <ul className="bg-fr-blue-200 flex items-center justify-between w-full p-3 md:p-5 sticky top-0 z-50">
       <li className="text-xl md:text-2xl text-white font-medium flex items-baseline ">
         {user?.firstName || "Welcome Pal"}
         <p className="text-4xl">.</p>

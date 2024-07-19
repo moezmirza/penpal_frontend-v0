@@ -212,17 +212,34 @@ function FindPal() {
     [customers, filter]
   );
 
+  const handleClearFilters = () => {
+    let newObj = {};
+    Object.keys(filter).forEach((key) => {
+      if (key == "isApplied") {
+        newObj[key] = false;
+      } else {
+        newObj[key] = [];
+      }
+      setFilter(newObj);
+    });
+  };
   return (
-    <div className="bg-c-basic flex flex-col gap-y-12 ">
-      <div className="flex justify-between bg-fr-blue-200 p-3 mt-16 w-10/12 m-auto rounded relative">
+    <div className="bg-c-basic flex flex-col gap-y-12 w-full px-3 py-6w">
+      <div
+        id="hero-section"
+        className="flex flex-col-reverse lg:flex-row gap-y-6 justify-between bg-fr-blue-200 p-3 mt-2 md:mt-16 w-full m-auto rounded relative"
+      >
         {getStartedPopup && (
           <CompleteProfilePopup onCloseClick={setGetStartedPopup} />
         )}
-        <div className="text-white my-auto ml-6 flex flex-col gap-y-8">
-          <h2 className="text-7xl font-bold">
+        <div className="text-white my-auto ml-0 md:ml-6 flex flex-col gap-y-8">
+          <h2 className="hidden md:block text-2xl md:text-7xl font-bold">
             CONNECT <br /> BEYOND BARS
           </h2>
-          <div className="text-xl ">
+          <h2 className="text-2xl md:text-7xl md:hidden font-bold">
+            CONNECT BEYOND BARS
+          </h2>
+          <div className="text-lg md:text-xl ">
             Discover friendship, support, and a new perspective with
             <p className="font-semibold ">A Way Out PenPals</p>
           </div>
@@ -238,11 +255,11 @@ function FindPal() {
                 alt=""
               />
             </button>
-            {/* Complete profile to find best matches. */}
           </div>
         </div>
-        <img src="/assets/heroImage.png" alt="" />
+        <img src="/assets/heroImage.png" alt="" className="h-80 lg:h-auto" />
       </div>
+
       <div
         ref={searchSectRef}
         style={{ marginTop: "-50px", height: "50px", visibility: "hidden" }}
@@ -250,14 +267,22 @@ function FindPal() {
 
       <div
         id="sect-search"
-        className="flex flex-col gap-y-12 bg-white p-6 relative"
+        className="flex flex-col  gap-y-12 bg-white p-3 md:p-6 relative"
       >
-        <div className="text-4xl font-bold">Find your best pal.</div>
+        <div className="flex flex-col items-start gap-y-3 md:justify-between md:flex-row">
+          <p className="text-2xl md:text-4xl font-bold">Find your best pal.</p>
+          <button
+            className=" border text-white px-5 py-1 md:py-2 bg-fr-blue-200 rounded-md hover:opacity-90"
+            onClick={handleClearFilters}
+          >
+            Clear filters
+          </button>
+        </div>
         {loading && <LoadingSpinner />}
 
         <div
           id="filters"
-          className="grid grid-cols-3 gap-6"
+          className="grid  md:grid-cols-3 gap-6"
           ref={customSelectContainerRef}
         >
           {Object.keys(filterOptionsMap).map((key) => (
@@ -309,24 +334,24 @@ function CustomerCard({ customer }) {
   return (
     <div
       id="customer-card"
-      className="bg-gray-100 rounded-md border border-gray-300 p-4 w-9/12 flex gap-x-4"
+      className="bg-gray-100 rounded-md border border-gray-300 p-4 w-full md:w-9/12 flex flex-col gap-y-6 gap-x-4 md:flex-row"
     >
       <img
         src={customer?.profilePic || "/assets/default.jpg"}
         alt=""
-        className="h-44 w-44 rounded"
+        className="h-auto w-full md:w-44 md:h-44 rounded"
       />
-      <div className="flex flex-col gap-y-3 w-7/12">
-        <div className="">
-          <p className="font-semibold text-3xl mb-1">
+      <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
+        <div className=" ">
+          <p className="font-semibold text-3xl md:text-lg mb-4 md:mb-1">
             {customer.firstName} {customer.lastName}
           </p>
 
           <div className="flex gap-x-4">
-            <p>{customer?.age || "N/A"} yrs</p>
-            <p>{customer?.gender || "N/A"}</p>
-            <p>{customer?.orientation || "N/A"}</p>
-            <p>{customer?.race || "N/A"}</p>
+            <p className="hidden md:block">{customer?.age || "N/A"} yrs</p>
+            <p className="hidden md:block">{customer?.gender || "N/A"}</p>
+            <p className="hidden md:block">{customer?.orientation || "N/A"}</p>
+            <p className="hidden md:block">{customer?.race || "N/A"}</p>
             <span className="flex gap-x-1 items-baseline">
               <img src="/assets/icons/star.svg" alt="" className="h-4" />{" "}
               {customer?.rating || 0}
@@ -347,17 +372,17 @@ function CustomerCard({ customer }) {
           {customer.mailingAddress || "N/A"}
         </p>
       </div>
-      <div className="ml-auto flex flex-col my-auto">
+      <div className="w-full md:w-fit ml-auto flex flex-col my-auto">
         <button
           type="button"
-          className=" ml-auto mt-4 bg-fr-blue-200 text-white px-6 py-3 rounded hover:opacity-90"
+          className="mt-4 bg-fr-blue-200 text-white px-6 py-3 rounded hover:opacity-90"
           onClick={() => navigate(`/customer/${customer._id}`)}
         >
           View Details
         </button>
         <button
           type="button"
-          className=" ml-auto mt-4 border text-black px-5 py-3 border-fr-blue-200 rounded hover:opacity-90"
+          className="mt-4 border text-black px-5 py-3 border-fr-blue-200 rounded hover:opacity-90"
           onClick={() => navigate("/chat", { state: { data: customer } })}
         >
           Message Pal
