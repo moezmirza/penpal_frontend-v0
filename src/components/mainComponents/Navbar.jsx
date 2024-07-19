@@ -7,17 +7,18 @@ import { setCurrentUser } from "../../state/slices/userSlice";
 import { resetAuth } from "../../state/slices/authSlice";
 
 const userNavbarLinkMap = {
-  Dashboard: "/",
+  "Find Pal": "/",
   Profile: "/user-profile",
+  Chat: "/chat",
   Subscription: "/",
 };
 const unAuthNavbarLinkMap = {
-  "Admin Login": "/",
+  // "Admin Login": "/",
   Register: "/register",
   Login: "/login",
 };
 const adminNavbarLinkMap = {
-  Dashboard: "/",
+  "Find Pal": "/find-pal",
   Profile: "/user-profile",
   Subscription: "/",
   Signout: "/",
@@ -27,6 +28,9 @@ function Navbar() {
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
 
+  const handleLinkClick = () => {
+    setShowDropdown(false);
+  };
   const handleSignout = () => {
     signOut(auth);
     dispatch(setCurrentUser(null));
@@ -35,7 +39,7 @@ function Navbar() {
     location.replace("/login");
   };
   return (
-    <ul className="bg-fr-blue-200 flex items-center justify-between w-full p-5">
+    <ul className="bg-fr-blue-200 flex items-center justify-between w-full p-5 sticky top-0 z-20">
       <li className="text-xl md:text-2xl text-white font-medium flex items-baseline ">
         {user?.firstName || "Welcome Pal"}
         <p className="text-4xl">.</p>
@@ -80,7 +84,11 @@ function Navbar() {
                   className="py-1 md:py-2 text-sm text-gray-700 dark:text-gray-200"
                   aria-labelledby="dropdownDefaultButton"
                 >
-                  <NavbarOptions user={user} onSignout={handleSignout} />
+                  <NavbarOptions
+                    user={user}
+                    onSignout={handleSignout}
+                    onLinkClick={handleLinkClick}
+                  />
                 </ul>
               </div>
             )}
@@ -96,7 +104,7 @@ function NavbarOptions({ user, onSignout, onLinkClick }) {
     return (
       <>
         {Object.keys(userNavbarLinkMap).map((linkName) => (
-          <li key={linkName} onClick={() => onLinkClick(false)}>
+          <li key={linkName} onClick={onLinkClick}>
             <Link
               to={userNavbarLinkMap[linkName]}
               className="block px-4 py-1.5 md:py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -117,7 +125,7 @@ function NavbarOptions({ user, onSignout, onLinkClick }) {
   return (
     <ul>
       {Object.keys(unAuthNavbarLinkMap).map((linkName) => (
-        <li>
+        <li key={linkName} onClick={onLinkClick}>
           <Link
             to={unAuthNavbarLinkMap[linkName]}
             className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"

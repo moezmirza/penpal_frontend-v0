@@ -4,8 +4,11 @@ import Login from "./routes/Login";
 import Register from "./routes/Register";
 
 import { useLoginState } from "./hooks/useLoginState";
-import UserProfile from "./routes/UserProfile/UserProfile";
+import UserProfile from "./routes/User/Profile/Profile";
 import { Navbar } from "./components/mainComponents/Navbar";
+import FindPal from "./routes/User/FindPal/FindPal";
+import Customer from "./routes/Customer/Customer";
+import Chat from "./routes/User/Chat";
 
 function App() {
   const AuthenticatedRoutes = () => {
@@ -14,16 +17,15 @@ function App() {
   };
   return (
     <div className="">
-      <Navbar />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route element={<AuthenticatedRoutes />}>
+          <Route path="/" element={<FindPal />} />
           <Route path="/user-profile" element={<UserProfile />} />
-          <Route
-            path="/"
-            element={<p className="w-fit m-auto mt-12">this the home page</p>}
-          />
+          <Route path="/customer/:id" element={<Customer />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="*" element={<FindPal />} />
         </Route>
       </Routes>
     </div>

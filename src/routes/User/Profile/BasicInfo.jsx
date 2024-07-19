@@ -1,20 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
-import { put } from "../../api/put";
-import { RequiredFieldLabel } from "../../components/mainComponents/RequiredFieldLabel";
+import { put } from "../../../api/put";
+import { RequiredFieldLabel } from "../../../components/mainComponents/RequiredFieldLabel";
 import { useDispatch, useSelector } from "react-redux";
-import mapAuthCodeToMessage, { baseUrl } from "../../utils/authCodeMap";
-import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { setCurrentUser } from "../../state/slices/userSlice";
+import mapAuthCodeToMessage, { baseUrl } from "../../../utils/authCodeMap";
+import { LoadingSpinner } from "../../../components/LoadingSpinner";
+import { setCurrentUser } from "../../../state/slices/userSlice";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { storage } from "../../services/firebase";
-import { v4 } from "uuid";
-function BasicInfo() {
+import { storage } from "../../../services/firebase";
+import { genderList } from "../FindPal/findPalState";
+function BasicInfo({ onTabSwitch }) {
   const imageRef = useRef(null);
   const authToken = useSelector((state) => state.auth.token);
   const currentUser = useSelector((state) => state.user.currentUser);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const [error, setError] = useState("");
+  console.log("currentUser", currentUser);
   const [basicInfo, setBasicInfo] = useState({
     firstName: "",
     lastName: "",
@@ -25,17 +26,7 @@ function BasicInfo() {
     bio: "",
     imageUrl: "",
   });
-  const genderList = [
-    "Male",
-    "Female",
-    "Gay",
-    "Bisexual",
-    "Lesbian",
-    "Straight",
-    "Transgender",
-    "LBGTQ+ ",
-    "Other",
-  ];
+
   const handleChange = (e) => {
     setBasicInfo({
       ...basicInfo,
@@ -70,6 +61,11 @@ function BasicInfo() {
       if (success) {
         console.log("data", data);
         dispatch(setCurrentUser(data));
+        if (!currentUser.profileComplete) {
+          // when the profile is incomplete
+          onTabSwitch(false);
+        }
+        console.log(currentUser);
       } else {
         console.log(error);
         setLoading(false);
@@ -244,8 +240,12 @@ function BasicInfo() {
             ></textarea>
           </label>
         </div>
-        <button className="ml-auto mt-4 bg-fr-blue-200 w-1/3 md:w-1/5  text-white p-1.5 rounded hover:opacity-90">
-          Update
+        <button
+          type="button"
+          onClick={handleSubmit}
+          className="ml-auto mt-4 bg-fr-blue-200 w-1/3 md:w-1/5  text-white p-1.5 rounded hover:opacity-90"
+        >
+          {currentUser?.profileComplete ? "Update" : "Continue"}
         </button>
       </form>
     </div>
