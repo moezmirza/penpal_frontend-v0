@@ -15,6 +15,7 @@ function Customer() {
   console.log("customer", customer);
   // const [ratingVal, setRatingVal] = useState("");
   const authToken = useSelector((state) => state.auth.token);
+  
   useEffect(() => {
     const fetchCustomer = async () => {
       setLoading(true);
@@ -76,7 +77,7 @@ function Customer() {
   };
   const handleMsgSend = async (e) => {
     e.target.disabled = true;
-    e.target.innerText="Sending..."
+    e.target.innerText = "Sending...";
     console.log("msg text", msgText);
     if (msgText != "") {
       const { success, data, error } = await post(
@@ -101,25 +102,29 @@ function Customer() {
         <div className={`top-1/2 left-1/3 relative`}>
           {loading && <LoadingSpinner />}
         </div>
-        <div className="flex gap-x-4 relative">
-          <img src="/assets/default.jpg" alt="" className="h-44 w-44 rounded" />
+        <div className="flex gap-x-4 justify-between relative">
+          <img
+            src={customer?.profilePic || "/assets/default.jpg"}
+            alt=""
+            className="h-44 w-44 rounded"
+          />
           <div className="flex flex-col gap-y-3 w-7/12">
             <div className="">
               <p className="font-semibold text-3xl mb-1">
                 {customer?.firstName} {customer?.lastName}
               </p>
 
-              <div className="flex gap-x-4">
-                <p>{customer?.age || "N/A"} yrs</p>
-                <p>{customer?.gender || "N/A"}</p>
-                <p>{customer?.orientation || "N/A"}</p>
-                <p>{customer?.race || "N/A"}</p>
+              <div className="flex gap-x-3">
+                <p className="text-nowrap">{customer?.age || "N/A"} yrs</p>
+                <p className="text-nowrap">{customer?.gender || "N/A"}</p>
+                <p className="text-nowrap">{customer?.orientation || "N/A"}</p>
+                <p className="text-nowrap">{customer?.race || "N/A"}</p>
                 <span className="flex gap-x-1 items-baseline">
                   <img src="/assets/icons/star.svg" alt="" className="h-4" />{" "}
                   {customer?.rating || 0}
                 </span>
-                <p className="underline">
-                  {customer?.numRatings || "N/A"} Reviews
+                <p className="underline text-nowrap">
+                  {customer?.numRatings || 0} Reviews
                 </p>
               </div>
             </div>

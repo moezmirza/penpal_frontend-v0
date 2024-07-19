@@ -109,6 +109,10 @@ function FindPal() {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     window.addEventListener("click", handleClickOutside);
     return () => {
       window.removeEventListener("click", handleClickOutside);
@@ -161,6 +165,7 @@ function FindPal() {
           console.log("more customers data", data);
           setCustomers([...customers, ...data]);
         } else {
+          setMatchesAlert("Error loading matches");
           setIsLoadingMore(false);
         }
       };
@@ -293,7 +298,11 @@ function CustomerCard({ customer }) {
       id="customer-card"
       className=" rounded-md border border-gray-300 p-4 w-9/12 flex gap-x-4"
     >
-      <img src="/assets/default.jpg" alt="" className="h-44 w-44 rounded" />
+      <img
+        src={customer?.profilePic || "/assets/default.jpg"}
+        alt=""
+        className="h-44 w-44 rounded"
+      />
       <div className="flex flex-col gap-y-3 w-7/12">
         <div className="">
           <p className="font-semibold text-3xl mb-1">
@@ -336,6 +345,7 @@ function CustomerCard({ customer }) {
         <button
           type="button"
           className=" ml-auto mt-4 border text-black px-5 py-3 border-fr-blue-200 rounded hover:opacity-90"
+          onClick={() => navigate("/chat", { state: { data: customer } })}
         >
           Message Pal
         </button>

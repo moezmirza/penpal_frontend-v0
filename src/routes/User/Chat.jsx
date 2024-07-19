@@ -9,6 +9,7 @@ import { v4 } from "uuid";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../services/firebase";
 import { post } from "../../api/post";
+import { useLocation } from "react-router-dom";
 
 function Chat() {
   const [searchText, setSearchText] = useState("");
@@ -17,6 +18,19 @@ function Chat() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const currChatInd = useRef();
+  const location = useLocation();
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const newCustomerChat = location.state?.data;
+  console.log("currentUser", currentUser);
+  console.log("newChatCus", newCustomerChat);
+
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+
+  console.log("newChat", newCustomerChat);
   useEffect(() => {
     const fetchChat = async () => {
       setLoading(true);
@@ -25,7 +39,38 @@ function Chat() {
       const { success, data, error } = await get("/user/chat", authToken);
       if (success) {
         console.log("data", data);
-        setUserChats(data);
+
+        if (newCustomerChat) {
+          const chatInd = data?.findIndex(
+            (chat) => chat.receiver._id == newCustomerChat._id
+          );
+          console.log("chatInd----here", chatInd);
+          if (chatInd == -1) {
+            const chatObj = {
+              messages: [],
+              sender: currentUser._id,
+              receiver: {
+                _id: newCustomerChat._id,
+                firstName: newCustomerChat.firstName,
+                lastName: newCustomerChat.lastName,
+                profilePic: newCustomerChat?.profilePic || "",
+              },
+            };
+            console.log("userChats", data);
+            const updatedUserChats = [...data];
+            currChatInd.current = 0;
+            updatedUserChats.unshift(chatObj);
+            console.log("upadatedUserChats", updatedUserChats);
+            setUserChats(updatedUserChats);
+          } else {
+            currChatInd.current = chatInd;
+            setUserChats(data);
+          }
+        } else {
+          console.log("inside here");
+          setUserChats(data);
+        }
+
         setLoading(false);
         setError("");
       } else {
@@ -96,8 +141,16 @@ function Chat() {
       }
     }
   };
+  const includesCaseInsensitive = (str, substring) => {
+    return str.toLowerCase().includes(substring.toLowerCase());
+  };
 
   const currChat = userChats[currChatInd.current];
+  const filteredChats = userChats?.filter(
+    (chat) =>
+      includesCaseInsensitive(chat.receiver.firstName, searchText) ||
+      includesCaseInsensitive(chat.receiver.lastName, searchText)
+  );
   return (
     <div className="py-6 px-4 h-screen">
       <div className="rounded flex bg-c-basic border border-2 border-black h-[90%] relative">
@@ -123,13 +176,13 @@ function Chat() {
           />
 
           <div id="chats" className="flex flex-col h-[80%] overflow-y-auto">
-            {userChats.map((chat, index) => (
+            {filteredChats.map((chat, index) => (
               <ChatCell
                 key={index}
                 index={index}
                 name={`${chat.receiver.firstName} ${chat.receiver.lastName}`}
                 imageUrl={chat.receiver.profilePic}
-                lastMsg={chat.messages[chat.messages.length - 1]}
+                lastMsg={chat.messages[chat.messages.length - 1] || {}}
                 onChatClick={handleChatClick}
               />
             ))}
@@ -184,15 +237,14 @@ function ChatCell({ index, name, lastMsg, imageUrl, onChatClick }) {
       />
       <div>
         <p className="mb-2">{name}</p>
-        {messageText ? (
+        {messageText && (
           <p className="text-gray-500 ">
             {messageText.length > 30
               ? `${messageText.slice(0, 30)}...`
               : messageText}
           </p>
-        ) : (
-          <p className="text-gray-600">File attached</p>
         )}
+        {fileLink && <p className="text-gray-600">File attached</p>}
       </div>
     </div>
   );
@@ -225,7 +277,7 @@ function Conversation({ conversation }) {
 }
 
 function Message({ haveSend, text, fileLink }) {
-  const fileName = v4().slice(0, 10) + ".pdf";
+  const fileName = v4().slice(0, 10);
   const handleDownloadFile = async () => {
     const result = await axios.get(fileLink, {
       responseType: "blob",
@@ -269,6 +321,7 @@ function ChatBox({ onSendMsg, chatIndex }) {
   const handleSendMsg = async () => {
     let msg = {};
     if (selectedFile) {
+      setSelectedFile(null);
       msg.file = selectedFile;
     } else {
       setInputVal("");
@@ -281,7 +334,7 @@ function ChatBox({ onSendMsg, chatIndex }) {
 
   console.log("imageRef length", imageRef.current?.files.length);
   return (
-    <div className="flex gap-x-2 mx-4 items-center absolute bottom-4 w-[70%]">
+    <div className="flex gap-x-2 mx-4 items-center  w-[95%]">
       {selectedFile ? (
         <div className="w-10/12 flex gap-x-6 justify-between">
           <p className="">{selectedFile.name}</p>
