@@ -63,7 +63,7 @@ function FindPal() {
   const oneChoiceField = ["age", "gender", "race", "education"];
 
   const handleGetStartedClick = () => {
-    if (!user.profileComplete) {
+    if (user.profileComplete) {
       if (searchSectRef.current) {
         searchSectRef.current.scrollIntoView({
           behavior: "smooth",
