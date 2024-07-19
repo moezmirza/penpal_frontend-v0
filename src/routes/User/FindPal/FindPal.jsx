@@ -296,7 +296,7 @@ function CustomerCard({ customer }) {
   return (
     <div
       id="customer-card"
-      className=" rounded-md border border-gray-300 p-4 w-9/12 flex gap-x-4"
+      className="bg-gray-100 rounded-md border border-gray-300 p-4 w-9/12 flex gap-x-4"
     >
       <img
         src={customer?.profilePic || "/assets/default.jpg"}

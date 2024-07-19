@@ -24,11 +24,9 @@ function Chat() {
   console.log("currentUser", currentUser);
   console.log("newChatCus", newCustomerChat);
 
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
 
   console.log("newChat", newCustomerChat);
   useEffect(() => {
@@ -117,7 +115,10 @@ function Chat() {
       } else {
         const newFile = msg.file;
         console.log("uploading file...", newFile);
-        const chatFileRef = ref(storage, `files/${newFile.name}¬pal${v4()}`);
+        const chatFileRef = ref(
+          storage,
+          `files/${v4()}penpal-fileName${newFile.name}`
+        );
         const snapshot = await uploadBytes(chatFileRef, newFile);
         const downloadUrl = await getDownloadURL(snapshot.ref);
 
@@ -277,8 +278,11 @@ function Conversation({ conversation }) {
 }
 
 function Message({ haveSend, text, fileLink }) {
-  const fileName = v4().slice(0, 10);
   const handleDownloadFile = async () => {
+    console.log("fileLink", fileLink);
+    const fileName = fileLink.split("penpal-fileName")[1].split("?")[0];
+    console.log("initial split", fileName);
+    console.log("file name", fileName);
     const result = await axios.get(fileLink, {
       responseType: "blob",
     });

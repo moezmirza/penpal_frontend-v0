@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar } from "../../../components/mainComponents/Navbar";
 import BasicInfo from "./BasicInfo";
 import PersonalityInfo from "./PersonaliltyInfo";
 
 function Profile() {
   const [showTab, setShowTab] = useState(true);
-  // const handleTabSwitch=()=>{
-
-  // }
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="bg-c-basic py-12 flex flex-col items-center">
       <div className="md:w-1/2 w-full px-3">
