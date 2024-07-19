@@ -15,7 +15,11 @@ function Customer() {
   console.log("customer", customer);
   // const [ratingVal, setRatingVal] = useState("");
   const authToken = useSelector((state) => state.auth.token);
-  
+
+  useEffect(() => {
+    window.scroll(0, 0);
+  }, []);
+
   useEffect(() => {
     const fetchCustomer = async () => {
       setLoading(true);
