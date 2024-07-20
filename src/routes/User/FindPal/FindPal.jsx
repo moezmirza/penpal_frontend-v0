@@ -60,7 +60,7 @@ function FindPal() {
   const oneChoiceField = ["age", "gender", "race", "education"];
 
   const handleGetStartedClick = () => {
-    if (user.profileComplete) {
+    if (user?.profileComplete) {
       if (searchSectRef.current) {
         searchSectRef.current.scrollIntoView({
           behavior: "smooth",
@@ -144,7 +144,7 @@ function FindPal() {
   }, []);
 
   const handleFetchMoreCustomers = () => {
-    if (user.profileComplete) {
+    if (user?.profileComplete) {
       //  page start from zero
       const page =
         customers.length === itemsPerPage
