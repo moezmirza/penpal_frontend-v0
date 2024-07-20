@@ -12,28 +12,26 @@ import {
 } from "./personalityInfoOptions";
 import { useDispatch, useSelector } from "react-redux";
 import mapAuthCodeToMessage from "../../../utils/authCodeMap";
-import { put } from "../../../api/put";
+import { usePut } from "../../../api/usePut";
 import { LoadingSpinner } from "../../../components/LoadingSpinner";
 import { setUserPersonality } from "../../../state/slices/userPersonalitySlice";
-import { get } from "../../../api/get";
+import { useGet } from "../../../api/useGet";
 import { useNavigate } from "react-router-dom";
-import {
-  setCurrentUser,
-  setCurrentUserProfileStatus,
-} from "../../../state/slices/userSlice";
+import { setCurrentUserProfileStatus } from "../../../state/slices/userSlice";
 
 function PersonalityInfo() {
   const personalityInfoState = useSelector(
     (state) => state.userPersonality.info
   );
   const currentUser = useSelector((state) => state.user.currentUser);
-  const authToken = useSelector((state) => state.auth.token);
   const customSelectContainerRef = useRef(null);
   const [collapseDropdown, setCollapseDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const get = useGet();
+  const put = usePut();
   const [personalityInfo, setPersonalityInfo] = useState({
     hobbies: [],
     sports: [],
@@ -74,11 +72,9 @@ function PersonalityInfo() {
       }
     }
     setLoading(true);
-    const { success, data, error } = await put(
-      "/user/personality",
-      { personality: personalityInfo },
-      authToken
-    );
+    const { success, data, error } = await put("/user/personality", {
+      personality: personalityInfo,
+    });
     setLoading(false);
     if (success) {
       console.log(data);
@@ -144,20 +140,15 @@ function PersonalityInfo() {
   useEffect(() => {
     const fetchPersonalityInfo = async () => {
       setLoading(true);
-      if (authToken) {
-        const { success, data, error } = await get(
-          "/user/personality",
-          authToken
-        );
-        if (success) {
-          console.log(data);
-          setPersonalityInfo(data);
-          dispatch(setUserPersonality(data));
-        } else {
-          setError(mapAuthCodeToMessage(error));
-        }
-        setLoading(false);
+      const { success, data, error } = await get("/user/personality");
+      if (success) {
+        console.log(data);
+        setPersonalityInfo(data);
+        dispatch(setUserPersonality(data));
+      } else {
+        setError(mapAuthCodeToMessage(error));
       }
+      setLoading(false);
     };
     console.log("personaityInfoState", personalityInfoState);
     if (personalityInfoState == null) {

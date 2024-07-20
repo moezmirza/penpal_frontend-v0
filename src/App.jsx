@@ -12,7 +12,7 @@ import Chat from "./routes/User/Chat";
 
 function App() {
   const AuthenticatedRoutes = () => {
-    const isAuth = useLoginState();
+    const isAuth = localStorage.getItem("auth");
     return isAuth ? <Outlet /> : <Navigate to="/login" />;
   };
   return (

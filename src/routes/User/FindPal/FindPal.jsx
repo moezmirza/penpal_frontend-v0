@@ -12,7 +12,7 @@ import {
   stateList,
 } from "./findPalState";
 
-import { get } from "../../../api/get";
+import { useGet } from "../../../api/useGet";
 import CompleteProfilePopup from "../../../components/CompleteProfilePopup";
 
 function FindPal() {
@@ -20,18 +20,15 @@ function FindPal() {
   const [customers, setCustomers] = useState([]);
   const [collapseDropdown, setCollapseDropdown] = useState(false);
   const [matchesAlert, setMatchesAlert] = useState("");
-  const authToken = useSelector((state) => state.auth.token);
   const [loading, setLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [getStartedPopup, setGetStartedPopup] = useState(false);
   const [viewMorePopup, setViewMorePopup] = useState(false);
+  const get = useGet();
 
-  console.log("authToken", authToken);
   const itemsPerPage = 5;
-
   const customSelectContainerRef = useRef(null);
   const searchSectRef = useRef(null);
-  const navigate = useNavigate();
 
   const [filter, setFilter] = useState({
     state: [],
@@ -74,7 +71,6 @@ function FindPal() {
       setGetStartedPopup(true);
     }
   };
-  console.log("it rendered");
   const handleFilterChange = (key, value, remove) => {
     console.log("filter changed occcured");
     const stateKey = key.toLowerCase();
@@ -134,8 +130,7 @@ function FindPal() {
     const fetchCustomers = async () => {
       setLoading(true);
       const { success, data, error } = await get(
-        `/user/matches?p=0&l=${itemsPerPage}`,
-        authToken
+        `/user/matches?p=0&l=${itemsPerPage}`
       );
       console.log(data);
       if (success) {
@@ -146,7 +141,7 @@ function FindPal() {
       }
     };
     fetchCustomers();
-  }, [authToken]);
+  }, []);
 
   const handleFetchMoreCustomers = () => {
     if (user.profileComplete) {
@@ -158,8 +153,7 @@ function FindPal() {
       const fetchMoreCustomers = async () => {
         setIsLoadingMore(true);
         const { success, data, error } = await get(
-          `/user/matches?p=${page}&l=${itemsPerPage}`,
-          authToken
+          `/user/matches?p=${page}&l=${itemsPerPage}`
         );
         if (success) {
           setIsLoadingMore(false);
@@ -176,9 +170,7 @@ function FindPal() {
       fetchMoreCustomers();
     } else {
       setViewMorePopup(true);
-      // navigate("/user-profile");
     }
-    console.log("more");
   };
 
   function getAgeGroup(age) {
@@ -227,7 +219,7 @@ function FindPal() {
     <div className="bg-c-basic flex flex-col gap-y-12 w-full px-3 py-6w">
       <div
         id="hero-section"
-        className="flex flex-col-reverse lg:flex-row gap-y-6 justify-between bg-fr-blue-200 p-3 mt-2 md:mt-16 w-full m-auto rounded relative"
+        className="flex flex-col-reverse lg:flex-row gap-y-6 justify-between bg-fr-blue-200 p-3 mt-2 md:mt-12 w-full md:w-10/12 m-auto rounded relative"
       >
         {getStartedPopup && (
           <CompleteProfilePopup onCloseClick={setGetStartedPopup} />
@@ -343,7 +335,7 @@ function CustomerCard({ customer }) {
       />
       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
         <div className=" ">
-          <p className="font-semibold text-3xl md:text-lg mb-4 md:mb-1">
+          <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
             {customer.firstName} {customer.lastName}
           </p>
 

@@ -1,19 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
-import { get } from "../../api/get";
+import { useGet } from "../../api/useGet";
 import { useSelector } from "react-redux";
 import fileDownload from "js-file-download";
 import axios from "axios";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { put } from "../../api/put";
+import { usePut } from "../../api/usePut";
 import { v4 } from "uuid";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../services/firebase";
-import { post } from "../../api/post";
+import { usePost } from "../../api/usePost";
 import { useLocation } from "react-router-dom";
 
 function Chat() {
   const [searchText, setSearchText] = useState("");
-  const authToken = useSelector((state) => state.auth.token);
   const [userChats, setUserChats] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -22,7 +21,9 @@ function Chat() {
   const location = useLocation();
   const currentUser = useSelector((state) => state.user.currentUser);
   const newCustomerChat = location.state?.data;
-  
+  const get = useGet();
+  const post = usePost();
+  const put = usePut();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -32,7 +33,7 @@ function Chat() {
     const fetchChat = async () => {
       setLoading(true);
       setError("");
-      const { success, data, error } = await get("/user/chat", authToken);
+      const { success, data, error } = await get("/user/chat");
       if (success) {
         if (newCustomerChat) {
           const chatInd = data?.findIndex(
@@ -71,7 +72,7 @@ function Chat() {
       }
     };
     fetchChat();
-  }, [authToken]);
+  }, []);
   const handleChatClick = async (chatIndex) => {
     if (window.innerWidth < 786) {
       // only for mobile
@@ -85,13 +86,9 @@ function Chat() {
 
     currChatInd.current = chatIndex;
     setUserChats(updatedChats);
-    const { success, data, error } = await put(
-      `/user/chat?id=${lastMsg._id}`,
-      {
-        unread: false,
-      },
-      authToken
-    );
+    const { success, data, error } = await put(`/user/chat?id=${lastMsg._id}`, {
+      unread: false,
+    });
     if (success) {
       console.log("update read status");
     }
@@ -120,8 +117,7 @@ function Chat() {
 
       const { data, success, error } = await post(
         `/user/chat?id=${receiver._id}`,
-        newMsg,
-        authToken
+        newMsg
       );
       if (success) {
         console.log("msg sent data", data);

@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../../services/firebase";
-import { reload, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { setCurrentUser } from "../../state/slices/userSlice";
-import { resetAuth } from "../../state/slices/authSlice";
+import { AuthContext } from "../../providers/AuthProvider";
 
 const userNavbarLinkMap = {
   "Find Pal": "/",
@@ -26,15 +26,15 @@ const adminNavbarLinkMap = {
 function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const user = useSelector((state) => state.user.currentUser);
+  const { updateAuthInfo } = useContext(AuthContext);
   const dispatch = useDispatch();
-
   const handleLinkClick = () => {
     setShowDropdown(false);
   };
   const handleSignout = () => {
     signOut(auth);
     dispatch(setCurrentUser(null));
-    dispatch(resetAuth());
+    updateAuthInfo({ token: "", isAuth: false });
     setShowDropdown(false);
     location.replace("/login");
   };

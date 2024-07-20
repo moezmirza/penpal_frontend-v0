@@ -9,8 +9,7 @@ function CompleteProfilePopup({ onCloseClick, atEnd }) {
   const popupRef = useRef();
   return (
     <div
-      id="popup-modal"
-      class={`w-full absolute ${
+      class={`w-full md:w-fit absolute ${
         atEnd ? "bottom-0" : "top-1/2"
       } left-1/2 -translate-x-1/2 -translate-y-${atEnd ? "0" : "1/2"} z-20`}
       ref={popupRef}

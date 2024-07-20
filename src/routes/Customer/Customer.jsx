@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { get } from "../../api/get";
-import { put } from "../../api/put";
-import { post } from "../../api/post";
+import { useGet } from "../../api/useGet";
+import { usePut } from "../../api/usePut";
+import { usePost } from "../../api/usePost";
 import { useSelector } from "react-redux";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 
@@ -12,7 +12,9 @@ function Customer() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [msgText, setMsgText] = useState("");
-  const authToken = useSelector((state) => state.auth.token);
+  const get = useGet();
+  const post = usePost();
+  const put = usePut();
 
   useEffect(() => {
     window.scroll(0, 0);
@@ -21,10 +23,7 @@ function Customer() {
   useEffect(() => {
     const fetchCustomer = async () => {
       setLoading(true);
-      const { success, data, error } = await get(
-        `/customer/test?id=${id}`,
-        authToken
-      );
+      const { success, data, error } = await get(`/customer/test?id=${id}`);
       if (success) {
         console.log("customer data", data);
         setCustomer(data[0]);
@@ -39,14 +38,12 @@ function Customer() {
       }
     };
     fetchCustomer();
-  }, [authToken]);
+  }, []);
 
   const handleRatingUpdate = async (rating) => {
-    const { success, data, error } = await put(
-      `/customer/rate?id=${id}`,
-      { rating },
-      authToken
-    );
+    const { success, data, error } = await put(`/customer/rate?id=${id}`, {
+      rating,
+    });
     if (success) {
       console.log("rating data", data);
     } else {
@@ -63,13 +60,9 @@ function Customer() {
       buttonText.trim() === "Add to Favorites" ? "Added" : "Add to Favorites";
 
     target.innerHTML = `<img src="/assets/icons/bookmark.svg" alt="" class="h-6 mr-2" /> ${newText}`;
-    const { success, data, error } = await put(
-      `/user/favorite?id=${id}`,
-      {
-        fav: buttonText === "Added" ? false : true,
-      },
-      authToken
-    );
+    const { success, data, error } = await put(`/user/favorite?id=${id}`, {
+      fav: buttonText === "Added" ? false : true,
+    });
     if (success) {
       console.log("Favorite data", data);
     } else {
@@ -80,13 +73,9 @@ function Customer() {
     e.target.disabled = true;
     e.target.innerText = "Sending...";
     if (msgText != "") {
-      const { success, data, error } = await post(
-        `/user/chat?id=${id}`,
-        {
-          messageText: msgText,
-        },
-        authToken
-      );
+      const { success, data, error } = await post(`/user/chat?id=${id}`, {
+        messageText: msgText,
+      });
       if (success) {
         e.target.innerText = "Sent";
       }
