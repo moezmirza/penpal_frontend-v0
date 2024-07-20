@@ -12,23 +12,21 @@ import Chat from "./routes/User/Chat";
 
 function App() {
   const AuthenticatedRoutes = () => {
-    const isAuth = useLoginState();
-    return isAuth ? <Outlet /> : <Navigate to="/login" />;
+    const isAuth = localStorage.getItem("auth") === "true";
+    return isAuth ? <Outlet /> : <Login />;
   };
   return (
-    <div className="">
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route element={<AuthenticatedRoutes />}>
-          <Route path="/" element={<FindPal />} />
-          <Route path="/user-profile" element={<UserProfile />} />
-          <Route path="/customer/:id" element={<Customer />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="*" element={<FindPal />} />
-        </Route>
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route element={<AuthenticatedRoutes />}>
+        <Route path="/" element={<FindPal />} />
+        <Route path="/user-profile" element={<UserProfile />} />
+        <Route path="/customer/:id" element={<Customer />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="*" element={<FindPal />} />
+      </Route>
+    </Routes>
   );
 }
 

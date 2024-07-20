@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { post } from "../api/post";
+import { usePost } from "../api/usePost";
 import { Link, useNavigate } from "react-router-dom";
 import mapAuthCodeToMessage, { baseUrl } from "../utils/authCodeMap";
 import { LoadingSpinner } from "../components/LoadingSpinner";
@@ -15,8 +15,9 @@ const Register = () => {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
+  const post = usePost();
+  console.log("post ", post);
 
   const handleChange = (e) => {
     console.log(e, e.target.value);

@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../services/firebase";
 import Separater from "../components/Separater";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../state/slices/userSlice";
-import { setAuth } from "../state/slices/authSlice";
 import mapAuthCodeToMessage from "../utils/authCodeMap";
 import { LoadingSpinner } from "../components/LoadingSpinner";
-import { get } from "../api/get";
+import { useGet } from "../api/useGet";
+import { AuthContext } from "../providers/AuthProvider";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -17,9 +17,11 @@ const Login = () => {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const get = useGet();
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
+
+  const { updateAuthInfo } = useContext(AuthContext);
 
   const handleChange = (e) => {
     setFormData({
@@ -51,11 +53,11 @@ const Login = () => {
           isAuth: true,
         };
 
-        let { success, data, error } = await get("/user", authInfo.token);
+        let { success, data, error } = await get("/user");
         console.log(success, "UserData", data);
         if (success) {
           dispatch(setCurrentUser(data));
-          dispatch(setAuth(authInfo));
+          updateAuthInfo(authInfo);
           navigate("/");
         }
         setLoading(false);
@@ -80,7 +82,8 @@ const Login = () => {
       isAuth: true,
     };
     dispatch(setCurrentUser(currentUser));
-    dispatch(setAuth(authInfo));
+    updateAuthInfo(authInfo);
+
     navigate("/");
   };
   return (

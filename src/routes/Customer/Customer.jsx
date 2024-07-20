@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { get } from "../../api/get";
-import { put } from "../../api/put";
-import { post } from "../../api/post";
+import { useGet } from "../../api/useGet";
+import { usePut } from "../../api/usePut";
+import { usePost } from "../../api/usePost";
 import { useSelector } from "react-redux";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 
@@ -12,9 +12,9 @@ function Customer() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [msgText, setMsgText] = useState("");
-  console.log("customer", customer);
-  // const [ratingVal, setRatingVal] = useState("");
-  const authToken = useSelector((state) => state.auth.token);
+  const get = useGet();
+  const post = usePost();
+  const put = usePut();
 
   useEffect(() => {
     window.scroll(0, 0);
@@ -23,10 +23,7 @@ function Customer() {
   useEffect(() => {
     const fetchCustomer = async () => {
       setLoading(true);
-      const { success, data, error } = await get(
-        `/customer/test?id=${id}`,
-        authToken
-      );
+      const { success, data, error } = await get(`/customer/test?id=${id}`);
       if (success) {
         console.log("customer data", data);
         setCustomer(data[0]);
@@ -41,14 +38,12 @@ function Customer() {
       }
     };
     fetchCustomer();
-  }, [authToken]);
+  }, []);
 
   const handleRatingUpdate = async (rating) => {
-    const { success, data, error } = await put(
-      `/customer/rate?id=${id}`,
-      { rating },
-      authToken
-    );
+    const { success, data, error } = await put(`/customer/rate?id=${id}`, {
+      rating,
+    });
     if (success) {
       console.log("rating data", data);
     } else {
@@ -57,7 +52,6 @@ function Customer() {
   };
 
   const handleFavouriteUpdate = async (e) => {
-    // console.log(e.tagert.textContent, e.target.textContent);
     const target =
       e.target.tagName === "IMG" ? e.target.parentElement : e.target;
     const buttonText = target.innerText; // or target.textContent
@@ -66,13 +60,9 @@ function Customer() {
       buttonText.trim() === "Add to Favorites" ? "Added" : "Add to Favorites";
 
     target.innerHTML = `<img src="/assets/icons/bookmark.svg" alt="" class="h-6 mr-2" /> ${newText}`;
-    const { success, data, error } = await put(
-      `/user/favorite?id=${id}`,
-      {
-        fav: buttonText === "Added" ? false : true,
-      },
-      authToken
-    );
+    const { success, data, error } = await put(`/user/favorite?id=${id}`, {
+      fav: buttonText === "Added" ? false : true,
+    });
     if (success) {
       console.log("Favorite data", data);
     } else {
@@ -82,43 +72,37 @@ function Customer() {
   const handleMsgSend = async (e) => {
     e.target.disabled = true;
     e.target.innerText = "Sending...";
-    console.log("msg text", msgText);
     if (msgText != "") {
-      const { success, data, error } = await post(
-        `/user/chat?id=${id}`,
-        {
-          messageText: msgText,
-        },
-        authToken
-      );
+      const { success, data, error } = await post(`/user/chat?id=${id}`, {
+        messageText: msgText,
+      });
       if (success) {
-        console.log("msg send data", data);
         e.target.innerText = "Sent";
       }
     }
   };
   return (
-    <div className="bg-c-basic min-h-screen p-6 py-12 flex gap-x-4 pb-32">
+    <div className="bg-c-basic min-h-screen p-3 md:p-6 py-12 flex flex-col  md:flex-row gap-y-12 gap-x-4 pb-32">
       <div
         id="profile-details"
-        className=" bg-white w-8/12 rounded-lg  flex flex-col gap-y-12 p-6"
+        className="bg-white w-full  md:w-8/12 rounded-lg flex flex-col gap-y-12 p-6"
       >
-        <div className={`top-1/2 left-1/3 relative`}>
+        <div className={`md:top-1/2 md:left-1/3 md:relative`}>
           {loading && <LoadingSpinner />}
         </div>
-        <div className="flex gap-x-4 justify-between relative">
+        <div className="flex flex-col md:flex-row gap-x-4 justify-between relative">
           <img
             src={customer?.profilePic || "/assets/default.jpg"}
             alt=""
-            className="h-44 w-44 rounded"
+            className="w-full h-auto md:h-44 md:w-44 rounded"
           />
-          <div className="flex flex-col gap-y-3 w-7/12">
+          <div className="flex flex-col justify-center gap-y-3 md:w-7/12 w-full mb-6 md:mb-0">
             <div className="">
-              <p className="font-semibold text-3xl mb-1">
+              <p className="font-semibold text-3xl mb-2 md:mb-1 text-center md:text-left">
                 {customer?.firstName} {customer?.lastName}
               </p>
 
-              <div className="flex gap-x-3">
+              <div className="flex gap-3 justify-center md:justify-start flex-wrap ">
                 <p className="text-nowrap">{customer?.age || "N/A"} yrs</p>
                 <p className="text-nowrap">{customer?.gender || "N/A"}</p>
                 <p className="text-nowrap">{customer?.orientation || "N/A"}</p>
@@ -147,20 +131,21 @@ function Customer() {
           </div>
           <button
             type="button"
-            className="flex items-center h-fit  border text-white text px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap my-auto"
+            className="flex items-center justify-center h-fit  border text-white text px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap my-auto"
             onClick={handleFavouriteUpdate}
           >
             <img src="/assets/icons/bookmark.svg" alt="" className="h-6 mr-2" />
             {customer?.isFavorite ? "Added" : "Add to Favorites"}
           </button>
         </div>
+
         <div className="flex flex-col gap-y-10">
           <div>
-            <h2 className="font-semibold text-2xl my-4 underline">
+            <h2 className="font-semibold text-3xl md:text-2xl my-4 underline">
               Personality Details
             </h2>
 
-            <div className="grid grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               {Object.keys(customer?.personality || []).map(
                 (key) =>
                   key != "_id" && (
@@ -182,7 +167,7 @@ function Customer() {
           </div>
 
           <div className="">
-            <h1 className="text-2xl font-semibold underline mb-4 ">
+            <h1 className="text-3xl md:text-2xl font-semibold underline mb-4 ">
               Give your rating
             </h1>
             <div className="flex items-center gap-x-4">
@@ -190,7 +175,6 @@ function Customer() {
                 initialRating={customer?.prevRating}
                 onRatingChange={handleRatingUpdate}
               />
-              {/* <p className="mt-2"> {ratingVal}</p> */}
             </div>
           </div>
         </div>

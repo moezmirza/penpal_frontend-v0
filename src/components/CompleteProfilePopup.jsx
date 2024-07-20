@@ -9,13 +9,12 @@ function CompleteProfilePopup({ onCloseClick, atEnd }) {
   const popupRef = useRef();
   return (
     <div
-      id="popup-modal"
-      class={`absolute ${
+      class={`w-full md:w-fit absolute ${
         atEnd ? "bottom-0" : "top-1/2"
       } left-1/2 -translate-x-1/2 -translate-y-${atEnd ? "0" : "1/2"} z-20`}
       ref={popupRef}
     >
-      <div class="relative p-4 w-full max-w-md max-h-full">
+      <div class="relative p-4 w-full max-w-md max-h-full ">
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
           <button
             type="button"
@@ -40,9 +39,9 @@ function CompleteProfilePopup({ onCloseClick, atEnd }) {
             </svg>
             <span class="sr-only">Close modal</span>
           </button>
-          <div class="p-4 md:p-5 text-center">
+          <div class="p-5 text-center ">
             <svg
-              class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+              class="mx-auto mb-4 text-gray-400 w-6 md:w-12 md:h-12 dark:text-gray-200"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -56,13 +55,13 @@ function CompleteProfilePopup({ onCloseClick, atEnd }) {
                 d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
               />
             </svg>
-            <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              Complete your profile to unlock all atures
+            <h3 class="mb-5 md:text-lg text-sm font-normal text-gray-500 dark:text-gray-400">
+              Complete your profile to unlock all profiles
             </h3>
             <button
               data-modal-hide="popup-modal"
               type="button"
-              class="text-white text-lg bg-blue-600 hover:bg-blue-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+              class="text-white md:text-sm text-xs bg-blue-600 hover:bg-blue-800 font-medium rounded-lg inline-flex items-center px-5 py-2.5 text-center"
               onClick={() => navigate("/user-profile")}
             >
               Complete Profile

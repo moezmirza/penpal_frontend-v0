@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { put } from "../../../api/put";
+import { usePut } from "../../../api/usePut";
 import { RequiredFieldLabel } from "../../../components/mainComponents/RequiredFieldLabel";
 import { useDispatch, useSelector } from "react-redux";
 import mapAuthCodeToMessage, { baseUrl } from "../../../utils/authCodeMap";
@@ -10,11 +10,12 @@ import { storage } from "../../../services/firebase";
 import { genderList } from "../FindPal/findPalState";
 function BasicInfo({ onTabSwitch }) {
   const imageRef = useRef(null);
-  const authToken = useSelector((state) => state.auth.token);
   const currentUser = useSelector((state) => state.user.currentUser);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const [error, setError] = useState("");
+  const put = usePut();
+
   console.log("currentUser", currentUser);
   const [basicInfo, setBasicInfo] = useState({
     firstName: "",
@@ -57,7 +58,7 @@ function BasicInfo({ onTabSwitch }) {
 
         basicInfo.imageUrl = downloadUrl;
       }
-      const { success, data, error } = await put("/user", basicInfo, authToken);
+      const { success, data, error } = await put("/user", basicInfo);
       if (success) {
         console.log("data", data);
         dispatch(setCurrentUser(data));
