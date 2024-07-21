@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Navbar } from "../../../components/mainComponents/Navbar";
 import BasicInfo from "./BasicInfo";
-import PersonalityInfo from "./PersonaliltyInfo";
+import Questionairre from "./Questionairre";
 
 function Profile() {
   const [showTab, setShowTab] = useState(true);
@@ -26,11 +25,11 @@ function Profile() {
             }`}
             onClick={() => setShowTab(false)}
           >
-            Personality Info
+            Questionnaire
           </div>
         </div>
 
-        {showTab ? <BasicInfo onTabSwitch={setShowTab} /> : <PersonalityInfo />}
+        {showTab ? <BasicInfo onTabSwitch={setShowTab} /> : <Questionairre />}
       </div>
     </div>
   );
