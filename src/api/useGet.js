@@ -6,7 +6,7 @@ import { useContext } from "react";
 
 // Custom hook
 function useGet() {
-  const { updateAuhtInfo } = useContext(AuthContext);
+  const { updateAuthInfo } = useContext(AuthContext);
 
   const get = async (url) => {
     console.log("here inside of get");
@@ -23,7 +23,7 @@ function useGet() {
           token: refreshAccessToken,
           isAuth: true,
         };
-        updateAuhtInfo(authInfo);
+        updateAuthInfo(authInfo);
         //30 mins
       }
 

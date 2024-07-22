@@ -9,7 +9,7 @@ import {
   musicGenres,
   personality,
   sports,
-} from "./personalityInfoOptions";
+} from "./questionairreOptions";
 import { useDispatch, useSelector } from "react-redux";
 import mapAuthCodeToMessage from "../../../utils/authCodeMap";
 import { usePut } from "../../../api/usePut";
@@ -19,7 +19,7 @@ import { useGet } from "../../../api/useGet";
 import { useNavigate } from "react-router-dom";
 import { setCurrentUserProfileStatus } from "../../../state/slices/userSlice";
 
-function PersonalityInfo() {
+function Questionairre() {
   const personalityInfoState = useSelector(
     (state) => state.userPersonality.info
   );
@@ -194,4 +194,4 @@ function PersonalityInfo() {
   );
 }
 
-export default PersonalityInfo;
+export default Questionairre;
