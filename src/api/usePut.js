@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 
 function usePut() {
-  const { updateAuhtInfo } = useContext(AuthContext);
+  const { updateAuthInfo } = useContext(AuthContext);
 
   const put = async (url, body) => {
     try {
@@ -19,8 +19,7 @@ function usePut() {
           token: refreshAccessToken,
           isAuth: true,
         };
-        updateAuhtInfo(authInfo);
-        //30 mins
+        updateAuthInfo(authInfo);
       }
       console.log(url, body, authToken);
       const completeUrl = baseUrl + url;
