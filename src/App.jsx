@@ -9,6 +9,8 @@ import { Navbar } from "./components/mainComponents/Navbar";
 import FindPal from "./routes/User/FindPal/FindPal";
 import Customer from "./routes/Customer/Customer";
 import Chat from "./routes/User/Chat";
+import CreateCustomer from "./routes/Customer/CreateCustomer";
+import ManageCustomers from "./routes/Customer/ManageCustomers";
 
 function App() {
   const AuthenticatedRoutes = () => {
@@ -23,6 +25,9 @@ function App() {
         <Route path="/" element={<FindPal />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/customer/:id" element={<Customer />} />
+        <Route path="/list-customer" element={<CreateCustomer />} />
+        <Route path="/update-customer/:id" element={<CreateCustomer />} />
+        <Route path="/manage-customers" element={<ManageCustomers />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="*" element={<FindPal />} />
       </Route>

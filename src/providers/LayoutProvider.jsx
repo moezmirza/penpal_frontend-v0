@@ -6,10 +6,14 @@ import { useSelector } from "react-redux";
 function LayoutProvider({ children }) {
   const currentUser = useSelector((state) => state.user.currentUser);
   return (
-    <div className="">
+    <div className="flex flex-col justify-between h-screen">
       <Navbar />
-      {children}
-      {currentUser && <Footer />}
+      <div className="flex-grow">{children}</div>
+      {currentUser && (
+        <div className="flex-none">
+          <Footer />
+        </div>
+      )}
     </div>
   );
 }

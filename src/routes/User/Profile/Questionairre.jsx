@@ -1,15 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { RequiredFieldLabel } from "../../../components/mainComponents/RequiredFieldLabel";
 import { MultiSelectField } from "../../../components/mainComponents/MultiSelectField";
-import {
-  bookGenres,
-  hobbies,
-  likes,
-  movieGenres,
-  musicGenres,
-  personality,
-  sports,
-} from "./questionairreOptions";
 import { useDispatch, useSelector } from "react-redux";
 import mapAuthCodeToMessage from "../../../utils/authCodeMap";
 import { usePut } from "../../../api/usePut";
@@ -18,14 +8,13 @@ import { setUserPersonality } from "../../../state/slices/userPersonalitySlice";
 import { useGet } from "../../../api/useGet";
 import { useNavigate } from "react-router-dom";
 import { setCurrentUserProfileStatus } from "../../../state/slices/userSlice";
+import { fieldOptionMap, fieldStateNameMap } from "../../../utils/sharedState";
 
 function Questionairre() {
   const personalityInfoState = useSelector(
     (state) => state.userPersonality.info
   );
   const currentUser = useSelector((state) => state.user.currentUser);
-  const customSelectContainerRef = useRef(null);
-  const [collapseDropdown, setCollapseDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const dispatch = useDispatch();
@@ -41,26 +30,6 @@ function Questionairre() {
     musicGenres: [],
     movieGenres: [],
   });
-
-  const fieldOptionMap = {
-    Hobbies: hobbies,
-    Sports: sports,
-    Likes: likes,
-    Personality: personality,
-    BookGenres: bookGenres,
-    MusicGenres: musicGenres,
-    MovieGenres: movieGenres,
-  };
-
-  const fieldStateNameMap = {
-    Hobbies: "hobbies",
-    Sports: "sports",
-    Likes: "likes",
-    Personality: "personality",
-    BookGenres: "bookGenres",
-    MusicGenres: "musicGenres",
-    MovieGenres: "movieGenres",
-  };
 
   const handleUpdate = async () => {
     setError("");
@@ -113,29 +82,12 @@ function Questionairre() {
       [stateKey]: updatedArr,
     });
   };
-  const handleClickOutside = (e) => {
-    console.log(e.target.id, "target");
-    console.log(customSelectContainerRef.current.contains(e.target));
 
-    if (
-      customSelectContainerRef.current &&
-      !customSelectContainerRef.current.contains(e.target)
-    ) {
-      console.log("inside here yellow ");
-      setCollapseDropdown(true);
-    }
-  };
 
   useEffect(() => {
     window.scroll(0, 0);
   }, []);
 
-  useEffect(() => {
-    window.addEventListener("click", handleClickOutside);
-    return () => {
-      window.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
 
   useEffect(() => {
     const fetchPersonalityInfo = async () => {
@@ -158,14 +110,8 @@ function Questionairre() {
     }
   }, []);
 
-  useEffect(() => {
-    if (collapseDropdown) {
-      setCollapseDropdown(false);
-    }
-  }, [collapseDropdown]);
   return (
     <div
-      ref={customSelectContainerRef}
       id="card"
       className="bg-white flex flex-col py-6 gap-y-6 md:gap-y-8 pb-10 items-center m-auto rounded-lg mb-6 p-2 md:p-6 relative"
     >
@@ -181,7 +127,6 @@ function Questionairre() {
           dropdownOptions={fieldOptionMap[key]}
           selectedOptions={personalityInfo[fieldStateNameMap[key]]}
           onChange={handleChange}
-          collapseDropdown={collapseDropdown}
         />
       ))}
       <button

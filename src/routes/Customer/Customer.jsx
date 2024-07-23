@@ -23,12 +23,12 @@ function Customer() {
   useEffect(() => {
     const fetchCustomer = async () => {
       setLoading(true);
-      const { success, data, error } = await get(`/customer/test?id=${id}`);
+      const { success, data, error } = await get(`/customer?id=${id}`);
       if (success) {
         console.log("customer data", data);
-        setCustomer(data[0]);
+        setCustomer(data);
         setMsgText(
-          `Hi ${data[0].firstName}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`
+          `Hi ${data.firstName}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`
         );
         setLoading(false);
       } else {

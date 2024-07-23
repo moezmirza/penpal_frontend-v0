@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { MultiSelectField } from "../../../components/mainComponents/MultiSelectField";
 import { LoadingSpinner } from "../../../components/LoadingSpinner";
+import { useGet } from "../../../api/useGet";
+import CompleteProfilePopup from "../../../components/CompleteProfilePopup";
 import {
   ageGrpList,
   educationList,
@@ -10,15 +12,11 @@ import {
   orientationList,
   raceList,
   stateList,
-} from "./findPalState";
-
-import { useGet } from "../../../api/useGet";
-import CompleteProfilePopup from "../../../components/CompleteProfilePopup";
+} from "../../../utils/sharedState";
 
 function FindPal() {
   const user = useSelector((state) => state.user.currentUser);
   const [customers, setCustomers] = useState([]);
-  const [collapseDropdown, setCollapseDropdown] = useState(false);
   const [matchesAlert, setMatchesAlert] = useState("");
   const [loading, setLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -27,7 +25,6 @@ function FindPal() {
   const get = useGet();
 
   const itemsPerPage = 5;
-  const customSelectContainerRef = useRef(null);
   const searchSectRef = useRef(null);
 
   const [filter, setFilter] = useState({
@@ -56,7 +53,6 @@ function FindPal() {
     Race: raceList,
     Education: educationList,
   };
-  console.log(filterOptionsMap["State"][0]);
   const oneChoiceField = ["age", "gender", "race", "education"];
 
   const handleGetStartedClick = () => {
@@ -97,33 +93,9 @@ function FindPal() {
     setFilter(updatedFilter);
   };
 
-  const handleClickOutside = (e) => {
-    console.log(customSelectContainerRef.current.contains(e.target));
-
-    if (
-      customSelectContainerRef.current &&
-      !customSelectContainerRef.current.contains(e.target)
-    ) {
-      setCollapseDropdown(true);
-    }
-  };
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  useEffect(() => {
-    window.addEventListener("click", handleClickOutside);
-    return () => {
-      window.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (collapseDropdown) {
-      setCollapseDropdown(false);
-    }
-  }, [collapseDropdown]);
 
   useEffect(() => {
     console.log("this gets caled");
@@ -275,7 +247,6 @@ function FindPal() {
         <div
           id="filters"
           className="grid  md:grid-cols-3 gap-6"
-          ref={customSelectContainerRef}
         >
           {Object.keys(filterOptionsMap).map((key) => (
             <MultiSelectField
@@ -285,7 +256,6 @@ function FindPal() {
               dropdownOptions={filterOptionsMap[key]}
               selectedOptions={filter[filterStateNameMap[key]]}
               onChange={handleFilterChange}
-              collapseDropdown={collapseDropdown}
             />
           ))}
         </div>
@@ -336,7 +306,7 @@ function CustomerCard({ customer }) {
       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
         <div className=" ">
           <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
-            {customer.firstName} {customer.lastName}
+            {customer?.firstName} {customer?.lastName}
           </p>
 
           <div className="flex gap-x-4">
@@ -353,22 +323,22 @@ function CustomerCard({ customer }) {
         </div>
         <p>
           <span className="font-medium mr-1">Location:</span>
-          {customer.state || "N/A"}, {customer.city || "N/A"}
+          {customer?.state || "N/A"}, {customer?.city || "N/A"}
         </p>
         <p>
           <span className="font-medium mr-1">Education:</span>
-          {customer.education || "N/A"}
+          {customer?.education || "N/A"}
         </p>
         <p>
           <span className="font-medium mr-1"> Mainling Addres:</span>
-          {customer.mailingAddress || "N/A"}
+          {customer?.mailingAddress || "N/A"}
         </p>
       </div>
       <div className="w-full md:w-fit ml-auto flex flex-col my-auto">
         <button
           type="button"
           className="mt-4 bg-fr-blue-200 text-white px-6 py-3 rounded hover:opacity-90"
-          onClick={() => navigate(`/customer/${customer._id}`)}
+          onClick={() => navigate(`/customer/${customer?._id}`)}
         >
           View Details
         </button>

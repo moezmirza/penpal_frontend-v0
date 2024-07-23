@@ -8,22 +8,17 @@ const MultiSelectField = memo(
     dropdownOptions,
     selectedOptions,
     onChange,
-    collapseDropdown,
     required,
   }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const containerRef = useRef();
+    console.log("labelText", labelText);
+
     const modifiedOptions = dropdownOptions.map((op, ind) => {
       if (selectedOptions.includes(op)) {
         return { value: ind + 1, label: op, selected: true };
       } else return { value: ind + 1, label: op, selected: false };
     });
-    console.log("re-rendered");
-
-    const [isOpen, setIsOpen] = useState(false);
-    useEffect(() => {
-      if (collapseDropdown) {
-        setIsOpen(false);
-      }
-    }, [collapseDropdown]);
 
     const toggleDropdown = () => {
       setIsOpen(!isOpen);
@@ -42,16 +37,23 @@ const MultiSelectField = memo(
       () => modifiedOptions.filter((op) => op.selected),
       [modifiedOptions]
     );
+
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    useEffect(() => {
+      window.addEventListener("click", handleClickOutside);
+      return () => window.removeEventListener("click", handleClickOutside);
+    }, []);
     return (
-      <div className="w-full relative  text-sm md:text-base">
-        {required ? (
-          <RequiredFieldLabel labelText={labelText} />
-        ) : (
-          <label>{labelText}</label>
-        )}
+      <div ref={containerRef} className="w-full relative  text-sm md:text-base">
+        <RequiredFieldLabel labelText={labelText} required={required} />
+
         <div
           id="wrapper"
-          className="rounded mt-1 border cursor-text p-1 md:p-2 flex justify-between gap-x-2 items-center"
+          className="rounded mt-1 border border-gray-400 cursor-text p-1 md:p-2 flex justify-between gap-x-2 items-center"
           onClick={toggleDropdown}
         >
           <div

@@ -7,7 +7,7 @@ import { LoadingSpinner } from "../../../components/LoadingSpinner";
 import { setCurrentUser } from "../../../state/slices/userSlice";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../services/firebase";
-import { genderList } from "../FindPal/findPalState";
+import { genderList } from "../../../utils/sharedState";
 function BasicInfo({ onTabSwitch }) {
   const imageRef = useRef(null);
   const currentUser = useSelector((state) => state.user.currentUser);

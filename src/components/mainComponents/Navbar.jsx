@@ -10,6 +10,7 @@ const userNavbarLinkMap = {
   "Find Pal": "/",
   Profile: "/user-profile",
   Chat: "/chat",
+  "Manage Customers": "/manage-customers",
   Subscription: "/",
 };
 const unAuthNavbarLinkMap = {
