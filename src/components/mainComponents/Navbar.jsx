@@ -9,12 +9,10 @@ import { AuthContext } from "../../providers/AuthProvider";
 const userNavbarLinkMap = {
   "Find Pal": "/",
   Profile: "/user-profile",
-  Chat: "/chat",
   "Manage Customers": "/manage-customers",
   Subscription: "/",
 };
 const unAuthNavbarLinkMap = {
-  // "Admin Login": "/",
   Register: "/register",
   Login: "/login",
 };
@@ -41,9 +39,9 @@ function Navbar() {
   console.log("type", typeof isAdmin, isAdmin);
   return (
     <ul className="bg-fr-blue-200 flex items-center justify-between w-full p-3 md:p-5 sticky top-0 z-50">
-      <li className="text-xl md:text-2xl text-white font-medium flex items-baseline ">
+      <li className="text-xl md:text-2xl text-white font-medium ">
         {user?.firstName || "Welcome Pal"}
-        <p className="text-4xl">.</p>
+        <span className="text-4xl">.</span>
       </li>
       <div className="flex gap-x-6 items-center">
         {user && (

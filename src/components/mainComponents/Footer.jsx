@@ -26,7 +26,7 @@ function Footer() {
           </li>
         </ul>
         <div className="flex my-auto items-center justify-between gap-x-4">
-          <img src="/assets/penpap-logo.png" alt="" className="h-16" />
+          <img src="/assets/logo.jpeg" alt="" className="h-16 rounded-md" />
           <div className="flex gap-x-4">
             <div className=" border rounded-full p-1.5">
               <img src="/assets/icons/fb.svg" alt="" className="h-6" />
@@ -43,7 +43,7 @@ function Footer() {
 
       {/* pc responsive */}
       <div className="hidden md:flex bg-fr-blue-200 flex justify-between  p-4 px-8 w-full">
-        <img src="/assets/penpap-logo.png" alt="" className="h-16" />
+        <img src="/assets/logo.jpeg" alt="" className="h-16 rounded-md" />
 
         <ul className="flex flex-col md:items-center md:flex-row gap-6 text-white text-lg mx-auto">
           <li>
@@ -68,7 +68,11 @@ function Footer() {
         <div className="flex my-auto items-center justify-between gap-x-4">
           <div className="flex gap-x-4">
             <div className=" border rounded-full p-1.5">
-              <img src="/assets/icons/fb.svg" alt="" className="h-6" />
+              <img
+                src="/assets/icons/fb.svg"
+                alt=""
+                className="h-6  rounded-lg"
+              />
             </div>
             <div className=" border rounded-full p-1.5">
               <img src="/assets/icons/twitter.svg" alt="" className="h-6" />

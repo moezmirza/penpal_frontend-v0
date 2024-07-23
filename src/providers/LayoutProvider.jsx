@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 
 function LayoutProvider({ children }) {
   const currentUser = useSelector((state) => state.user.currentUser);
-  const isAdmin = localStorage.getItem("admin");
+  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
   return (
     <div className="flex flex-col justify-between h-screen">
       <Navbar />

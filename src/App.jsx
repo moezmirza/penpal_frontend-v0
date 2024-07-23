@@ -42,7 +42,6 @@ function App() {
         <Route path="/list-customer" element={<CreateCustomer />} />
         <Route path="/update-customer/:id" element={<CreateCustomer />} />
         <Route path="/manage-customers" element={<ManageCustomers />} />
-        <Route path="/chat" element={<Chat />} />
         <Route path="*" element={<FindPal />} />
       </Route>
     </Routes>
