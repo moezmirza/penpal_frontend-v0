@@ -20,6 +20,7 @@ import { useParams } from "react-router-dom";
 import { usePut } from "../../api/usePut";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { compose } from "@reduxjs/toolkit";
+import { v4 } from "uuid";
 
 function CreateCustomer() {
   const imageRef = useRef();
@@ -27,6 +28,7 @@ function CreateCustomer() {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
+  console.log("current", currentUser);
   const post = usePost();
   const get = useGet();
   const put = usePut();
@@ -101,18 +103,14 @@ function CreateCustomer() {
     const uploadedImg = imageRef.current.files[0];
     if (uploadedImg) {
       console.log("uploading img...", uploadedImg);
-      const userProfileImgRef = ref(
-        storage,
-        `images/${currentUser.firebaseUid}`
-      );
+      const userProfileImgRef = ref(storage, `images/${v4()}`);
       const snapshot = await uploadBytes(userProfileImgRef, uploadedImg);
       const downloadUrl = await getDownloadURL(snapshot.ref);
-
+      console.log("downloadUrl", downloadUrl)
       basicInfo.imageUrl = downloadUrl;
     }
     console.log("final Object", { ...basicInfo, ...personalityInfo });
 
-    
     const updatedInfo = Object.keys(updatedFields.current).reduce(
       (acc, field) => {
         acc[field] = basicInfo[field];
@@ -163,6 +161,7 @@ function CreateCustomer() {
 
   const handleImageChange = () => {
     const files = imageRef.current.files;
+    updatedFields.current["imageUrl"] = true;
 
     if (files.length > 0) {
       const src = URL.createObjectURL(files[0]);

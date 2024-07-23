@@ -96,8 +96,8 @@ function FindPal() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
   useEffect(() => {
+    
     console.log("this gets caled");
     const fetchCustomers = async () => {
       setLoading(true);
@@ -298,7 +298,7 @@ function CustomerCard({ customer }) {
       }  rounded-md border border-gray-300 p-4 w-full md:w-9/12 flex flex-col gap-y-6 gap-x-4 md:flex-row`}
     >
       <img
-        src={customer?.profilePic || "/assets/default.jpg"}
+        src={customer?.imageUrl || "/assets/default.jpg"}
         alt=""
         className="h-auto w-full md:w-44 md:h-44 rounded"
       />
@@ -361,13 +361,6 @@ function CustomerCard({ customer }) {
           onClick={() => navigate(`/customer/${customer?._id}`)}
         >
           View Details
-        </button>
-        <button
-          type="button"
-          className="mt-4 border text-black px-5 py-3 border-fr-blue-200 rounded hover:opacity-90"
-          onClick={() => navigate("/chat", { state: { data: customer } })}
-        >
-          Message Pal
         </button>
       </div>
     </div>

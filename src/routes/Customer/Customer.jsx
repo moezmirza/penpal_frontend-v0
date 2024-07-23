@@ -137,7 +137,7 @@ function Customer() {
         <div className="flex flex-col gap-y-8">
           <div className="flex flex-col md:flex-row md:items-start gap-x-12 relative">
             <img
-              src={customer?.profilePic || "/assets/default.jpg"}
+              src={customer?.imageUrl || "/assets/default.jpg"}
               alt=""
               className="w-full h-auto md:h-44 md:w-44 rounded"
             />
