@@ -51,7 +51,6 @@ function AdminCustomer() {
         console.error("Error approving customer:", error);
       }
     });
-
   };
 
   const basicInfoDisplayFields = [
@@ -75,12 +74,12 @@ function AdminCustomer() {
     "veteranStatus",
   ];
 
-  const updatedFields = customer?.updatedFields;
+  const updatedFields = customer?.updatedFields || [];
   return (
     <div className="bg-c-basic min-h-screen p-3 md:p-6 py-12 flex justify-center gap-y-12 gap-x-4 pb-32">
       <div
         id="profile-details"
-        className={`bg-white w-9/12  border rounded-lg flex flex-col gap-y-4 p-6`}
+        className={`bg-white w-full md:w-9/12  border rounded-lg flex flex-col gap-y-4 p-6`}
       >
         {loading && <LoadingSpinner />}
         <div className="flex flex-col gap-y-8">
@@ -205,8 +204,13 @@ function AdminCustomer() {
           </div>
           <div className="flex flex-col gap-y-10">
             <div>
-              <h2 className="font-semibold text-3xl md:text-2xl my-4 underline">
-                Personality Info
+              <h2 className="font-semibold text-3xl md:text-2xl my-4 flex items-end">
+                <p className="underline">Personality Info</p>
+                {updatedFields?.includes("personality") && (
+                  <span className="font-normal text-xs text-green-500 ml-2">
+                    new
+                  </span>
+                )}
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -216,11 +220,6 @@ function AdminCustomer() {
                       <div key={key}>
                         <p className="font-semibold text-lg ">
                           {key.toUpperCase()}{" "}
-                          {updatedFields.includes(key) && (
-                            <span className="font-normal text-xs text-green-500 ml-2">
-                              new
-                            </span>
-                          )}
                         </p>
                         <ul className="">
                           {customer?.personality[key].map((value) => (
