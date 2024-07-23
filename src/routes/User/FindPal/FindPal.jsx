@@ -244,10 +244,7 @@ function FindPal() {
         </div>
         {loading && <LoadingSpinner />}
 
-        <div
-          id="filters"
-          className="grid  md:grid-cols-3 gap-6"
-        >
+        <div id="filters" className="grid  md:grid-cols-3 gap-6">
           {Object.keys(filterOptionsMap).map((key) => (
             <MultiSelectField
               key={key}
@@ -296,7 +293,9 @@ function CustomerCard({ customer }) {
   return (
     <div
       id="customer-card"
-      className="bg-gray-100 rounded-md border border-gray-300 p-4 w-full md:w-9/12 flex flex-col gap-y-6 gap-x-4 md:flex-row"
+      className={`bg-gray-100 border ${
+        customer?.isFavorite && "border-green-500"
+      }  rounded-md border border-gray-300 p-4 w-full md:w-9/12 flex flex-col gap-y-6 gap-x-4 md:flex-row`}
     >
       <img
         src={customer?.profilePic || "/assets/default.jpg"}
@@ -305,9 +304,16 @@ function CustomerCard({ customer }) {
       />
       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
         <div className=" ">
-          <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
-            {customer?.firstName} {customer?.lastName}
-          </p>
+          <div className="flex gap-x-6 items-center">
+            <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
+              {customer?.firstName} {customer?.lastName}
+            </p>
+            <img
+              src={`assets/icons/${customer?.isFavorite && "filledHeart.svg"}`}
+              alt=""
+              className="h-6"
+            />
+          </div>
 
           <div className="flex gap-4 flex-wrap">
             <p className="hidden md:block text-nowrap">

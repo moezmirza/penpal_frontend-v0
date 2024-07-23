@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import {
   getIdTokenResult,
   signInWithEmailAndPassword,
@@ -24,6 +24,8 @@ const Login = () => {
   const get = useGet();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const passwordRef = useRef();
+  const imageRef = useRef();
 
   const { updateAuthInfo } = useContext(AuthContext);
 
@@ -63,6 +65,7 @@ const Login = () => {
           authInfo.adminAuth = true;
           dispatch(setCurrentUser(currentUser));
           updateAuthInfo(authInfo);
+          navigate("/approve-profiles");
         } else {
           let { success, data, error } = await get("/user");
           console.log(success, "UserData", data);
@@ -70,9 +73,9 @@ const Login = () => {
             authInfo.userAuth = true;
             dispatch(setCurrentUser(data));
             updateAuthInfo(authInfo);
+            navigate("/");
           }
         }
-        navigate("/");
       }
     } catch (err) {
       console.log(err);
@@ -98,6 +101,16 @@ const Login = () => {
 
     navigate("/");
   };
+  const changePassInputType = () => {
+    console.log("inside drop", passwordRef.current.type);
+    if (passwordRef.current.type == "password") {
+      passwordRef.current.type = "text";
+      imageRef.current.src = "assets/icons/eye.svg";
+    } else {
+      passwordRef.current.type = "password";
+      imageRef.current.src = "assets/icons/eyeSlash.svg";
+    }
+  };
   return (
     <div className="flex  justify-center  bg-b-general  h-screen items-center px-4 md:h-full md:pb-6">
       <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-1/3 w-full h-fit rounded-lg relative text-sm md:text-base">
@@ -114,7 +127,7 @@ const Login = () => {
           <label className="text-left">
             Email
             <input
-              type="text"
+              type="email"
               id="name"
               name="email"
               value={formData.email}
@@ -125,11 +138,21 @@ const Login = () => {
             />
           </label>
 
-          <label className=" text-left">
-            Password
+          <label className="text-left">
+            <div className="flex items-center gap-x-6  justify-between">
+              Password
+              <img
+                src={`/assets/icons/eyeSlash.svg`}
+                alt=""
+                ref={imageRef}
+                className="h-6 cursor-pointer"
+                onClick={changePassInputType}
+              />
+            </div>
             <input
-              type="text"
-              id="name"
+              ref={passwordRef}
+              type="password"
+              id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}

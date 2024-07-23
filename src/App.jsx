@@ -5,7 +5,7 @@ import Register from "./routes/Register";
 
 import { useLoginState } from "./hooks/useLoginState";
 import UserProfile from "./routes/User/Profile/Profile";
-import { Navbar } from "./components/mainComponents/Navbar";
+
 import FindPal from "./routes/User/FindPal/FindPal";
 import Customer from "./routes/Customer/Customer";
 import Chat from "./routes/User/Chat";
@@ -13,6 +13,7 @@ import CreateCustomer from "./routes/Customer/CreateCustomer";
 import ManageCustomers from "./routes/Customer/ManageCustomers";
 import ApproveProfiles from "./routes/Admin/ApproveProfiles";
 import ApproveUpdates from "./routes/Admin/ApproveUpdates";
+import AdminCustomer from "./routes/Customer/AdminCustomer";
 
 function App() {
   const UserRoutes = () => {
@@ -30,8 +31,9 @@ function App() {
       <Route path="/register" element={<Register />} />
 
       <Route element={<AdminRoutes />}>
-        <Route path="/profile-approval" element={<ApproveProfiles />} />
-        <Route path="/update-approval" element={<ApproveUpdates />} />
+        <Route path="/approve-profiles" element={<ApproveProfiles />} />
+        <Route path="/approve-updates" element={<ApproveUpdates />} />
+        <Route path="/admin/customer/:id" element={<AdminCustomer />} />
       </Route>
       <Route element={<UserRoutes />}>
         <Route path="/" element={<FindPal />} />

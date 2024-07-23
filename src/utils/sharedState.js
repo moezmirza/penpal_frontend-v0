@@ -325,7 +325,7 @@ export const movieGenres = [
   "Others",
 ];
 
-const spokenLanguagesList = [
+export const spokenLanguagesList = [
   "English",
   "Mandarin Chinese",
   "Hindi",

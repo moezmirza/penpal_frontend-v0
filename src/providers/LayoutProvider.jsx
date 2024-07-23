@@ -1,5 +1,6 @@
 import React from "react";
 import { Navbar } from "../components/mainComponents/Navbar";
+
 import Footer from "../components/mainComponents/Footer";
 import { useSelector } from "react-redux";
 

@@ -16,7 +16,7 @@ function ApproveUpdates() {
     const fetchCustomers = async () => {
       setLoading(true);
       const { success, data, error } = await get(
-        `/admin/customer?approved=${false}`
+        `/admin/update?approved=${false}`
       );
       if (success) {
         setLoading(false);
@@ -60,9 +60,7 @@ function ApproveUpdates() {
   return (
     <div className="flex flex-col gap-y-12 p-6 relative ">
       {loading && <LoadingSpinner />}
-      <h1 className="text-3xl font-bold underline">
-        Approve Customer Profiles
-      </h1>
+      <h1 className="text-3xl font-bold underline">Approve Profile Updates</h1>
       <div className="flex gap-6 w-9/12 items-center">
         <input
           className="bg-transparent block w-full mt-1 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
@@ -76,7 +74,7 @@ function ApproveUpdates() {
         </p>
       </div>
       {customers?.length == 0 && !loading ? (
-        <p className="text-center">You have not listed any customers</p>
+        <p className="text-center">There are no updates to approve</p>
       ) : (
         <div className="flex flex-col gap-y-6">
           {filteredCustomers?.map((customer) => (
@@ -159,7 +157,7 @@ function CustomerCard({ customer, onApprove }) {
         <button
           type="button"
           className="mt-4 bg-fr-blue-200  text-black px-5 py-3  text-white rounded hover:opacity-90"
-          onClick={() => navigate(`/customer/${customer?._id}`)}
+          onClick={() => navigate(`/admin/customer/${customer?._id}`)}
         >
           View Details
         </button>
