@@ -15,6 +15,7 @@ function AuthProvider({ children }) {
         createdAt: authInfo.token ? Date.now() : "",
       })
     );
+    localStorage.setItem("admin", authInfo.isAdmin);
   };
 
   useEffect(() => {
@@ -23,6 +24,7 @@ function AuthProvider({ children }) {
         const authInfo = {
           token: user.accessToken,
           isAuth: true,
+          isAdmin: localStorage.getItem("admin") == "true" ? true : false,
         };
         updateAuthInfo(authInfo);
       }

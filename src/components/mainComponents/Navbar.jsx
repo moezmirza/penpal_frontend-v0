@@ -19,10 +19,7 @@ const unAuthNavbarLinkMap = {
   Login: "/login",
 };
 const adminNavbarLinkMap = {
-  "Find Pal": "/find-pal",
-  Profile: "/user-profile",
-  Subscription: "/",
-  Signout: "/",
+  "Customer Approval": "/",
 };
 function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -35,10 +32,12 @@ function Navbar() {
   const handleSignout = () => {
     signOut(auth);
     dispatch(setCurrentUser(null));
-    updateAuthInfo({ token: "", isAuth: false });
+    updateAuthInfo({ token: "", isAuth: false, isAdmin: false });
     setShowDropdown(false);
     location.replace("/login");
   };
+  const isAdmin = JSON.parse(localStorage.getItem("admin"));
+  console.log("type", typeof isAdmin, isAdmin);
   return (
     <ul className="bg-fr-blue-200 flex items-center justify-between w-full p-3 md:p-5 sticky top-0 z-50">
       <li className="text-xl md:text-2xl text-white font-medium flex items-baseline ">
@@ -86,6 +85,7 @@ function Navbar() {
                   aria-labelledby="dropdownDefaultButton"
                 >
                   <NavbarOptions
+                    isAdmin={isAdmin}
                     user={user}
                     onSignout={handleSignout}
                     onLinkClick={handleLinkClick}
@@ -100,7 +100,29 @@ function Navbar() {
   );
 }
 
-function NavbarOptions({ user, onSignout, onLinkClick }) {
+function NavbarOptions({ user, onSignout, onLinkClick, isAdmin }) {
+  if (isAdmin) {
+    return (
+      <>
+        {Object.keys(adminNavbarLinkMap).map((linkName) => (
+          <li key={linkName} onClick={onLinkClick}>
+            <Link
+              to={adminNavbarLinkMap[linkName]}
+              className="block px-4 py-1.5 md:py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+            >
+              {linkName}
+            </Link>
+          </li>
+        ))}
+        <li
+          className="block px-4 py-1.5 md:py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
+          onClick={onSignout}
+        >
+          Sign out
+        </li>
+      </>
+    );
+  }
   if (user) {
     return (
       <>

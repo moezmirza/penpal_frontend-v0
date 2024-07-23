@@ -15,12 +15,23 @@ import ManageCustomers from "./routes/Customer/ManageCustomers";
 function App() {
   const AuthenticatedRoutes = () => {
     const isAuth = localStorage.getItem("auth") === "true";
-    return isAuth ? <Outlet /> : <Login />;
+    const isAdmin = localStorage.getItem("admin") === "false";
+    console.log("isAuth", "isAdmin", isAuth, isAdmin);
+
+    return isAuth && isAdmin ? <Outlet /> : <Login />;
+  };
+  const AdminRoutes = () => {
+    const isAdmin = localStorage.getItem("admin") === "true";
+    return isAdmin ? <Outlet /> : <Login />;
   };
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+
+      <Route element={<AdminRoutes />}>
+        <Route path="/home" element={<FindPal />} />
+      </Route>
       <Route element={<AuthenticatedRoutes />}>
         <Route path="/" element={<FindPal />} />
         <Route path="/user-profile" element={<UserProfile />} />

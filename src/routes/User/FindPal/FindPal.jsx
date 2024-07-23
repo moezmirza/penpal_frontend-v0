@@ -309,16 +309,30 @@ function CustomerCard({ customer }) {
             {customer?.firstName} {customer?.lastName}
           </p>
 
-          <div className="flex gap-x-4">
-            <p className="hidden md:block">{customer?.age || "N/A"} yrs</p>
-            <p className="hidden md:block">{customer?.gender || "N/A"}</p>
-            <p className="hidden md:block">{customer?.orientation || "N/A"}</p>
-            <p className="hidden md:block">{customer?.race || "N/A"}</p>
+          <div className="flex gap-4 flex-wrap">
+            <p className="hidden md:block text-nowrap">
+              {customer?.age || "N/A"} yrs
+            </p>
+            <p className="hidden md:block text-nowrap">
+              {customer?.gender || "N/A"}
+            </p>
+            <p className="hidden md:block text-nowrap">
+              {customer?.orientation || "N/A"}
+            </p>
+            <p className="hidden md:block text-nowrap">
+              {customer?.race || "N/A"}
+            </p>
             <span className="flex gap-x-1 items-baseline">
-              <img src="/assets/icons/star.svg" alt="" className="h-4" />{" "}
+              <img
+                src="/assets/icons/star.svg"
+                alt=""
+                className="h-4  text-nowrap"
+              />{" "}
               {customer?.rating || 0}
             </span>
-            <p className="underline">{customer?.numRatings || 0} Reviews</p>
+            <p className="underline  text-nowrap">
+              {customer?.numRatings || 0} Reviews
+            </p>
           </div>
         </div>
         <p>

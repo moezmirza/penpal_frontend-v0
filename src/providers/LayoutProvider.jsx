@@ -5,11 +5,12 @@ import { useSelector } from "react-redux";
 
 function LayoutProvider({ children }) {
   const currentUser = useSelector((state) => state.user.currentUser);
+  const isAdmin = localStorage.getItem("admin");
   return (
     <div className="flex flex-col justify-between h-screen">
       <Navbar />
       <div className="flex-grow">{children}</div>
-      {currentUser && (
+      {currentUser && !isAdmin && (
         <div className="flex-none">
           <Footer />
         </div>

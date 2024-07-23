@@ -1,5 +1,9 @@
 import { useContext, useState } from "react";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import {
+  getIdTokenResult,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth, provider } from "../services/firebase";
 import Separater from "../components/Separater";
 import { Link, useNavigate } from "react-router-dom";
@@ -40,27 +44,36 @@ const Login = () => {
         formData.email,
         formData.password
       );
+      setLoading(false);
       console.log("user", user);
       if (user) {
         user = user.user;
         console.log("user.user", user);
-        const currentUser = {
-          name: user.displayName,
-          email: user.email,
-        };
+
         const authInfo = {
           token: user.accessToken,
           isAuth: true,
+          isAdmin: false,
         };
-
-        let { success, data, error } = await get("/user");
-        console.log(success, "UserData", data);
-        if (success) {
-          dispatch(setCurrentUser(data));
+        const tokenResult = await getIdTokenResult(user);
+        console.log("res", tokenResult);
+        if (tokenResult.claims.role == "admin") {
+          const currentUser = {
+            firstName: "Admin",
+            email: user.email,
+          };
+          authInfo.isAdmin = true;
+          dispatch(setCurrentUser(currentUser));
           updateAuthInfo(authInfo);
-          navigate("/");
+        } else {
+          let { success, data, error } = await get("/user");
+          console.log(success, "UserData", data);
+          if (success) {
+            dispatch(setCurrentUser(data));
+            updateAuthInfo(authInfo);
+          }
         }
-        setLoading(false);
+        navigate("/");
       }
     } catch (err) {
       console.log(err);
@@ -80,6 +93,7 @@ const Login = () => {
     const authInfo = {
       token: user.accessToken,
       isAuth: true,
+      isAdmin: localStorage.getItem("admin") == "true" ? true : false,
     };
     dispatch(setCurrentUser(currentUser));
     updateAuthInfo(authInfo);
