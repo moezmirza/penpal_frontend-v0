@@ -151,13 +151,13 @@ function AdminCustomer() {
                   </span>
                 )}
                 {customer?.bio || (
-                  <p className="italic text-gray-500">No bio added</p>
+                  <p className="italic text-gray-500 text-center w-full md:text-left">No bio added</p>
                 )}
               </p>
             </div>
             <button
               type="button"
-              className="flex items-center justify-center h-fit  border text-white text px-5 py-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
+              className="flex items-center justify-center h-fit w-fit  border text-white text  mx-auto px-8 py-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
               onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
             >
               Approve
@@ -169,7 +169,7 @@ function AdminCustomer() {
               Basic Info
             </h2>
 
-            <div className="grid grid-cols-2  gap-4">
+            <div className="grid md:grid-cols-2  grid-cols-1  gap-4">
               {customer &&
                 basicInfoDisplayFields.map((field) => {
                   return (
@@ -236,29 +236,6 @@ function AdminCustomer() {
           </div>
         </div>
       </div>
-      {/* <div
-        id="send-msgs"
-        className="bg-white px-4 py-6 rounded-lg h-fit flex  flex-col grow gap-y-8"
-      >
-        <p className="font-bold text-2xl text-center">
-          Send {customer?.firstName} a message
-        </p>
-        <textarea
-          name=""
-          id=""
-          className="outline-none border focus:border-fr-blue-200 rounded p-3"
-          rows={6}
-          value={msgText}
-          onChange={(e) => setMsgText(e.target.value)}
-        ></textarea>
-        <button
-          type="button"
-          className="mx-auto mt-4 border w-full text-white text px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"
-          onClick={handleMsgSend}
-        >
-          Send Message
-        </button>
-      </div> */}
     </div>
   );
 }
