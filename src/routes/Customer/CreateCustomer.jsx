@@ -50,7 +50,6 @@ function CreateCustomer() {
     race: [],
     spokenLanguages: "",
     institutionalEmailProvider: [],
-    referredBy: "",
     religiousPref: [],
     education: [],
     nameOfCollege: "",
