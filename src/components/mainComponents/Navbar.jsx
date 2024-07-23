@@ -107,7 +107,7 @@ function NavbarOptions({ user, onSignout, onLinkClick, isAdmin }) {
           <li key={linkName} onClick={onLinkClick}>
             <Link
               to={adminNavbarLinkMap[linkName]}
-              className="block px-4 py-1.5 md:py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+              className=" text-nowrap block px-4 py-1.5 md:py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
             >
               {linkName}
             </Link>

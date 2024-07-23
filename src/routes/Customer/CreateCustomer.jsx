@@ -248,9 +248,11 @@ function CreateCustomer() {
     }
   }, []);
   return (
-    <div className="bg-c-basic flex flex-col items-center gap-y-6 p-12  ">
-      <h1 className="text-3xl font-bold  w-7/12 text-left">Customer Profile</h1>
-      <div className="w-7/12 bg-white">
+    <div className="bg-c-basic flex flex-col items-center gap-y-6 py-8 px-3  md:p-12">
+      <h1 className="text-3xl font-bold   md:w-7/12 text-left underline">
+        Customer Profile
+      </h1>
+      <div className=" w-full md:w-7/12 bg-white">
         <div className="bg-gray-300 w-full rounded-lg p-6 flex flex-col items-center gap-y-6">
           <div className="w-fit m-auto relative">
             <img
@@ -330,7 +332,7 @@ function CreateCustomer() {
         {/* personality info */}
         <div
           id="card"
-          className="bg-white flex flex-col py-6 gap-y-6 md:gap-y-8 pb-10 items-center rounded- p-6 lg mb-6"
+          className="bg-white flex flex-col py-6 gap-y-6 md:gap-y-8 pb-10 items-center p-3 md:p-6 lg mb-6"
         >
           <div className="m-auto font-semibold text-xl md:text-3xl underline">
             Personality Info
@@ -349,11 +351,13 @@ function CreateCustomer() {
           ))}
           <div className="flex gap-x-6 w-full justify-between">
             {success && (
-              <p className="text-green-500 w-fit">
+              <p className="text-green-500 w-fit text-sm md:text-base">
                 Customer {id ? "updated" : "created"} successfully
               </p>
             )}
-            {error && <p className="text-fr-red w-fit">{error}</p>}
+            {error && (
+              <p className="text-fr-red w-fit text-sm md:text-base">{error}</p>
+            )}
 
             <button
               className="ml-auto  bg-fr-blue-200 w-1/3 md:w-1/5  text-white p-1.5 rounded hover:opacity-90"

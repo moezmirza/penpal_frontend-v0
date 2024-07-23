@@ -34,6 +34,7 @@ function App() {
         <Route path="/approve-profiles" element={<ApproveProfiles />} />
         <Route path="/approve-updates" element={<ApproveUpdates />} />
         <Route path="/admin/customer/:id" element={<AdminCustomer />} />
+        <Route path="/customer/:id" element={<Customer />} />
       </Route>
       <Route element={<UserRoutes />}>
         <Route path="/" element={<FindPal />} />

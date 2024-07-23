@@ -36,7 +36,7 @@ function ApproveUpdates() {
     setCustomers((customers) =>
       customers.filter((customer) => customer._id != cid)
     );
-    put(`/admin/approve-customer?id=${cid}`).then((response) => {
+    put(`/admin/approve-update?id=${cid}`).then((response) => {
       const { success, data, error } = response;
       if (success) {
         console.log("Approval update successful:", data);
@@ -74,7 +74,7 @@ function ApproveUpdates() {
         </p>
       </div>
       {customers?.length == 0 && !loading ? (
-        <p className="text-center">There are no updates to approve</p>
+        <p className="text-center">There are no more updates to approve</p>
       ) : (
         <div className="flex flex-col gap-y-6">
           {filteredCustomers?.map((customer) => (

@@ -70,8 +70,8 @@ const Register = () => {
   };
 
   return (
-    <div className="flex justify-center items-center  py-20 md:py-6 bg-b-general py-6 px-3 md:px-8 h-screen md:h-full">
-      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 w-full h-fit md:w-2/5 rounded-lg relative">
+    <div className="flex justify-center md:items-center  py-20 md:py-6 bg-b-general py-6 px-3 md:px-8  h-screen md:h-full ">
+      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 w-full md:mt-0 mt-32 h-fit md:w-2/5 rounded-lg relative">
         {loading && <LoadingSpinner />}
         <h2 className="md:text-4xl text-2xl font-bold text-gray-900 flex gap-x-4">
           Create Account
@@ -127,7 +127,7 @@ const Register = () => {
                 src={`/assets/icons/eyeSlash.svg`}
                 alt=""
                 ref={imageRef}
-                className="h-6 cursor-pointer"
+                className="h-4 md:h-6 cursor-pointer"
                 onClick={changePassInputType}
               />
             </div>

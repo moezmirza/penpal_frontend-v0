@@ -4,9 +4,7 @@ import { useGet } from "../../api/useGet";
 import { usePut } from "../../api/usePut";
 import { usePost } from "../../api/usePost";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import {
-  basicInfoFieldLabelMap,
-} from "../../utils/sharedState";
+import { basicInfoFieldLabelMap } from "../../utils/sharedState";
 
 function AdminCustomer() {
   const { id } = useParams();
@@ -25,12 +23,12 @@ function AdminCustomer() {
     const fetchCustomer = async () => {
       setLoading(true);
       const { success, data, error } = await get(
-        `/admin/customer?approved=${false}&id=${id}`
+        `/admin/update?approved=${false}&id=${id}`
       );
       if (success) {
         console.log("customer data", data[0]);
         setCustomer(data[0]);
-      
+
         setLoading(false);
       } else {
         setLoading(false);
@@ -41,14 +39,11 @@ function AdminCustomer() {
     fetchCustomer();
   }, []);
 
-
-
-
   const handleApprovalUpdate = async (e, status, cid) => {
     e.target.innerText = "Approved";
     e.target.disabled = true;
 
-    put(`/admin/approve-customer?id=${cid}`).then((response) => {
+    put(`/admin/approve-update?id=${cid}`).then((response) => {
       const { success, data, error } = response;
       if (success) {
         console.log("Approval update successful:", data);
@@ -57,7 +52,6 @@ function AdminCustomer() {
       }
     });
 
-    setCustomer({ ...customer, profileApproved: true });
   };
 
   const basicInfoDisplayFields = [
@@ -80,21 +74,14 @@ function AdminCustomer() {
     "relationShipStatus",
     "veteranStatus",
   ];
-  console.log("basicInfo", basicInfoDisplayFields);
 
+  const updatedFields = customer?.updatedFields;
   return (
     <div className="bg-c-basic min-h-screen p-3 md:p-6 py-12 flex justify-center gap-y-12 gap-x-4 pb-32">
       <div
         id="profile-details"
-        className={`bg-white w-9/12  border ${
-          customer?.profileApproved == false && "border-red-500"
-        }  rounded-lg flex flex-col gap-y-4 p-6`}
+        className={`bg-white w-9/12  border rounded-lg flex flex-col gap-y-4 p-6`}
       >
-        {customer?.profileApproved == false && (
-          <p className="text-red-500 text-center text-xl">
-            Pending for approval
-          </p>
-        )}
         {loading && <LoadingSpinner />}
         <div className="flex flex-col gap-y-8">
           <div className="flex flex-col md:flex-row md:items-start gap-x-12 relative">
@@ -106,16 +93,48 @@ function AdminCustomer() {
             <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">
               <div>
                 <p className="font-semibold text-3xl mb-2 md:mb-1 text-center md:text-left">
-                  {customer?.firstName} {customer?.lastName}
+                  {customer?.firstName} {customer?.lastName}{" "}
+                  {(updatedFields?.includes("firstName") ||
+                    updatedFields?.includes("lastName")) && (
+                    <span className="font-normal text-xs text-green-500 ml-2">
+                      new
+                    </span>
+                  )}
                 </p>
 
                 <div className="flex gap-3 justify-center md:justify-start flex-wrap ">
-                  <p className="text-nowrap">{customer?.age || "N/A"} yrs</p>
-                  <p className="text-nowrap">{customer?.gender || "N/A"}</p>
+                  <p className="text-nowrap">
+                    {customer?.age || "N/A"} yrs{" "}
+                    {updatedFields?.includes("age") && (
+                      <span className="font-normal text-xs text-green-500 ml-2">
+                        new
+                      </span>
+                    )}
+                  </p>
+                  <p className="text-nowrap">
+                    {customer?.gender || "N/A"}
+                    {updatedFields?.includes("gender") && (
+                      <span className="font-normal text-xs text-green-500 ml-2">
+                        new
+                      </span>
+                    )}
+                  </p>
                   <p className="text-nowrap">
                     {customer?.orientation || "N/A"}
+                    {updatedFields?.includes("orientation") && (
+                      <span className="font-normal text-xs text-green-500 ml-2">
+                        new
+                      </span>
+                    )}
                   </p>
-                  <p className="text-nowrap">{customer?.race || "N/A"}</p>
+                  <p className="text-nowrap">
+                    {customer?.race || "N/A"}
+                    {updatedFields?.includes("race") && (
+                      <span className="font-normal text-xs text-green-500 ml-2">
+                        new
+                      </span>
+                    )}
+                  </p>
                   <span className="flex gap-x-1 items-baseline">
                     <img src="/assets/icons/star.svg" alt="" className="h-4" />{" "}
                     {customer?.rating || 0}
@@ -125,9 +144,15 @@ function AdminCustomer() {
                   </p>
                 </div>
               </div>
-              <p>
+
+              <p className="flex flex-col items-start mt-6 ">
+                {updatedFields?.includes("bio") && (
+                  <span className="font-normal text-xs text-green-500">
+                    new
+                  </span>
+                )}
                 {customer?.bio || (
-                  <p className="italic mt-6 text-gray-500">No bio added</p>
+                  <p className="italic text-gray-500">No bio added</p>
                 )}
               </p>
             </div>
@@ -167,38 +192,16 @@ function AdminCustomer() {
                         {field == "dateOfBirth"
                           ? customer[field].split("T")[0]
                           : customer[field]}
+                        {updatedFields.includes(field) && (
+                          <span className="text-xs text-green-500 ml-2">
+                            new
+                          </span>
+                        )}
                       </p>
                     ))
                   );
                 })}
             </div>
-
-            {/* <p>
-              <span className="font-semibold mr-1 text-lg">Location:</span>
-              {customer?.state}, {customer?.city}
-            </p>
-            <p>
-              <span className="font-semibold mr-1 text-lg">Location:</span>
-              {customer?.state}, {customer?.city}
-            </p>
-            <p>
-              <span className="font-semibold mr-1 text-lg">
-                Mainling Addres:
-              </span>
-              {customer?.mailingAddress}
-            </p>
-            {customer?.eduction && (
-              <p>
-                <span className="font-semibold mr-1 text-lg">Education:</span>
-                {customer?.eduction}
-              </p>
-            )}
-            {customer?.eduction && (
-              <p>
-                <span className="font-semibold mr-1 text-lg">Education:</span>
-                {customer?.eduction}
-              </p>
-            )} */}
           </div>
           <div className="flex flex-col gap-y-10">
             <div>
@@ -212,7 +215,12 @@ function AdminCustomer() {
                     key != "_id" && (
                       <div key={key}>
                         <p className="font-semibold text-lg ">
-                          {key.toUpperCase()}
+                          {key.toUpperCase()}{" "}
+                          {updatedFields.includes(key) && (
+                            <span className="font-normal text-xs text-green-500 ml-2">
+                              new
+                            </span>
+                          )}
                         </p>
                         <ul className="">
                           {customer?.personality[key].map((value) => (

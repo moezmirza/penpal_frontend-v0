@@ -31,9 +31,6 @@ function Customer() {
       if (success) {
         console.log("customer data", data);
         setCustomer(data);
-        setMsgText(
-          `Hi ${data.firstName}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`
-        );
         setLoading(false);
       } else {
         setLoading(false);
@@ -106,15 +103,36 @@ function Customer() {
     "relationShipStatus",
     "veteranStatus",
   ];
-  console.log("basicInfo", basicInfoDisplayFields);
-  // const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
+  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
 
+  const handleApprovalUpdate = async (e, status, cid) => {
+    e.target.innerText = "Approved";
+    e.target.disabled = true;
+
+    put(`/admin/approve-customer?id=${cid}`).then((response) => {
+      const { success, data, error } = response;
+      if (success) {
+        console.log("Approval update successful:", data);
+      } else {
+        console.error("Error approving customer:", error);
+      }
+    });
+
+    setCustomer({ ...customer, profileApproved: true });
+  };
   return (
     <div className="bg-c-basic min-h-screen p-3 md:p-6 py-12 flex justify-center gap-y-12 gap-x-4 pb-32">
       <div
         id="profile-details"
-        className={`bg-white w-9/12  border rounded-lg flex flex-col gap-y-4 p-6`}
+        className={`bg-white w-9/12  border ${
+          customer?.profileApproved == false && isAdmin && "border-red-500"
+        }  rounded-lg flex flex-col gap-y-4 p-6`}
       >
+        {customer?.profileApproved == false && isAdmin && (
+          <p className="text-red-500 text-center text-xl">
+            Profile Pending for approval
+          </p>
+        )}
         {loading && <LoadingSpinner />}
         <div className="flex flex-col gap-y-8">
           <div className="flex flex-col md:flex-row md:items-start gap-x-12 relative">
@@ -147,22 +165,34 @@ function Customer() {
               </div>
               <p>
                 {customer?.bio || (
-                  <p className="italic mt-6 text-gray-500">No bio added</p>
+                  <p className="italic mt-6 text-gray-500 text-center md:text-left">
+                    No bio added
+                  </p>
                 )}
               </p>
             </div>
-            <button
-              type="button"
-              className="flex items-center justify-center h-fit  border text-white text px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
-              onClick={handleFavouriteUpdate}
-            >
-              <img
-                src="/assets/icons/bookmark.svg"
-                alt=""
-                className="h-6 mr-2"
-              />
-              {customer?.isFavorite ? "Added" : "Add to Favorites"}
-            </button>
+            {isAdmin ? (
+              <button
+                type="button"
+                className="flex items-center justify-center h-fit  border text-white text px-5 py-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
+                onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
+              >
+                Approve
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="flex items-center justify-center h-fit mx-auto  w-fit border text-white px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
+                onClick={handleFavouriteUpdate}
+              >
+                <img
+                  src="/assets/icons/bookmark.svg"
+                  alt=""
+                  className="h-6 mr-2"
+                />
+                {customer?.isFavorite ? "Added" : "Add to Favorites"}
+              </button>
+            )}
           </div>
 
           <div>
@@ -170,7 +200,7 @@ function Customer() {
               Basic Info
             </h2>
 
-            <div className="grid grid-cols-2  gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
               {customer &&
                 basicInfoDisplayFields.map((field) => {
                   return (
@@ -224,18 +254,19 @@ function Customer() {
                 )}
               </div>
             </div>
-
-            <div className="">
-              <h1 className="text-3xl md:text-2xl font-semibold underline mb-4 ">
-                Give your rating
-              </h1>
-              <div className="flex items-center gap-x-4">
-                <RatingScale
-                  initialRating={customer?.prevRating}
-                  onRatingChange={handleRatingUpdate}
-                />
+            {!isAdmin && (
+              <div className="">
+                <h1 className="text-3xl md:text-2xl font-semibold underline mb-4 ">
+                  Give your rating
+                </h1>
+                <div className="flex items-center gap-x-4">
+                  <RatingScale
+                    initialRating={customer?.prevRating}
+                    onRatingChange={handleRatingUpdate}
+                  />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

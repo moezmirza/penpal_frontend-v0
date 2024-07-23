@@ -68,10 +68,10 @@ function ApproveProfiles() {
       includesCaseInsensitive(customer.lastName, inputVal)
   );
   return (
-    <div className="flex flex-col gap-y-12 p-6 relative ">
+    <div className="flex flex-col gap-y-12 p-4 md:p-6 relative mt-6 md:mt-0">
       {loading && <LoadingSpinner />}
-      <h1 className="text-3xl font-bold underline">Approve Profiles</h1>
-      <div className="flex gap-6 w-9/12 items-center">
+      <h1 className="md:text-3xl  text-2xl font-bold underline">Approve Profiles</h1>
+      <div className="flex flex-col md:flex-row gap-6 md:w-9/12 items-center">
         <input
           className="bg-transparent block w-full mt-1 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
           placeholder={"Search customer..."}
@@ -79,12 +79,12 @@ function ApproveProfiles() {
           ref={inputRef}
           onChange={(e) => setInputVal(e.target.value)}
         />
-        <p className="text-nowrap text-xl">
+        <p className="text-nowrap text-xl mr-auto">
           Total: {filteredCustomers?.length}
         </p>
       </div>
       {customers?.length == 0 && !loading ? (
-        <p className="text-center">There are profiles to approve </p>
+        <p className="text-center">There are no more profiles to approve </p>
       ) : (
         <div className="flex flex-col gap-y-6">
           {filteredCustomers?.map((customer) => (
@@ -164,10 +164,10 @@ function CustomerCard({ customer, onApprove }) {
         >
           Reject
         </button> */}
-        <button
+      <button
           type="button"
           className="mt-4 bg-fr-blue-200  text-black px-5 py-3  text-white rounded hover:opacity-90"
-          onClick={() => navigate(`/admin/customer/${customer?._id}`)}
+          onClick={() => navigate(`/customer/${customer?._id}`)}
         >
           View Details
         </button>

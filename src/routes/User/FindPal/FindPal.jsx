@@ -188,7 +188,7 @@ function FindPal() {
     });
   };
   return (
-    <div className="bg-c-basic flex flex-col gap-y-12 w-full px-3 py-6w">
+    <div className="bg-c-basic flex flex-col gap-y-12 w-full px-3 py-6">
       <div
         id="hero-section"
         className="flex flex-col-reverse lg:flex-row gap-y-6 justify-between bg-fr-blue-200 p-3 mt-2 md:mt-12 w-full md:w-10/12 m-auto rounded relative"
@@ -350,7 +350,7 @@ function CustomerCard({ customer }) {
           {customer?.education || "N/A"}
         </p>
         <p>
-          <span className="font-medium mr-1"> Mainling Addres:</span>
+          <span className="font-medium mr-1"> Mailing Address:</span>
           {customer?.mailingAddress || "N/A"}
         </p>
       </div>

@@ -141,7 +141,7 @@ function BasicInfo({ onTabSwitch }) {
       </div>
 
       <form
-        className="flex flex-col gap-y-6 text-sm p-2 md:text-base md:p-0 "
+        className="flex flex-col gap-y-6 text-sm p-2 md:text-base md:p-4 w-full "
         onSubmit={handleSubmit}
       >
         <div className="m-auto font-semibold text-xl md:text-2xl">
@@ -150,7 +150,7 @@ function BasicInfo({ onTabSwitch }) {
         {error && <p className="text-fr-red m-auto">{error}</p>}
         <div className="flex flex-col gap-y-4">
           <div className="flex gap-x-6 flex-col gap-y-4 md:flex-row">
-            <label>
+            <label className="flex-grow">
               <RequiredFieldLabel labelText={"First Name"} />
               <input
                 type="text"
@@ -161,7 +161,7 @@ function BasicInfo({ onTabSwitch }) {
                 className="bg-transparent block w-full mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
               />
             </label>
-            <label>
+            <label className="flex-grow">
               <RequiredFieldLabel labelText={"Last Name"} />
               <input
                 name="lastName"
