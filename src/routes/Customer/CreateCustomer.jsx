@@ -19,6 +19,7 @@ import { useGet } from "../../api/useGet";
 import { useParams } from "react-router-dom";
 import { usePut } from "../../api/usePut";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
+import { compose } from "@reduxjs/toolkit";
 
 function CreateCustomer() {
   const imageRef = useRef();
@@ -70,6 +71,9 @@ function CreateCustomer() {
     movieGenres: [],
   });
 
+  // to keep track of only updatedFields
+  const updatedFields = useRef({});
+
   const handleUpdate = async () => {
     // checking for required fields
     setError("");
@@ -107,15 +111,25 @@ function CreateCustomer() {
       basicInfo.imageUrl = downloadUrl;
     }
     console.log("final Object", { ...basicInfo, ...personalityInfo });
-    const finalObj = {
-      ...basicInfo,
-      personality: {
-        ...personalityInfo,
+
+    
+    const updatedInfo = Object.keys(updatedFields.current).reduce(
+      (acc, field) => {
+        acc[field] = basicInfo[field];
+        return acc;
       },
-    };
-    console.log("finalObj", finalObj);
+      {}
+    );
+
+    console.log("updatedInfo", updatedInfo);
 
     if (id) {
+      const finalObj = {
+        ...updatedInfo,
+        personality: {
+          ...personalityInfo,
+        },
+      };
       const { success, data, error } = await put(
         `/customer?id=${id}`,
         finalObj
@@ -129,6 +143,12 @@ function CreateCustomer() {
         setError("An unexpected error occurred");
       }
     } else {
+      const finalObj = {
+        ...basicInfo,
+        personality: {
+          ...personalityInfo,
+        },
+      };
       const { success, data, error } = await post("/customer", finalObj);
       if (success) {
         setLoading(false);
@@ -160,7 +180,7 @@ function CreateCustomer() {
     const fieldKeyIndex = Object.values(basicInfoFieldLabelMap).indexOf(label);
     const fieldKey = Object.keys(basicInfoFieldLabelMap)[fieldKeyIndex];
     let updatedArr = basicInfo[fieldKey];
-
+    updatedFields.current[fieldKey] = true;
     if (remove) {
       updatedArr = updatedArr.filter((item) => item != value);
     } else {
@@ -174,6 +194,7 @@ function CreateCustomer() {
   };
 
   const handleBasicInfoTextFieldChange = (e) => {
+    updatedFields.current[e.target.name] = true;
     setBasicInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
