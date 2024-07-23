@@ -58,10 +58,10 @@ function ApproveUpdates() {
       includesCaseInsensitive(customer.lastName, inputVal)
   );
   return (
-    <div className="flex flex-col gap-y-12 p-6 relative ">
+    <div className="flex flex-col gap-y-12 py-6 px-4   relative">
       {loading && <LoadingSpinner />}
-      <h1 className="text-3xl font-bold underline">Approve Profile Updates</h1>
-      <div className="flex gap-6 w-9/12 items-center">
+      <h1 className="text-2xl md:text-3xl font-bold underline">Approve Profile Updates</h1>
+      <div className="flex flex-col md:flex-row gap-6  md:w-9/12 items-center">
         <input
           className="bg-transparent block w-full mt-1 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
           placeholder={"Search customer..."}
@@ -69,7 +69,7 @@ function ApproveUpdates() {
           ref={inputRef}
           onChange={(e) => setInputVal(e.target.value)}
         />
-        <p className="text-nowrap text-xl">
+        <p className="text-nowrap text-xl mr-auto md:m-0">
           Total: {filteredCustomers?.length}
         </p>
       </div>

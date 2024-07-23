@@ -124,7 +124,7 @@ function Customer() {
     <div className="bg-c-basic min-h-screen p-3 md:p-6 py-12 flex justify-center gap-y-12 gap-x-4 pb-32">
       <div
         id="profile-details"
-        className={`bg-white w-9/12  border ${
+        className={`bg-white w-full md:w-9/12  border ${
           customer?.profileApproved == false && isAdmin && "border-red-500"
         }  rounded-lg flex flex-col gap-y-4 p-6`}
       >
@@ -174,7 +174,7 @@ function Customer() {
             {isAdmin ? (
               <button
                 type="button"
-                className="flex items-center justify-center h-fit  border text-white text px-5 py-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
+                className="flex items-center justify-center h-fit w-fit mx-auto border text-white text px-8 py-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
                 onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
               >
                 Approve

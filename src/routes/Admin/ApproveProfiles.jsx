@@ -111,7 +111,7 @@ function CustomerCard({ customer, onApprove }) {
   return (
     <div
       id="customer-card"
-      className="bg-gray-100 rounded-md border border-gray-300 p-2 px-4 w-full md:w-9/12 flex flex-col gap-y-6 gap-x-4 md:flex-row"
+      className="bg-gray-100 rounded-md border border-gray-300 p-2 px-4 w-full flex flex-col gap-y-6 gap-x-4 md:flex-row"
     >
       <img
         src={customer?.imageUrl || "/assets/default.jpg"}
