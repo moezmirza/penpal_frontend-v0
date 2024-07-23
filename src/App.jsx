@@ -11,7 +11,8 @@ import Customer from "./routes/Customer/Customer";
 import Chat from "./routes/User/Chat";
 import CreateCustomer from "./routes/Customer/CreateCustomer";
 import ManageCustomers from "./routes/Customer/ManageCustomers";
-import ApproveCustomers from "./routes/Admin/ApproveCustomers";
+import ApproveProfiles from "./routes/Admin/ApproveProfiles";
+import ApproveUpdates from "./routes/Admin/ApproveUpdates";
 
 function App() {
   const UserRoutes = () => {
@@ -29,7 +30,8 @@ function App() {
       <Route path="/register" element={<Register />} />
 
       <Route element={<AdminRoutes />}>
-        <Route path="/" element={<ApproveCustomers />} />
+        <Route path="/profile-approval" element={<ApproveProfiles />} />
+        <Route path="/update-approval" element={<ApproveUpdates />} />
       </Route>
       <Route element={<UserRoutes />}>
         <Route path="/" element={<FindPal />} />

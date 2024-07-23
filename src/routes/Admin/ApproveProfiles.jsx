@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGet } from "../../api/useGet";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
+import { usePut } from "../../api/usePut";
 
-function ApproveCustomers() {
+function ApproveProfiles() {
   const [customers, setCustomers] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [inputVal, setInputVal] = useState("");
+  const inputRef = useRef();
   const get = useGet();
+  const put = usePut();
 
   useEffect(() => {
     const fetchCustomers = async () => {
       setLoading(true);
-      const { success, data, error } = await get("/user/created-customers");
+      const { success, data, error } = await get(
+        `/admin/customer?approved=${false}`
+      );
       if (success) {
         setLoading(false);
         setCustomers(data);
@@ -27,31 +31,74 @@ function ApproveCustomers() {
     };
     fetchCustomers();
   }, []);
+
+  const handleApprovalUpdate = async (status, cid) => {
+    setCustomers((customers) =>
+      customers.filter((customer) => customer._id != cid)
+    );
+    put(`/admin/approve-customer?id=${cid}`).then((response) => {
+      const { success, data, error } = response;
+      if (success) {
+        console.log("Approval update successful:", data);
+      } else {
+        console.error("Error approving customer:", error);
+      }
+    });
+  };
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+  const includesCaseInsensitive = (str, substring) => {
+    return str.toLowerCase().includes(substring.toLowerCase());
+  };
+
+  const filteredCustomers = customers?.filter(
+    (customer) =>
+      includesCaseInsensitive(customer.firstName, inputVal) ||
+      includesCaseInsensitive(customer.lastName, inputVal)
+  );
   return (
-    <div className="flex flex-col gap-y-16 p-6 relative ">
+    <div className="flex flex-col gap-y-12 p-6 relative ">
       {loading && <LoadingSpinner />}
-      <h1 className="text-3xl font-bold underline">Approve Customers</h1>
-      {customers.length == 0 && !loading ? (
+      <h1 className="text-3xl font-bold underline">
+        Approve Customer Profiles
+      </h1>
+      <div className="flex gap-6 w-9/12 items-center">
+        <input
+          className="bg-transparent block w-full mt-1 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
+          placeholder={"Search customer..."}
+          value={inputVal}
+          ref={inputRef}
+          onChange={(e) => setInputVal(e.target.value)}
+        />
+        <p className="text-nowrap text-xl">
+          Total: {filteredCustomers?.length}
+        </p>
+      </div>
+      {customers?.length == 0 && !loading ? (
         <p className="text-center">You have not listed any customers</p>
       ) : (
         <div className="flex flex-col gap-y-6">
-          {customers.map((customer) => (
-            <CustomerCard customer={customer} />
+          {filteredCustomers?.map((customer) => (
+            <CustomerCard
+              customer={customer}
+              onApprove={handleApprovalUpdate}
+            />
           ))}
         </div>
       )}
-      <button
+      {/* <button
         onClick={() => navigate("/list-customer")}
         className="flex justify-center items-center gap-4 m-auto bg-fr-blue-200  px-6  text-white py-3 text-lg rounded hover:opacity-90"
       >
         <img src="/assets/icons/plus.svg" alt="" className="h-6" />
         List customer{" "}
-      </button>
+      </button> */}
     </div>
   );
 }
 
-function CustomerCard({ customer }) {
+function CustomerCard({ customer, onApprove }) {
   const navigate = useNavigate();
   return (
     <div
@@ -97,14 +144,21 @@ function CustomerCard({ customer }) {
       <div className="w-full md:w-fit ml-auto flex flex-col my-auto">
         <button
           type="button"
-          className="mt-4 bg-fr-blue-200 text-white px-6 py-3 rounded hover:opacity-90"
-          onClick={() => navigate(`/update-customer/${customer?._id}`)}
+          className="mt-4 bg-green-600 text-white px-6 py-3 rounded hover:opacity-90"
+          onClick={() => onApprove(true, customer._id)}
         >
-          Update
+          Approve
         </button>
+        {/* <button
+          type="button"
+          className="mt-4 bg-red-600  text-black px-5 py-3  text-white rounded hover:opacity-90"
+          onClick={() => navigate(`/customer/${customer?._id}`)}
+        >
+          Reject
+        </button> */}
         <button
           type="button"
-          className="mt-4 border text-black px-5 py-3 border-fr-blue-200 rounded hover:opacity-90"
+          className="mt-4 bg-fr-blue-200  text-black px-5 py-3  text-white rounded hover:opacity-90"
           onClick={() => navigate(`/customer/${customer?._id}`)}
         >
           View Details
@@ -114,4 +168,4 @@ function CustomerCard({ customer }) {
   );
 }
 
-export default ApproveCustomers;
+export default ApproveProfiles;

@@ -19,7 +19,8 @@ const unAuthNavbarLinkMap = {
   Login: "/login",
 };
 const adminNavbarLinkMap = {
-  "Customer Approval": "/",
+  "Profile Approvals": "/profile-approval",
+  "Update Approvals": "/update-approval",
 };
 function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);

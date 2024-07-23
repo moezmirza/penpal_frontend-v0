@@ -14,8 +14,12 @@ function AuthProvider({ children }) {
         createdAt: authInfo.token ? Date.now() : "",
       })
     );
-    authInfo.userAuth && localStorage.setItem("userAuth", authInfo.userAuth);
-    authInfo.adminAuth && localStorage.setItem("adminAuth", authInfo.adminAuth);
+
+    console.log("update authIno", authInfo);
+    authInfo.userAuth != undefined &&
+      localStorage.setItem("userAuth", authInfo.userAuth);
+    authInfo.adminAuth != undefined &&
+      localStorage.setItem("adminAuth", authInfo.adminAuth);
   };
 
   useEffect(() => {
