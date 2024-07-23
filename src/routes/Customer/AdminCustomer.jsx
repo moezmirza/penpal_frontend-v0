@@ -79,7 +79,7 @@ function AdminCustomer() {
     <div className="bg-c-basic min-h-screen p-3 md:p-6 py-12 flex justify-center gap-y-12 gap-x-4 pb-32">
       <div
         id="profile-details"
-        className={`bg-white w-9/12  border rounded-lg flex flex-col gap-y-4 p-6`}
+        className={`bg-white w-full md:w-9/12  border rounded-lg flex flex-col gap-y-4 p-6`}
       >
         {loading && <LoadingSpinner />}
         <div className="flex flex-col gap-y-8">

@@ -101,7 +101,7 @@ function CustomerCard({ customer, onApprove }) {
   return (
     <div
       id="customer-card"
-      className="bg-gray-100 rounded-md border border-gray-300 p-2 px-4 w-full md:w-9/12 flex flex-col gap-y-6 gap-x-4 md:flex-row"
+      className="bg-gray-100 rounded-md border border-gray-300 p-2 px-4 w-full  md:w-10/12   flex flex-col gap-y-6 gap-x-4 md:flex-row"
     >
       <img
         src={customer?.imageUrl || "/assets/default.jpg"}
@@ -157,7 +157,7 @@ function CustomerCard({ customer, onApprove }) {
         <button
           type="button"
           className="mt-4 bg-fr-blue-200  text-black px-5 py-3  text-white rounded hover:opacity-90"
-          onClick={() => navigate(`/admin/customer/${customer?._id}`)}
+          onClick={() => navigate(`/admin/customer-updates/${customer?._id}`)}
         >
           View Details
         </button>
