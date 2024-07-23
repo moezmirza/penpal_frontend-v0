@@ -52,8 +52,6 @@ const Login = () => {
 
         const authInfo = {
           token: user.accessToken,
-          isAuth: true,
-          isAdmin: false,
         };
         const tokenResult = await getIdTokenResult(user);
         console.log("res", tokenResult);
@@ -62,13 +60,14 @@ const Login = () => {
             firstName: "Admin",
             email: user.email,
           };
-          authInfo.isAdmin = true;
+          authInfo.adminAuth = true;
           dispatch(setCurrentUser(currentUser));
           updateAuthInfo(authInfo);
         } else {
           let { success, data, error } = await get("/user");
           console.log(success, "UserData", data);
           if (success) {
+            authInfo.userAuth = true;
             dispatch(setCurrentUser(data));
             updateAuthInfo(authInfo);
           }
@@ -92,8 +91,7 @@ const Login = () => {
     };
     const authInfo = {
       token: user.accessToken,
-      isAuth: true,
-      isAdmin: localStorage.getItem("admin") == "true" ? true : false,
+      userAuth: true,
     };
     dispatch(setCurrentUser(currentUser));
     updateAuthInfo(authInfo);

@@ -11,18 +11,17 @@ import Customer from "./routes/Customer/Customer";
 import Chat from "./routes/User/Chat";
 import CreateCustomer from "./routes/Customer/CreateCustomer";
 import ManageCustomers from "./routes/Customer/ManageCustomers";
+import ApproveCustomers from "./routes/Admin/ApproveCustomers";
 
 function App() {
-  const AuthenticatedRoutes = () => {
-    const isAuth = localStorage.getItem("auth") === "true";
-    const isAdmin = localStorage.getItem("admin") === "false";
-    console.log("isAuth", "isAdmin", isAuth, isAdmin);
-
-    return isAuth && isAdmin ? <Outlet /> : <Login />;
+  const UserRoutes = () => {
+    const userAuth = JSON.parse(localStorage.getItem("userAuth"));
+    console.log("userAuth", userAuth);
+    return userAuth ? <Outlet /> : <Login />;
   };
   const AdminRoutes = () => {
-    const isAdmin = localStorage.getItem("admin") === "true";
-    return isAdmin ? <Outlet /> : <Login />;
+    const adminAuth = JSON.parse(localStorage.getItem("adminAuth"));
+    return adminAuth ? <Outlet /> : <Login />;
   };
   return (
     <Routes>
@@ -30,9 +29,9 @@ function App() {
       <Route path="/register" element={<Register />} />
 
       <Route element={<AdminRoutes />}>
-        <Route path="/home" element={<FindPal />} />
+        <Route path="/" element={<ApproveCustomers />} />
       </Route>
-      <Route element={<AuthenticatedRoutes />}>
+      <Route element={<UserRoutes />}>
         <Route path="/" element={<FindPal />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/customer/:id" element={<Customer />} />

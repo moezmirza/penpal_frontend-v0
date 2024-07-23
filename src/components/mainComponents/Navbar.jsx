@@ -32,11 +32,11 @@ function Navbar() {
   const handleSignout = () => {
     signOut(auth);
     dispatch(setCurrentUser(null));
-    updateAuthInfo({ token: "", isAuth: false, isAdmin: false });
+    updateAuthInfo({ token: "", adminAuth: false, userAuth: false });
     setShowDropdown(false);
     location.replace("/login");
   };
-  const isAdmin = JSON.parse(localStorage.getItem("admin"));
+  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
   console.log("type", typeof isAdmin, isAdmin);
   return (
     <ul className="bg-fr-blue-200 flex items-center justify-between w-full p-3 md:p-5 sticky top-0 z-50">

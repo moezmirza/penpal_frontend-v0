@@ -17,8 +17,6 @@ function usePut() {
         console.log("curruserinGet", currUser);
         const authInfo = {
           token: refreshAccessToken,
-          isAuth: true,
-          isAdmin: localStorage.getItem("admin") == "true" ? true : false,
         };
         updateAuthInfo(authInfo);
       }

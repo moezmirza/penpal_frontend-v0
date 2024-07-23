@@ -14,8 +14,6 @@ function usePost() {
         const refreshAccessToken = await auth?.currentUser?.getIdToken(true);
         const authInfo = {
           token: refreshAccessToken,
-          isAuth: true,
-          isAdmin: localStorage.getItem("admin") == "true" ? true : false,
         };
         console.log("authInfo", authInfo);
         updateAuthInfo(authInfo);
