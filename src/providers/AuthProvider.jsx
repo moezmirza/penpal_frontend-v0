@@ -7,7 +7,6 @@ export const AuthContext = createContext(null);
 
 function AuthProvider({ children }) {
   const updateAuthInfo = (authInfo) => {
-    localStorage.setItem("auth", authInfo.isAuth);
     localStorage.setItem(
       "tokenInfo",
       JSON.stringify({
@@ -15,6 +14,12 @@ function AuthProvider({ children }) {
         createdAt: authInfo.token ? Date.now() : "",
       })
     );
+
+    console.log("update authIno", authInfo);
+    authInfo.userAuth != undefined &&
+      localStorage.setItem("userAuth", authInfo.userAuth);
+    authInfo.adminAuth != undefined &&
+      localStorage.setItem("adminAuth", authInfo.adminAuth);
   };
 
   useEffect(() => {
@@ -22,7 +27,6 @@ function AuthProvider({ children }) {
       if (user) {
         const authInfo = {
           token: user.accessToken,
-          isAuth: true,
         };
         updateAuthInfo(authInfo);
       }

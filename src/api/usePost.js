@@ -14,7 +14,6 @@ function usePost() {
         const refreshAccessToken = await auth?.currentUser?.getIdToken(true);
         const authInfo = {
           token: refreshAccessToken,
-          isAuth: true,
         };
         console.log("authInfo", authInfo);
         updateAuthInfo(authInfo);

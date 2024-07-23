@@ -3,19 +3,14 @@ import { useParams } from "react-router-dom";
 import { useGet } from "../../api/useGet";
 import { usePut } from "../../api/usePut";
 import { usePost } from "../../api/usePost";
-import { useSelector } from "react-redux";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import {
-  basicInfoFieldLabelMap,
-  spokenLanguagesList,
-} from "../../utils/sharedState";
+import { basicInfoFieldLabelMap } from "../../utils/sharedState";
 
-function Customer() {
+function AdminCustomer() {
   const { id } = useParams();
   const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [msgText, setMsgText] = useState("");
   const get = useGet();
   const post = usePost();
   const put = usePut();
@@ -27,10 +22,13 @@ function Customer() {
   useEffect(() => {
     const fetchCustomer = async () => {
       setLoading(true);
-      const { success, data, error } = await get(`/customer?id=${id}`);
+      const { success, data, error } = await get(
+        `/admin/update?approved=${false}&id=${id}`
+      );
       if (success) {
-        console.log("customer data", data);
-        setCustomer(data);
+        console.log("customer data", data[0]);
+        setCustomer(data[0]);
+
         setLoading(false);
       } else {
         setLoading(false);
@@ -41,46 +39,19 @@ function Customer() {
     fetchCustomer();
   }, []);
 
-  const handleRatingUpdate = async (rating) => {
-    const { success, data, error } = await put(`/customer/rate?id=${id}`, {
-      rating,
-    });
-    if (success) {
-      console.log("rating data", data);
-    } else {
-      console.log("error updating rating", error);
-    }
-  };
-
-  const handleFavouriteUpdate = async (e) => {
-    const target =
-      e.target.tagName === "IMG" ? e.target.parentElement : e.target;
-    const buttonText = target.innerText; // or target.textContent
-    console.log(buttonText);
-    const newText =
-      buttonText.trim() === "Add to Favorites" ? "Added" : "Add to Favorites";
-
-    target.innerHTML = `<img src="/assets/icons/bookmark.svg" alt="" class="h-6 mr-2" /> ${newText}`;
-    const { success, data, error } = await put(`/user/favorite?id=${id}`, {
-      fav: buttonText === "Added" ? false : true,
-    });
-    if (success) {
-      console.log("Favorite data", data);
-    } else {
-      console.log("error updating rating", error);
-    }
-  };
-  const handleMsgSend = async (e) => {
+  const handleApprovalUpdate = async (e, status, cid) => {
+    e.target.innerText = "Approved";
     e.target.disabled = true;
-    e.target.innerText = "Sending...";
-    if (msgText != "") {
-      const { success, data, error } = await post(`/user/chat?id=${id}`, {
-        messageText: msgText,
-      });
+
+    put(`/admin/approve-update?id=${cid}`).then((response) => {
+      const { success, data, error } = response;
       if (success) {
-        e.target.innerText = "Sent";
+        console.log("Approval update successful:", data);
+      } else {
+        console.error("Error approving customer:", error);
       }
-    }
+    });
+
   };
 
   const basicInfoDisplayFields = [
@@ -103,36 +74,14 @@ function Customer() {
     "relationShipStatus",
     "veteranStatus",
   ];
-  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
 
-  const handleApprovalUpdate = async (e, status, cid) => {
-    e.target.innerText = "Approved";
-    e.target.disabled = true;
-
-    put(`/admin/approve-customer?id=${cid}`).then((response) => {
-      const { success, data, error } = response;
-      if (success) {
-        console.log("Approval update successful:", data);
-      } else {
-        console.error("Error approving customer:", error);
-      }
-    });
-
-    setCustomer({ ...customer, profileApproved: true });
-  };
+  const updatedFields = customer?.updatedFields;
   return (
     <div className="bg-c-basic min-h-screen p-3 md:p-6 py-12 flex justify-center gap-y-12 gap-x-4 pb-32">
       <div
         id="profile-details"
-        className={`bg-white w-9/12  border ${
-          customer?.profileApproved == false && isAdmin && "border-red-500"
-        }  rounded-lg flex flex-col gap-y-4 p-6`}
+        className={`bg-white w-9/12  border rounded-lg flex flex-col gap-y-4 p-6`}
       >
-        {customer?.profileApproved == false && isAdmin && (
-          <p className="text-red-500 text-center text-xl">
-            Profile Pending for approval
-          </p>
-        )}
         {loading && <LoadingSpinner />}
         <div className="flex flex-col gap-y-8">
           <div className="flex flex-col md:flex-row md:items-start gap-x-12 relative">
@@ -144,16 +93,48 @@ function Customer() {
             <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">
               <div>
                 <p className="font-semibold text-3xl mb-2 md:mb-1 text-center md:text-left">
-                  {customer?.firstName} {customer?.lastName}
+                  {customer?.firstName} {customer?.lastName}{" "}
+                  {(updatedFields?.includes("firstName") ||
+                    updatedFields?.includes("lastName")) && (
+                    <span className="font-normal text-xs text-green-500 ml-2">
+                      new
+                    </span>
+                  )}
                 </p>
 
                 <div className="flex gap-3 justify-center md:justify-start flex-wrap ">
-                  <p className="text-nowrap">{customer?.age || "N/A"} yrs</p>
-                  <p className="text-nowrap">{customer?.gender || "N/A"}</p>
+                  <p className="text-nowrap">
+                    {customer?.age || "N/A"} yrs{" "}
+                    {updatedFields?.includes("age") && (
+                      <span className="font-normal text-xs text-green-500 ml-2">
+                        new
+                      </span>
+                    )}
+                  </p>
+                  <p className="text-nowrap">
+                    {customer?.gender || "N/A"}
+                    {updatedFields?.includes("gender") && (
+                      <span className="font-normal text-xs text-green-500 ml-2">
+                        new
+                      </span>
+                    )}
+                  </p>
                   <p className="text-nowrap">
                     {customer?.orientation || "N/A"}
+                    {updatedFields?.includes("orientation") && (
+                      <span className="font-normal text-xs text-green-500 ml-2">
+                        new
+                      </span>
+                    )}
                   </p>
-                  <p className="text-nowrap">{customer?.race || "N/A"}</p>
+                  <p className="text-nowrap">
+                    {customer?.race || "N/A"}
+                    {updatedFields?.includes("race") && (
+                      <span className="font-normal text-xs text-green-500 ml-2">
+                        new
+                      </span>
+                    )}
+                  </p>
                   <span className="flex gap-x-1 items-baseline">
                     <img src="/assets/icons/star.svg" alt="" className="h-4" />{" "}
                     {customer?.rating || 0}
@@ -163,36 +144,25 @@ function Customer() {
                   </p>
                 </div>
               </div>
-              <p>
+
+              <p className="flex flex-col items-start mt-6 ">
+                {updatedFields?.includes("bio") && (
+                  <span className="font-normal text-xs text-green-500">
+                    new
+                  </span>
+                )}
                 {customer?.bio || (
-                  <p className="italic mt-6 text-gray-500 text-center md:text-left">
-                    No bio added
-                  </p>
+                  <p className="italic text-gray-500">No bio added</p>
                 )}
               </p>
             </div>
-            {isAdmin ? (
-              <button
-                type="button"
-                className="flex items-center justify-center h-fit  border text-white text px-5 py-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
-                onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
-              >
-                Approve
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="flex items-center justify-center h-fit mx-auto  w-fit border text-white px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
-                onClick={handleFavouriteUpdate}
-              >
-                <img
-                  src="/assets/icons/bookmark.svg"
-                  alt=""
-                  className="h-6 mr-2"
-                />
-                {customer?.isFavorite ? "Added" : "Add to Favorites"}
-              </button>
-            )}
+            <button
+              type="button"
+              className="flex items-center justify-center h-fit  border text-white text px-5 py-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
+              onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
+            >
+              Approve
+            </button>
           </div>
 
           <div>
@@ -200,7 +170,7 @@ function Customer() {
               Basic Info
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
+            <div className="grid grid-cols-2  gap-4">
               {customer &&
                 basicInfoDisplayFields.map((field) => {
                   return (
@@ -222,6 +192,11 @@ function Customer() {
                         {field == "dateOfBirth"
                           ? customer[field].split("T")[0]
                           : customer[field]}
+                        {updatedFields.includes(field) && (
+                          <span className="text-xs text-green-500 ml-2">
+                            new
+                          </span>
+                        )}
                       </p>
                     ))
                   );
@@ -240,7 +215,12 @@ function Customer() {
                     key != "_id" && (
                       <div key={key}>
                         <p className="font-semibold text-lg ">
-                          {key.toUpperCase()}
+                          {key.toUpperCase()}{" "}
+                          {updatedFields.includes(key) && (
+                            <span className="font-normal text-xs text-green-500 ml-2">
+                              new
+                            </span>
+                          )}
                         </p>
                         <ul className="">
                           {customer?.personality[key].map((value) => (
@@ -254,19 +234,6 @@ function Customer() {
                 )}
               </div>
             </div>
-            {!isAdmin && (
-              <div className="">
-                <h1 className="text-3xl md:text-2xl font-semibold underline mb-4 ">
-                  Give your rating
-                </h1>
-                <div className="flex items-center gap-x-4">
-                  <RatingScale
-                    initialRating={customer?.prevRating}
-                    onRatingChange={handleRatingUpdate}
-                  />
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -339,4 +306,4 @@ const Star = ({ filled, onClick, onMouseEnter, onMouseLeave }) => {
     </svg>
   );
 };
-export default Customer;
+export default AdminCustomer;

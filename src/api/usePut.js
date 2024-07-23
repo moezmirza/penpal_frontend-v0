@@ -17,7 +17,6 @@ function usePut() {
         console.log("curruserinGet", currUser);
         const authInfo = {
           token: refreshAccessToken,
-          isAuth: true,
         };
         updateAuthInfo(authInfo);
       }

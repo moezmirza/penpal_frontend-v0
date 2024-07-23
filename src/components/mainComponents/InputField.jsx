@@ -1,9 +1,19 @@
 import React from "react";
+import { RequiredFieldLabel } from "./RequiredFieldLabel";
 
-function InputField({ labelText, type, placeholder, name, value, onChange }) {
+function InputField({
+  labelText,
+  type,
+  placeholder,
+  name,
+  value,
+  onChange,
+  required,
+}) {
+  console.log("label", labelText, "name", name, "required", required);
   return (
-    <label>
-      <RequiredFieldLabel text={labelText} />
+    <div>
+      <RequiredFieldLabel labelText={labelText} required={required} />
 
       <input
         type={type}
@@ -13,7 +23,7 @@ function InputField({ labelText, type, placeholder, name, value, onChange }) {
         onChange={onChange}
         className="bg-transparent block w-full mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
       />
-    </label>
+    </div>
   );
 }
 

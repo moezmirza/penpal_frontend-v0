@@ -9,19 +9,16 @@ import { AuthContext } from "../../providers/AuthProvider";
 const userNavbarLinkMap = {
   "Find Pal": "/",
   Profile: "/user-profile",
-  Chat: "/chat",
+  "Manage Customers": "/manage-customers",
   Subscription: "/",
 };
 const unAuthNavbarLinkMap = {
-  // "Admin Login": "/",
   Register: "/register",
   Login: "/login",
 };
 const adminNavbarLinkMap = {
-  "Find Pal": "/find-pal",
-  Profile: "/user-profile",
-  Subscription: "/",
-  Signout: "/",
+  "Approve Profiles": "/approve-profiles",
+  "Approve Updates": "/approve-updates",
 };
 function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -34,15 +31,17 @@ function Navbar() {
   const handleSignout = () => {
     signOut(auth);
     dispatch(setCurrentUser(null));
-    updateAuthInfo({ token: "", isAuth: false });
+    updateAuthInfo({ token: "", adminAuth: false, userAuth: false });
     setShowDropdown(false);
     location.replace("/login");
   };
+  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
+  console.log("type", typeof isAdmin, isAdmin);
   return (
     <ul className="bg-fr-blue-200 flex items-center justify-between w-full p-3 md:p-5 sticky top-0 z-50">
-      <li className="text-xl md:text-2xl text-white font-medium flex items-baseline ">
+      <li className="text-xl md:text-2xl text-white font-medium ">
         {user?.firstName || "Welcome Pal"}
-        <p className="text-4xl">.</p>
+        <span className="text-4xl">.</span>
       </li>
       <div className="flex gap-x-6 items-center">
         {user && (
@@ -85,6 +84,7 @@ function Navbar() {
                   aria-labelledby="dropdownDefaultButton"
                 >
                   <NavbarOptions
+                    isAdmin={isAdmin}
                     user={user}
                     onSignout={handleSignout}
                     onLinkClick={handleLinkClick}
@@ -99,7 +99,29 @@ function Navbar() {
   );
 }
 
-function NavbarOptions({ user, onSignout, onLinkClick }) {
+function NavbarOptions({ user, onSignout, onLinkClick, isAdmin }) {
+  if (isAdmin) {
+    return (
+      <>
+        {Object.keys(adminNavbarLinkMap).map((linkName) => (
+          <li key={linkName} onClick={onLinkClick}>
+            <Link
+              to={adminNavbarLinkMap[linkName]}
+              className=" text-nowrap block px-4 py-1.5 md:py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+            >
+              {linkName}
+            </Link>
+          </li>
+        ))}
+        <li
+          className="block px-4 py-1.5 md:py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
+          onClick={onSignout}
+        >
+          Sign out
+        </li>
+      </>
+    );
+  }
   if (user) {
     return (
       <>

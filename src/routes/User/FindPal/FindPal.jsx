@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { MultiSelectField } from "../../../components/mainComponents/MultiSelectField";
 import { LoadingSpinner } from "../../../components/LoadingSpinner";
+import { useGet } from "../../../api/useGet";
+import CompleteProfilePopup from "../../../components/CompleteProfilePopup";
 import {
   ageGrpList,
   educationList,
@@ -10,15 +12,11 @@ import {
   orientationList,
   raceList,
   stateList,
-} from "./findPalState";
-
-import { useGet } from "../../../api/useGet";
-import CompleteProfilePopup from "../../../components/CompleteProfilePopup";
+} from "../../../utils/sharedState";
 
 function FindPal() {
   const user = useSelector((state) => state.user.currentUser);
   const [customers, setCustomers] = useState([]);
-  const [collapseDropdown, setCollapseDropdown] = useState(false);
   const [matchesAlert, setMatchesAlert] = useState("");
   const [loading, setLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -27,7 +25,6 @@ function FindPal() {
   const get = useGet();
 
   const itemsPerPage = 5;
-  const customSelectContainerRef = useRef(null);
   const searchSectRef = useRef(null);
 
   const [filter, setFilter] = useState({
@@ -56,7 +53,6 @@ function FindPal() {
     Race: raceList,
     Education: educationList,
   };
-  console.log(filterOptionsMap["State"][0]);
   const oneChoiceField = ["age", "gender", "race", "education"];
 
   const handleGetStartedClick = () => {
@@ -97,33 +93,9 @@ function FindPal() {
     setFilter(updatedFilter);
   };
 
-  const handleClickOutside = (e) => {
-    console.log(customSelectContainerRef.current.contains(e.target));
-
-    if (
-      customSelectContainerRef.current &&
-      !customSelectContainerRef.current.contains(e.target)
-    ) {
-      setCollapseDropdown(true);
-    }
-  };
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  useEffect(() => {
-    window.addEventListener("click", handleClickOutside);
-    return () => {
-      window.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (collapseDropdown) {
-      setCollapseDropdown(false);
-    }
-  }, [collapseDropdown]);
 
   useEffect(() => {
     console.log("this gets caled");
@@ -216,7 +188,7 @@ function FindPal() {
     });
   };
   return (
-    <div className="bg-c-basic flex flex-col gap-y-12 w-full px-3 py-6w">
+    <div className="bg-c-basic flex flex-col gap-y-12 w-full px-3 py-6">
       <div
         id="hero-section"
         className="flex flex-col-reverse lg:flex-row gap-y-6 justify-between bg-fr-blue-200 p-3 mt-2 md:mt-12 w-full md:w-10/12 m-auto rounded relative"
@@ -272,11 +244,7 @@ function FindPal() {
         </div>
         {loading && <LoadingSpinner />}
 
-        <div
-          id="filters"
-          className="grid  md:grid-cols-3 gap-6"
-          ref={customSelectContainerRef}
-        >
+        <div id="filters" className="grid  md:grid-cols-3 gap-6">
           {Object.keys(filterOptionsMap).map((key) => (
             <MultiSelectField
               key={key}
@@ -285,7 +253,6 @@ function FindPal() {
               dropdownOptions={filterOptionsMap[key]}
               selectedOptions={filter[filterStateNameMap[key]]}
               onChange={handleFilterChange}
-              collapseDropdown={collapseDropdown}
             />
           ))}
         </div>
@@ -326,7 +293,9 @@ function CustomerCard({ customer }) {
   return (
     <div
       id="customer-card"
-      className="bg-gray-100 rounded-md border border-gray-300 p-4 w-full md:w-9/12 flex flex-col gap-y-6 gap-x-4 md:flex-row"
+      className={`bg-gray-100 border ${
+        customer?.isFavorite && "border-green-500"
+      }  rounded-md border border-gray-300 p-4 w-full md:w-9/12 flex flex-col gap-y-6 gap-x-4 md:flex-row`}
     >
       <img
         src={customer?.profilePic || "/assets/default.jpg"}
@@ -335,40 +304,61 @@ function CustomerCard({ customer }) {
       />
       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
         <div className=" ">
-          <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
-            {customer.firstName} {customer.lastName}
-          </p>
+          <div className="flex gap-x-6 items-center">
+            <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
+              {customer?.firstName} {customer?.lastName}
+            </p>
+            <img
+              src={`assets/icons/${customer?.isFavorite && "filledHeart.svg"}`}
+              alt=""
+              className="h-6"
+            />
+          </div>
 
-          <div className="flex gap-x-4">
-            <p className="hidden md:block">{customer?.age || "N/A"} yrs</p>
-            <p className="hidden md:block">{customer?.gender || "N/A"}</p>
-            <p className="hidden md:block">{customer?.orientation || "N/A"}</p>
-            <p className="hidden md:block">{customer?.race || "N/A"}</p>
+          <div className="flex gap-4 flex-wrap">
+            <p className="hidden md:block text-nowrap">
+              {customer?.age || "N/A"} yrs
+            </p>
+            <p className="hidden md:block text-nowrap">
+              {customer?.gender || "N/A"}
+            </p>
+            <p className="hidden md:block text-nowrap">
+              {customer?.orientation || "N/A"}
+            </p>
+            <p className="hidden md:block text-nowrap">
+              {customer?.race || "N/A"}
+            </p>
             <span className="flex gap-x-1 items-baseline">
-              <img src="/assets/icons/star.svg" alt="" className="h-4" />{" "}
+              <img
+                src="/assets/icons/star.svg"
+                alt=""
+                className="h-4  text-nowrap"
+              />{" "}
               {customer?.rating || 0}
             </span>
-            <p className="underline">{customer?.numRatings || 0} Reviews</p>
+            <p className="underline  text-nowrap">
+              {customer?.numRatings || 0} Reviews
+            </p>
           </div>
         </div>
         <p>
           <span className="font-medium mr-1">Location:</span>
-          {customer.state || "N/A"}, {customer.city || "N/A"}
+          {customer?.state || "N/A"}, {customer?.city || "N/A"}
         </p>
         <p>
           <span className="font-medium mr-1">Education:</span>
-          {customer.education || "N/A"}
+          {customer?.education || "N/A"}
         </p>
         <p>
-          <span className="font-medium mr-1"> Mainling Addres:</span>
-          {customer.mailingAddress || "N/A"}
+          <span className="font-medium mr-1"> Mailing Address:</span>
+          {customer?.mailingAddress || "N/A"}
         </p>
       </div>
       <div className="w-full md:w-fit ml-auto flex flex-col my-auto">
         <button
           type="button"
           className="mt-4 bg-fr-blue-200 text-white px-6 py-3 rounded hover:opacity-90"
-          onClick={() => navigate(`/customer/${customer._id}`)}
+          onClick={() => navigate(`/customer/${customer?._id}`)}
         >
           View Details
         </button>

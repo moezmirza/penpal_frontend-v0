@@ -1,5 +1,9 @@
-import { useContext, useState } from "react";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { useContext, useRef, useState } from "react";
+import {
+  getIdTokenResult,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth, provider } from "../services/firebase";
 import Separater from "../components/Separater";
 import { Link, useNavigate } from "react-router-dom";
@@ -20,6 +24,8 @@ const Login = () => {
   const get = useGet();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const passwordRef = useRef();
+  const imageRef = useRef();
 
   const { updateAuthInfo } = useContext(AuthContext);
 
@@ -40,27 +46,36 @@ const Login = () => {
         formData.email,
         formData.password
       );
+      setLoading(false);
       console.log("user", user);
       if (user) {
         user = user.user;
         console.log("user.user", user);
-        const currentUser = {
-          name: user.displayName,
-          email: user.email,
-        };
+
         const authInfo = {
           token: user.accessToken,
-          isAuth: true,
         };
-
-        let { success, data, error } = await get("/user");
-        console.log(success, "UserData", data);
-        if (success) {
-          dispatch(setCurrentUser(data));
+        const tokenResult = await getIdTokenResult(user);
+        console.log("res", tokenResult);
+        if (tokenResult.claims.role == "admin") {
+          const currentUser = {
+            firstName: "Admin",
+            email: user.email,
+          };
+          authInfo.adminAuth = true;
+          dispatch(setCurrentUser(currentUser));
           updateAuthInfo(authInfo);
-          navigate("/");
+          navigate("/approve-profiles");
+        } else {
+          let { success, data, error } = await get("/user");
+          console.log(success, "UserData", data);
+          if (success) {
+            authInfo.userAuth = true;
+            dispatch(setCurrentUser(data));
+            updateAuthInfo(authInfo);
+            navigate("/");
+          }
         }
-        setLoading(false);
       }
     } catch (err) {
       console.log(err);
@@ -79,16 +94,26 @@ const Login = () => {
     };
     const authInfo = {
       token: user.accessToken,
-      isAuth: true,
+      userAuth: true,
     };
     dispatch(setCurrentUser(currentUser));
     updateAuthInfo(authInfo);
 
     navigate("/");
   };
+  const changePassInputType = () => {
+    console.log("inside drop", passwordRef.current.type);
+    if (passwordRef.current.type == "password") {
+      passwordRef.current.type = "text";
+      imageRef.current.src = "assets/icons/eye.svg";
+    } else {
+      passwordRef.current.type = "password";
+      imageRef.current.src = "assets/icons/eyeSlash.svg";
+    }
+  };
   return (
-    <div className="flex  justify-center  bg-b-general  h-screen items-center px-4 md:h-full md:pb-6">
-      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-1/3 w-full h-fit rounded-lg relative text-sm md:text-base">
+    <div className="flex  justify-center bg-b-general  md:items-center h-screen px-3 md:h-full ">
+      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-1/3 w-full h-fit md:mt-0 mt-32  rounded-lg relative text-sm md:text-base">
         {loading && <LoadingSpinner />}
         <h2 className="text-2xl md:text-4xl font-bold text-gray-900 flex gap-x-3">
           Welcome Back
@@ -102,7 +127,7 @@ const Login = () => {
           <label className="text-left">
             Email
             <input
-              type="text"
+              type="email"
               id="name"
               name="email"
               value={formData.email}
@@ -113,11 +138,21 @@ const Login = () => {
             />
           </label>
 
-          <label className=" text-left">
-            Password
+          <label className="text-left">
+            <div className="flex items-center gap-x-6  justify-between">
+              Password
+              <img
+                src={`/assets/icons/eyeSlash.svg`}
+                alt=""
+                ref={imageRef}
+                className="h-4 md:h-6 cursor-pointer"
+                onClick={changePassInputType}
+              />
+            </div>
             <input
-              type="text"
-              id="name"
+              ref={passwordRef}
+              type="password"
+              id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}

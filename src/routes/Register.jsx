@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePost } from "../api/usePost";
 import { Link, useNavigate } from "react-router-dom";
 import mapAuthCodeToMessage, { baseUrl } from "../utils/authCodeMap";
@@ -17,7 +17,8 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const post = usePost();
-  console.log("post ", post);
+  const passwordRef = useRef();
+  const imageRef = useRef();
 
   const handleChange = (e) => {
     console.log(e, e.target.value);
@@ -56,13 +57,21 @@ const Register = () => {
       setError(mapAuthCodeToMessage(error.message));
     }
   };
-  // useEffect(()=>{
-  //   window.addEventListener("click", handleWindowClick)
-  // },[])
+
+  const changePassInputType = () => {
+    console.log("inside drop", passwordRef.current.type);
+    if (passwordRef.current.type == "password") {
+      passwordRef.current.type = "text";
+      imageRef.current.src = "assets/icons/eye.svg";
+    } else {
+      passwordRef.current.type = "password";
+      imageRef.current.src = "assets/icons/eyeSlash.svg";
+    }
+  };
 
   return (
-    <div className="flex justify-center items-center  py-20 md:py-6 bg-b-general py-6 px-3 md:px-8 h-screen md:h-full">
-      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 w-full h-fit md:w-2/5 rounded-lg relative">
+    <div className="flex justify-center md:items-center  py-20 md:py-6 bg-b-general py-6 px-3 md:px-8  h-screen md:h-full ">
+      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 w-full md:mt-0 mt-32 h-fit md:w-2/5 rounded-lg relative">
         {loading && <LoadingSpinner />}
         <h2 className="md:text-4xl text-2xl font-bold text-gray-900 flex gap-x-4">
           Create Account
@@ -111,14 +120,26 @@ const Register = () => {
               placeholder="Enter your email"
             />
           </label>
-          <label className=" text-left ">
-            Password
+          <label className="text-left">
+            <div className="flex items-center gap-x-6  justify-between">
+              Password
+              <img
+                src={`/assets/icons/eyeSlash.svg`}
+                alt=""
+                ref={imageRef}
+                className="h-4 md:h-6 cursor-pointer"
+                onClick={changePassInputType}
+              />
+            </div>
             <input
-              type="text"
+              ref={passwordRef}
+              type="password"
+              id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="block w-full mt-2 rounded-md p-1.5 md:p-2 border border-gray-400 outline-none focus:border-gray-700"
+              className="block w-full mt-2 rounded-md p-1.5 md:p-2 border border-gray-400 outline-none focus:border-gray-700 "
+              required
               placeholder="Enter your password"
             />
           </label>
