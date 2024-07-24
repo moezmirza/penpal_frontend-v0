@@ -8,6 +8,7 @@ import { setCurrentUser } from "../../../state/slices/userSlice";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../services/firebase";
 import { genderList } from "../../../utils/sharedState";
+import { v4 } from "uuid";
 function BasicInfo({ onTabSwitch }) {
   const imageRef = useRef(null);
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -49,10 +50,7 @@ function BasicInfo({ onTabSwitch }) {
       const uploadedImg = imageRef.current.files[0];
       if (uploadedImg) {
         console.log("uploading img...", uploadedImg);
-        const userProfileImgRef = ref(
-          storage,
-          `images/${currentUser.firebaseUid}`
-        );
+        const userProfileImgRef = ref(storage, `images/${v4()}`);
         const snapshot = await uploadBytes(userProfileImgRef, uploadedImg);
         const downloadUrl = await getDownloadURL(snapshot.ref);
 

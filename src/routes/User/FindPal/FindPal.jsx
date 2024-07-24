@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { MultiSelectField } from "../../../components/mainComponents/MultiSelectField";
 import { LoadingSpinner } from "../../../components/LoadingSpinner";
 import { useGet } from "../../../api/useGet";
@@ -14,6 +14,13 @@ import {
   stateList,
 } from "../../../utils/sharedState";
 
+export const mailTOLink = (email) => {
+  const intialBody = `Hi ${name}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`;
+
+  return `mailto:${email}?subject=${encodeURIComponent(
+    "Looking for a pal"
+  )}&body=${encodeURIComponent(intialBody)}`;
+};
 function FindPal() {
   const user = useSelector((state) => state.user.currentUser);
   const [customers, setCustomers] = useState([]);
@@ -26,6 +33,7 @@ function FindPal() {
 
   const itemsPerPage = 5;
   const searchSectRef = useRef(null);
+  const location = useLocation();
 
   const [filter, setFilter] = useState({
     state: [],
@@ -97,7 +105,6 @@ function FindPal() {
     window.scrollTo(0, 0);
   }, []);
   useEffect(() => {
-    
     console.log("this gets caled");
     const fetchCustomers = async () => {
       setLoading(true);
@@ -187,6 +194,16 @@ function FindPal() {
       setFilter(newObj);
     });
   };
+
+  useEffect(() => {
+    if (location.hash === "#findpal" && searchSectRef.current) {
+      searchSectRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [location]);
+
   return (
     <div className="bg-c-basic flex flex-col gap-y-12 w-full px-3 py-6">
       <div
@@ -209,7 +226,7 @@ function FindPal() {
           </div>
           <div className="flex items-center gap-x-4 ">
             <button
-              className=" flex items-center gap-x-4 text-xl w-fit  text-[#47C3F6]  rounded-md hover:opacity-90"
+              className=" flex items-center gap-x-4 text-xl hover:underline md:text-2xl w-fit  text-[#47C3F6]  rounded-md hover:opacity-90"
               onClick={handleGetStartedClick}
             >
               Get Started
@@ -223,14 +240,9 @@ function FindPal() {
         </div>
         <img src="/assets/heroImage.png" alt="" className="h-80 lg:h-auto" />
       </div>
-
       <div
         ref={searchSectRef}
-        style={{ marginTop: "-50px", height: "50px", visibility: "hidden" }}
-      ></div>
-
-      <div
-        id="sect-search"
+        id="findpal"
         className="flex flex-col  gap-y-12 bg-white p-3 md:p-6 relative"
       >
         <div className="flex flex-col items-start gap-y-3 md:justify-between md:flex-row">
@@ -288,7 +300,7 @@ function FindPal() {
   );
 }
 
-function CustomerCard({ customer }) {
+function CustomerCard({ customer, name }) {
   const navigate = useNavigate();
   return (
     <div
@@ -304,7 +316,7 @@ function CustomerCard({ customer }) {
       />
       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
         <div className=" ">
-          <div className="flex gap-x-6 items-center">
+          <div className="flex gap-x-6 items-baseline">
             <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
               {customer?.firstName} {customer?.lastName}
             </p>
@@ -358,9 +370,21 @@ function CustomerCard({ customer }) {
         <button
           type="button"
           className="mt-4 bg-fr-blue-200 text-white px-6 py-3 rounded hover:opacity-90"
-          onClick={() => navigate(`/customer/${customer?._id}`)}
+          onClick={() => navigate(`/inmate/${customer?._id}`)}
         >
           View Details
+        </button>
+        <button
+          type="button"
+          className="mt-4 border text-black px-5 py-3 border-fr-blue-200 rounded hover:opacity-90"
+          onClick={() =>
+            (window.location.href = mailTOLink(
+              customer?.email,
+              customer.firstName
+            ))
+          }
+        >
+          Contact Inmate
         </button>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   getIdTokenResult,
   signInWithEmailAndPassword,
@@ -26,6 +26,9 @@ const Login = () => {
   const dispatch = useDispatch();
   const passwordRef = useRef();
   const imageRef = useRef();
+  const isUserLoggedIn = JSON.parse(localStorage.getItem("userAuth"));
+  const isAdminLoggedIn = JSON.parse(localStorage.getItem("adminAuth"));
+  console.log("userAuth", isUserLoggedIn, "adminAuth", isAdminLoggedIn);
 
   const { updateAuthInfo } = useContext(AuthContext);
 
@@ -85,6 +88,14 @@ const Login = () => {
     }
   };
 
+  useEffect(() => {
+    if (isAdminLoggedIn) {
+      navigate("/user-profiles");
+    } else if (isUserLoggedIn) {
+      navigate("/");
+    }
+  }, [isAdminLoggedIn, isUserLoggedIn, navigate]);
+
   const handleSignInWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
@@ -112,7 +123,7 @@ const Login = () => {
     }
   };
   return (
-    <div className="flex  justify-center bg-b-general  md:items-center h-screen px-3 md:h-full ">
+    <div className="flex  justify-center bg-b-general  md:items-center h-screen px-3 md:h-full">
       <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-1/3 w-full h-fit md:mt-0 mt-32  rounded-lg relative text-sm md:text-base">
         {loading && <LoadingSpinner />}
         <h2 className="text-2xl md:text-4xl font-bold text-gray-900 flex gap-x-3">

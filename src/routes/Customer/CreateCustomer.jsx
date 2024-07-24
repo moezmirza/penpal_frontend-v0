@@ -20,7 +20,7 @@ import { useParams } from "react-router-dom";
 import { usePut } from "../../api/usePut";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { compose } from "@reduxjs/toolkit";
-import { v4 } from "uuid";
+import { v4, validate } from "uuid";
 
 function CreateCustomer() {
   const imageRef = useRef();
@@ -37,6 +37,7 @@ function CreateCustomer() {
   const [basicInfo, setBasicInfo] = useState({
     firstName: "",
     lastName: "",
+    email: "",
     inmateNumber: "",
     age: "",
     gender: "",
@@ -72,6 +73,11 @@ function CreateCustomer() {
     musicGenres: [],
     movieGenres: [],
   });
+  const validateEmail = (email) => {
+    // Basic regex for email validation
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
 
   // to keep track of only updatedFields
   const updatedFields = useRef({});
@@ -99,6 +105,11 @@ function CreateCustomer() {
       }
     }
 
+    if (!validateEmail(basicInfo.email)) {
+      setError("Invalid email format");
+      return;
+    }
+
     setLoading(true);
     const uploadedImg = imageRef.current.files[0];
     if (uploadedImg) {
@@ -106,7 +117,7 @@ function CreateCustomer() {
       const userProfileImgRef = ref(storage, `images/${v4()}`);
       const snapshot = await uploadBytes(userProfileImgRef, uploadedImg);
       const downloadUrl = await getDownloadURL(snapshot.ref);
-      console.log("downloadUrl", downloadUrl)
+      console.log("downloadUrl", downloadUrl);
       basicInfo.imageUrl = downloadUrl;
     }
     console.log("final Object", { ...basicInfo, ...personalityInfo });
@@ -154,7 +165,7 @@ function CreateCustomer() {
         console.log("data", data);
       } else {
         setLoading(false);
-        setError("An unexpected error occurred");
+        setError(error);
       }
     }
   };

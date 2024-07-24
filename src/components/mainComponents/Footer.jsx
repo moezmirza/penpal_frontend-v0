@@ -5,24 +5,39 @@ function Footer() {
   return (
     <>
       <div className="md:hidden bg-fr-blue-200 flex justify-between flex-col gap-y-6 p-4 px-8 w-full">
-        <ul className="flex flex-col md:items-center md:flex-row gap-6 text-white text-lg mx-auto">
+        <ul
+          className="flex flex-col md:items-center md:flex-row gap-6 text-white
+        text-lg mx-auto"
+        >
           <li>
-            <Link to={"/"}>About Us</Link>
+            <a href="https://penpal.musingsinc.co/">Home</a>
           </li>
           <li>
-            <Link to={"/"}>How it works</Link>
+            <a href="https://penpal.musingsinc.co/about-us/">About Us</a>
           </li>
           <li>
-            <Link to={"/"}>FAQ</Link>
+            <a href="https://penpal.musingsinc.co/how-it-works/">
+              How it works
+            </a>
           </li>
           <li>
-            <Link to={"/"}>Contact Us</Link>
+            <a href="https://penpal.musingsinc.co/pricing/">Pricing</a>
           </li>
           <li>
-            <Link to={"/"}>Privacy Policy</Link>
+            <a href="https://penpal.musingsinc.co/faq/">FAQ</a>
           </li>
           <li>
-            <Link to={"/"}>Terms of Service</Link>
+            <a href="https://penpal.musingsinc.co/contact-us/">Contact Us</a>
+          </li>
+          <li>
+            <a href="https://penpal.musingsinc.co/privacy-policy/">
+              Privacy Policy
+            </a>
+          </li>
+          <li>
+            <a href="https://penpal.musingsinc.co/terms-of-service/">
+              Terms of Service
+            </a>
           </li>
         </ul>
         <div className="flex my-auto items-center justify-between gap-x-4">
@@ -45,24 +60,39 @@ function Footer() {
       <div className="hidden md:flex bg-fr-blue-200 flex justify-between  p-4 px-8 w-full">
         <img src="/assets/logo.jpeg" alt="" className="h-16 rounded-md" />
 
-        <ul className="flex flex-col md:items-center md:flex-row gap-6 text-white text-lg mx-auto">
+        <ul
+          className="flex flex-col md:items-center md:flex-row gap-6 text-white
+        text-lg mx-auto"
+        >
           <li>
-            <Link to={"/"}>About Us</Link>
+            <a href="https://penpal.musingsinc.co/">Home</a>
           </li>
           <li>
-            <Link to={"/"}>How it works</Link>
+            <a href="https://penpal.musingsinc.co/about-us/">About Us</a>
           </li>
           <li>
-            <Link to={"/"}>FAQ</Link>
+            <a href="https://penpal.musingsinc.co/how-it-works/">
+              How it works
+            </a>
           </li>
           <li>
-            <Link to={"/"}>Contact Us</Link>
+            <a href="https://penpal.musingsinc.co/pricing/">Pricing</a>
           </li>
           <li>
-            <Link to={"/"}>Privacy Policy</Link>
+            <a href="https://penpal.musingsinc.co/faq/">FAQ</a>
           </li>
           <li>
-            <Link to={"/"}>Terms of Service</Link>
+            <a href="https://penpal.musingsinc.co/contact-us/">Contact Us</a>
+          </li>
+          <li>
+            <a href="https://penpal.musingsinc.co/privacy-policy/">
+              Privacy Policy
+            </a>
+          </li>
+          <li>
+            <a href="https://penpal.musingsinc.co/terms-of-service/">
+              Terms of Service
+            </a>
           </li>
         </ul>
         <div className="flex my-auto items-center justify-between gap-x-4">
