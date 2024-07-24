@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   getIdTokenResult,
   signInWithEmailAndPassword,
@@ -26,6 +26,9 @@ const Login = () => {
   const dispatch = useDispatch();
   const passwordRef = useRef();
   const imageRef = useRef();
+  const isUserLoggedIn = JSON.parse(localStorage.getItem("userAuth"));
+  const isAdminLoggedIn = JSON.parse(localStorage.getItem("adminAuth"));
+  console.log("userAuth", isUserLoggedIn, "adminAuth", isAdminLoggedIn);
 
   const { updateAuthInfo } = useContext(AuthContext);
 
@@ -84,6 +87,14 @@ const Login = () => {
       setError(errString);
     }
   };
+
+  useEffect(() => {
+    if (isAdminLoggedIn) {
+      navigate("/user-profiles");
+    } else if (isUserLoggedIn) {
+      navigate("/");
+    }
+  }, [isAdminLoggedIn, isUserLoggedIn, navigate]);
 
   const handleSignInWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);

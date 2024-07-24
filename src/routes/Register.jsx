@@ -19,6 +19,8 @@ const Register = () => {
   const post = usePost();
   const passwordRef = useRef();
   const imageRef = useRef();
+  const isUserLoggedIn = JSON.parse(localStorage.getItem("userAuth"));
+  const isAdminLoggedIn = JSON.parse(localStorage.getItem("adminAuth"));
 
   const handleChange = (e) => {
     console.log(e, e.target.value);
@@ -31,6 +33,14 @@ const Register = () => {
       [e.target.name]: updateValue,
     });
   };
+
+  useEffect(() => {
+    if (isAdminLoggedIn) {
+      navigate("/user-profiles");
+    } else if (isUserLoggedIn) {
+      navigate("/");
+    }
+  }, [isAdminLoggedIn, isUserLoggedIn, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
