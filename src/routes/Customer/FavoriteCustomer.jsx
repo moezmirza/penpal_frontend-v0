@@ -49,7 +49,11 @@ function CustomerCard({ customer }) {
   return (
     <div
       id="customer-card"
-      className="bg-gray-100 rounded-md border border-gray-300 p-2 px-4 w-full md:w-10/12 flex flex-col gap-y-6 gap-x-4 md:flex-row"
+      className={`bg-gray-100 rounded-md border ${
+        customer?.profileApproved == false
+          ? "border-red-500"
+          : "border-gray-300"
+      }  p-2 px-4 w-full md:w-10/12 flex flex-col gap-y-6 gap-x-4 md:flex-row`}
     >
       <img
         src={customer?.imageUrl || "/assets/default.jpg"}
@@ -58,9 +62,17 @@ function CustomerCard({ customer }) {
       />
       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
         <div className=" ">
-          <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
-            {customer?.firstName} {customer?.lastName}
-          </p>
+          <div className=" flex flex-col items-center md:flex-row gap-2 ">
+            <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
+              {customer?.firstName} {customer?.lastName}
+            </p>
+            {customer?.profileApproved == false && (
+              <p className="text-red-500 text-sm font-normal">
+                {" "}
+                Approval needed
+              </p>
+            )}
+          </div>
 
           <div className="flex gap-x-4">
             <p className="hidden md:block">{customer?.age || "N/A"} yrs</p>
