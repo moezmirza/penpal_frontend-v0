@@ -14,7 +14,7 @@ import {
   stateList,
 } from "../../../utils/sharedState";
 
-export const mailTOLink = (email) => {
+export const mailTOLink = (email, name) => {
   const intialBody = `Hi ${name}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`;
 
   return `mailto:${email}?subject=${encodeURIComponent(

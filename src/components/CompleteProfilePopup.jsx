@@ -56,7 +56,7 @@ function CompleteProfilePopup({ onCloseClick, atEnd }) {
               />
             </svg>
             <h3 class="mb-5 md:text-lg text-sm font-normal text-gray-500 dark:text-gray-400">
-              Complete your profile to unlock all inmates
+              Complete your profile to unlock inmates.
             </h3>
             <button
               data-modal-hide="popup-modal"
