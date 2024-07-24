@@ -94,7 +94,7 @@ const Login = () => {
     } else if (isUserLoggedIn) {
       navigate("/");
     }
-  }, [isAdminLoggedIn, isUserLoggedIn, navigate]);
+  }, []);
 
   const handleSignInWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);

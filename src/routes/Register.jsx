@@ -40,7 +40,7 @@ const Register = () => {
     } else if (isUserLoggedIn) {
       navigate("/");
     }
-  }, [isAdminLoggedIn, isUserLoggedIn, navigate]);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
