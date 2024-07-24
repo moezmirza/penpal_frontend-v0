@@ -38,7 +38,7 @@ function ManageCustomers() {
           <div id="tabs" className="flex cursor-pointer">
             <div
               className={`rounded border  md:px-8 md:py-2 md:text-lg text-sm px-2 py-1.5  ${
-                showTab ? "bg-fr-blue-100 text-white" : "bg-white text-black"
+                showTab ? "bg-blue-900 text-white" : "bg-white text-black"
               }`}
               onClick={() => setShowTab(true)}
             >
@@ -46,7 +46,7 @@ function ManageCustomers() {
             </div>
             <div
               className={`rounded border   md:px-8 md:py-2 md:text-lg text-sm px-2 py-1.5  ${
-                !showTab ? "bg-fr-blue-100 text-white" : "bg-white text-black"
+                !showTab ? "bg-blue-900 text-white" : "bg-white text-black"
               }`}
               onClick={() => setShowTab(false)}
             >
