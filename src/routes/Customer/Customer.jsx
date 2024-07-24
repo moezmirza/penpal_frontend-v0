@@ -353,7 +353,7 @@ export const ContactInfo = ({ name, email, mailingAddress }) => {
           <div className="flex flex-col gap-y-4 basis-1/3">
             <p className="text-lg font-semibold">Post mail option</p>
             <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt, eius!
+             {mailingAddress}
             </p>
           </div>
         </div>
