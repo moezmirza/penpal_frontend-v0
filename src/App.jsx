@@ -25,6 +25,8 @@ function App() {
     const adminAuth = JSON.parse(localStorage.getItem("adminAuth"));
     return adminAuth ? <Outlet /> : <Login />;
   };
+
+  // intially we used word customers for inmates
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
@@ -33,16 +35,16 @@ function App() {
       <Route element={<AdminRoutes />}>
         <Route path="/approve-profiles" element={<ApproveProfiles />} />
         <Route path="/approve-updates" element={<ApproveUpdates />} />
-        <Route path="/admin/customer-updates/:id" element={<AdminCustomer />} />
-        <Route path="/admin/customer-profile/:id" element={<Customer />} />
+        <Route path="/admin/inmate-updates/:id" element={<AdminCustomer />} />
+        <Route path="/admin/inmate-profile/:id" element={<Customer />} />
       </Route>
       <Route element={<UserRoutes />}>
         <Route path="/" element={<FindPal />} />
         <Route path="/user-profile" element={<UserProfile />} />
-        <Route path="/customer/:id" element={<Customer />} />
-        <Route path="/list-customer" element={<CreateCustomer />} />
-        <Route path="/update-customer/:id" element={<CreateCustomer />} />
-        <Route path="/manage-customers" element={<ManageCustomers />} />
+        <Route path="/inmate/:id" element={<Customer />} />
+        <Route path="/list-inmate" element={<CreateCustomer />} />
+        <Route path="/update-inmate/:id" element={<CreateCustomer />} />
+        <Route path="/manage-inmates" element={<ManageCustomers />} />
         <Route path="*" element={<FindPal />} />
       </Route>
     </Routes>

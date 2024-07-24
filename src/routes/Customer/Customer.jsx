@@ -9,6 +9,7 @@ import {
   basicInfoFieldLabelMap,
   spokenLanguagesList,
 } from "../../utils/sharedState";
+import { mailTOLink } from "../User/FindPal/FindPal";
 
 function Customer() {
   const { id } = useParams();
@@ -125,10 +126,10 @@ function Customer() {
       <div
         id="profile-details"
         className={`bg-white w-full md:w-9/12  border ${
-          customer?.profileApproved == false && isAdmin && "border-red-500"
+          customer?.profileApproved == false && "border-red-500"
         }  rounded-lg flex flex-col gap-y-4 p-6`}
       >
-        {customer?.profileApproved == false && isAdmin && (
+        {customer?.profileApproved == false && (
           <p className="text-red-500 text-center text-xl">
             Profile Pending for approval
           </p>
@@ -171,28 +172,42 @@ function Customer() {
                 )}
               </p>
             </div>
-            {isAdmin ? (
+            <div className="flex flex-col items-center ">
+              {isAdmin ? (
+                <button
+                  type="button"
+                  className="flex items-center justify-center h-fit w-fit mx-auto border text-white text px-8 py-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
+                  onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
+                >
+                  Approve
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="flex items-center justify-center h-fit mx-auto  w-fit border text-white px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
+                  onClick={handleFavouriteUpdate}
+                >
+                  <img
+                    src="/assets/icons/bookmark.svg"
+                    alt=""
+                    className="h-6 mr-2"
+                  />
+                  {customer?.isFavorite ? "Added" : "Add to Favorites"}
+                </button>
+              )}
               <button
                 type="button"
-                className="flex items-center justify-center h-fit w-fit mx-auto border text-white text px-8 py-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
-                onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
+                className="mt-4 border text-black px-5 py-3 text-nowrap w-fit border-fr-blue-200 rounded-xl hover:opacity-90"
+                onClick={() =>
+                  (window.location.href = mailTOLink(
+                    customer?.email,
+                    customer.firstName
+                  ))
+                }
               >
-                Approve
+                Contact Inmate
               </button>
-            ) : (
-              <button
-                type="button"
-                className="flex items-center justify-center h-fit mx-auto  w-fit border text-white px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
-                onClick={handleFavouriteUpdate}
-              >
-                <img
-                  src="/assets/icons/bookmark.svg"
-                  alt=""
-                  className="h-6 mr-2"
-                />
-                {customer?.isFavorite ? "Added" : "Add to Favorites"}
-              </button>
-            )}
+            </div>
           </div>
 
           <div>

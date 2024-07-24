@@ -157,7 +157,7 @@ function CustomerCard({ customer, onApprove }) {
         <button
           type="button"
           className="mt-4 bg-fr-blue-200  text-black px-5 py-3  text-white rounded hover:opacity-90"
-          onClick={() => navigate(`/admin/customer-updates/${customer?._id}`)}
+          onClick={() => navigate(`/admin/inmate-updates/${customer?._id}`)}
         >
           View Details
         </button>

@@ -58,7 +58,7 @@ function Questionairre() {
       );
       if (!currentUser.profileComplete) {
         console.log("isnide navigate");
-        navigate("/find-pal");
+        navigate("/#findpal");
       }
     } else {
       console.log(error);

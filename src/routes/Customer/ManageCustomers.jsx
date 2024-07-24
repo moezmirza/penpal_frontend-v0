@@ -30,9 +30,9 @@ function ManageCustomers() {
   return (
     <div className="flex flex-col gap-y-12 md:gap-y-16 mt-6 md:mt-0 p-4 md:p-6 relative ">
       {loading && <LoadingSpinner />}
-      <h1 className="text-3xl font-bold underline">Manange Customers</h1>
+      <h1 className="text-3xl font-bold underline">Manange Inmates</h1>
       {customers.length == 0 && !loading ? (
-        <p className="text-center">You have not listed any customers</p>
+        <p className="text-center">You have not listed any inmates</p>
       ) : (
         <div className="flex flex-col gap-y-6">
           {customers.map((customer) => (
@@ -41,11 +41,11 @@ function ManageCustomers() {
         </div>
       )}
       <button
-        onClick={() => navigate("/list-customer")}
+        onClick={() => navigate("/list-inmate")}
         className="flex justify-center items-center gap-4 m-auto bg-fr-blue-200  px-6  text-white py-3 text-lg rounded hover:opacity-90"
       >
         <img src="/assets/icons/plus.svg" alt="" className="h-6" />
-        List customer{" "}
+        List Inmate{" "}
       </button>
     </div>
   );
@@ -106,7 +106,7 @@ function CustomerCard({ customer }) {
         <button
           type="button"
           className="mt-4 border text-black px-5 py-3 border-fr-blue-200 rounded hover:opacity-90"
-          onClick={() => navigate(`/customer/${customer?._id}`)}
+          onClick={() => navigate(`/inmate/${customer?._id}`)}
         >
           View Details
         </button>
