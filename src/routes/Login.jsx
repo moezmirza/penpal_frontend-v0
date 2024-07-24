@@ -49,7 +49,6 @@ const Login = () => {
         formData.email,
         formData.password
       );
-      setLoading(false);
       console.log("user", user);
       if (user) {
         user = user.user;
@@ -79,6 +78,7 @@ const Login = () => {
             navigate("/");
           }
         }
+        setLoading(false);
       }
     } catch (err) {
       console.log(err);
@@ -94,7 +94,7 @@ const Login = () => {
     } else if (isUserLoggedIn) {
       navigate("/");
     }
-  }, [isAdminLoggedIn, isUserLoggedIn, navigate]);
+  }, []);
 
   const handleSignInWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);

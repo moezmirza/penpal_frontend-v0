@@ -59,7 +59,9 @@ function Customer() {
     const buttonText = target.innerText; // or target.textContent
     console.log(buttonText);
     const newText =
-      buttonText.trim() === "Add to Favorites" ? "Favorite" : "Add to Favorites";
+      buttonText.trim() === "Add to Favorites"
+        ? "Favorite"
+        : "Add to Favorites";
 
     target.innerHTML = `<img src="/assets/icons/bookmark.svg" alt="" class="h-6 mr-2" /> ${newText}`;
     const { success, data, error } = await put(`/user/favorite?id=${id}`, {
@@ -122,169 +124,182 @@ function Customer() {
     setCustomer({ ...customer, profileApproved: true });
   };
   return (
-    <div className="bg-c-basic min-h-screen p-3 md:p-6 py-12 flex justify-center gap-y-12 gap-x-4 pb-32">
-      <div
-        id="profile-details"
-        className={`bg-white w-full md:w-9/12  border ${
-          customer?.profileApproved == false && "border-red-500"
-        }  rounded-lg flex flex-col gap-y-4 p-6`}
-      >
-        {customer?.profileApproved == false && (
-          <p className="text-red-500 text-center text-xl">
-            Profile Pending for approval
-          </p>
-        )}
-        {loading && <LoadingSpinner />}
-        <div className="flex flex-col gap-y-8">
-          <div className="flex flex-col md:flex-row md:items-start gap-x-12 relative">
-            <img
-              src={customer?.imageUrl || "/assets/default.jpg"}
-              alt=""
-              className="w-full h-auto md:h-44 md:w-44 rounded"
-            />
-            <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">
-              <div>
-                <p className="font-semibold text-3xl mb-2 md:mb-1 text-center md:text-left">
-                  {customer?.firstName} {customer?.lastName}
-                </p>
+    <div className="bg-c-basic min-h-screen px-3 md:px-0 py-12">
+      <div className="flex flex-col items-center gap-y-12 w-full md:w-8/12 mx-auto">
+        <div
+          id="profile-details"
+          className={`bg-white  w-full border ${
+            customer?.profileApproved == false && "border-red-500"
+          }  rounded-lg flex flex-col gap-y-4 p-6`}
+        >
+          {customer?.profileApproved == false && (
+            <p className="text-red-500 text-center text-xl">
+              Profile Pending for approval
+            </p>
+          )}
+          {loading && <LoadingSpinner />}
+          <div className="flex flex-col gap-y-8">
+            <div className="flex flex-col md:flex-row md:items-start gap-x-12 gap-y-6 relative">
+              <img
+                src={customer?.imageUrl || "/assets/default.jpg"}
+                alt=""
+                className=" h-80 md:h-44 md:w-44 rounded"
+              />
+              <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">
+                <div>
+                  <p className="font-semibold text-3xl mb-2 md:mb-1 text-center md:text-left">
+                    {customer?.firstName} {customer?.lastName}
+                  </p>
 
-                <div className="flex gap-3 justify-center md:justify-start flex-wrap ">
-                  <p className="text-nowrap">{customer?.age || "N/A"} yrs</p>
-                  <p className="text-nowrap">{customer?.gender || "N/A"}</p>
-                  <p className="text-nowrap">
-                    {customer?.orientation || "N/A"}
-                  </p>
-                  <p className="text-nowrap">{customer?.race || "N/A"}</p>
-                  <span className="flex gap-x-1 items-baseline">
-                    <img src="/assets/icons/star.svg" alt="" className="h-4" />{" "}
-                    {customer?.rating || 0}
-                  </span>
-                  <p className="underline text-nowrap">
-                    {customer?.numRatings || 0} Reviews
-                  </p>
+                  <div className="flex gap-3 justify-center md:justify-start flex-wrap ">
+                    <p className="text-nowrap">{customer?.age || "N/A"} yrs</p>
+                    <p className="text-nowrap">{customer?.gender || "N/A"}</p>
+                    <p className="text-nowrap">
+                      {customer?.orientation || "N/A"}
+                    </p>
+                    <p className="text-nowrap">{customer?.race || "N/A"}</p>
+                    <span className="flex gap-x-1 items-baseline">
+                      <img
+                        src="/assets/icons/star.svg"
+                        alt=""
+                        className="h-4"
+                      />{" "}
+                      {customer?.rating || 0}
+                    </span>
+                    <p className="underline text-nowrap">
+                      {customer?.numRatings || 0} Reviews
+                    </p>
+                  </div>
                 </div>
+                <p>
+                  {customer?.bio || (
+                    <p className="italic mt-6 text-gray-500 text-center md:text-left">
+                      No bio added
+                    </p>
+                  )}
+                </p>
               </div>
-              <p>
-                {customer?.bio || (
-                  <p className="italic mt-6 text-gray-500 text-center md:text-left">
-                    No bio added
-                  </p>
+              <div className="flex flex-col items-center ">
+                {isAdmin ? (
+                  <button
+                    type="button"
+                    className="flex items-center justify-center  mx-auto border text-white text w-full py-2.5 px-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
+                    onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
+                  >
+                    Approve
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-3 border  text-white bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
+                    onClick={handleFavouriteUpdate}
+                  >
+                    <img
+                      src="/assets/icons/bookmark.svg"
+                      alt=""
+                      className="h-6 mr-2"
+                    />
+                    {customer?.isFavorite ? "Favorite" : "Add to Favorites"}
+                  </button>
                 )}
-              </p>
-            </div>
-            <div className="flex flex-col items-center ">
-              {isAdmin ? (
                 <button
                   type="button"
-                  className="flex items-center justify-center h-fit w-fit mx-auto border text-white text px-8 py-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
-                  onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
-                >
-                  Approve
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className="flex items-center justify-center h-fit mx-auto  w-fit border text-white px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
-                  onClick={handleFavouriteUpdate}
-                >
-                  <img
-                    src="/assets/icons/bookmark.svg"
-                    alt=""
-                    className="h-6 mr-2"
-                  />
-                  {customer?.isFavorite ? "Favorite" : "Add to Favorites"}
-                </button>
-              )}
-              <button
-                type="button"
-                className="mt-4 border text-black px-5 py-3 text-nowrap w-fit border-fr-blue-200 rounded-xl hover:opacity-90"
-                onClick={() =>
-                  (window.location.href = mailTOLink(
-                    customer?.email,
-                    customer.firstName
-                  ))
-                }
-              >
-                Contact Inmate
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <h2 className="font-semibold text-3xl md:text-2xl my-4 underline">
-              Basic Info
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
-              {customer &&
-                basicInfoDisplayFields.map((field) => {
-                  return (
-                    customer[field] &&
-                    (field == "spokenLanguages" ? (
-                      <p className="flex flex-wrap items-end">
-                        <span className="font-semibold mr-1 text-lg">
-                          {basicInfoFieldLabelMap[field]}:
-                        </span>
-                        {customer[field].map((lang) => (
-                          <span className="mr-1">{lang}</span>
-                        ))}
-                      </p>
-                    ) : (
-                      <p className="">
-                        <span className="font-semibold mr-1 text-lg">
-                          {basicInfoFieldLabelMap[field]}:
-                        </span>
-                        {field == "dateOfBirth"
-                          ? customer[field].split("T")[0]
-                          : customer[field]}
-                      </p>
+                  className="mt-4 border text-black text-nowrap w-full py-2.5 px-3  border-fr-blue-200 rounded-xl hover:opacity-90"
+                  onClick={() =>
+                    (window.location.href = mailTOLink(
+                      customer?.email,
+                      customer.firstName
                     ))
-                  );
-                })}
+                  }
+                >
+                  Contact Inmate
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col gap-y-10">
+
             <div>
               <h2 className="font-semibold text-3xl md:text-2xl my-4 underline">
-                Personality Info
+                Basic Info
               </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                {Object.keys(customer?.personality || []).map(
-                  (key) =>
-                    key != "_id" && (
-                      <div key={key}>
-                        <p className="font-semibold text-lg ">
-                          {key.toUpperCase()}
-                        </p>
-                        <ul className="">
-                          {customer?.personality[key].map((value) => (
-                            <li className="text-nowrap" key={value}>
-                              {value}
-                            </li>
+              <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
+                {customer &&
+                  basicInfoDisplayFields.map((field) => {
+                    return (
+                      customer[field] &&
+                      (field == "spokenLanguages" ? (
+                        <p className="flex flex-wrap items-end">
+                          <span className="font-semibold mr-1 text-lg">
+                            {basicInfoFieldLabelMap[field]}:
+                          </span>
+                          {customer[field].map((lang) => (
+                            <span className="mr-1">{lang}</span>
                           ))}
-                        </ul>
-                      </div>
-                    )
-                )}
+                        </p>
+                      ) : (
+                        <p className="">
+                          <span className="font-semibold mr-1 text-lg">
+                            {basicInfoFieldLabelMap[field]}:
+                          </span>
+                          {field == "dateOfBirth"
+                            ? customer[field].split("T")[0]
+                            : customer[field]}
+                        </p>
+                      ))
+                    );
+                  })}
               </div>
             </div>
-            {!isAdmin && (
-              <div className="">
-                <h1 className="text-3xl md:text-2xl font-semibold underline mb-4 ">
-                  Give your rating
-                </h1>
-                <div className="flex items-center gap-x-4">
-                  <RatingScale
-                    initialRating={customer?.prevRating}
-                    onRatingChange={handleRatingUpdate}
-                  />
+            <div className="flex flex-col gap-y-10">
+              <div>
+                <h2 className="font-semibold text-3xl md:text-2xl my-4 underline">
+                  Personality Info
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                  {Object.keys(customer?.personality || []).map(
+                    (key) =>
+                      key != "_id" && (
+                        <div key={key}>
+                          <p className="font-semibold text-lg ">
+                            {key.toUpperCase()}
+                          </p>
+                          <ul className="">
+                            {customer?.personality[key].map((value) => (
+                              <li className="text-nowrap" key={value}>
+                                {value}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )
+                  )}
                 </div>
               </div>
-            )}
+              {!isAdmin && (
+                <div className="">
+                  <h1 className="text-3xl md:text-2xl font-semibold underline mb-4 ">
+                    Give your rating
+                  </h1>
+                  <div className="flex items-center gap-x-4">
+                    <RatingScale
+                      initialRating={customer?.prevRating}
+                      onRatingChange={handleRatingUpdate}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
+
+        <ContactInfo
+          name={customer?.firstName}
+          email={customer?.email}
+          mailingAddress={customer?.mailingAddress}
+        />
       </div>
+
       {/* <div
         id="send-msgs"
         className="bg-white px-4 py-6 rounded-lg h-fit flex  flex-col grow gap-y-8"
@@ -311,6 +326,41 @@ function Customer() {
     </div>
   );
 }
+
+export const ContactInfo = ({ name, email, mailingAddress }) => {
+  return (
+    <div className="mr-auto flex flex-col gap-y-6 w-full ">
+      <h1 className="bg-fr-blue-200 text-white py-3 px-4 rounded text-xl px-6">
+        How to contact {name}
+      </h1>
+      <div className="border rounded-lg">
+        <div className="bg-white flex justify-between flex-col md:flex-row gap-y-12  py-3 px-12 w-full ">
+          <div className="flex flex-col gap-y-4 basis-1/4">
+            <p className="text-lg font-semibold"> Email forwarding option</p>
+            <div>
+              <p className="mb-2">{email}</p>
+              <p>
+                <a
+                  href={mailTOLink(email, name)}
+                  className="text-blue-600 underline mr-1 cursor-pointer "
+                >
+                  Click here
+                </a>
+                to email
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col gap-y-4 basis-1/3">
+            <p className="text-lg font-semibold">Post mail option</p>
+            <p>
+             {mailingAddress}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const RatingScale = ({ initialRating = 0, onRatingChange }) => {
   const [rating, setRating] = useState(initialRating);

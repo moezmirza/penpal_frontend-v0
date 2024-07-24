@@ -14,7 +14,7 @@ import {
   stateList,
 } from "../../../utils/sharedState";
 
-export const mailTOLink = (email) => {
+export const mailTOLink = (email, name) => {
   const intialBody = `Hi ${name}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`;
 
   return `mailto:${email}?subject=${encodeURIComponent(
@@ -105,7 +105,6 @@ function FindPal() {
     window.scrollTo(0, 0);
   }, []);
   useEffect(() => {
-    console.log("this gets caled");
     const fetchCustomers = async () => {
       setLoading(true);
       const { success, data, error } = await get(
@@ -312,7 +311,7 @@ function CustomerCard({ customer, name }) {
       <img
         src={customer?.imageUrl || "/assets/default.jpg"}
         alt=""
-        className="h-auto w-full md:w-44 md:h-44 rounded"
+        className="h-80 md:w-44 md:h-44 rounded"
       />
       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
         <div className=" ">
