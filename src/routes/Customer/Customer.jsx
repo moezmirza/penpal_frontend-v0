@@ -59,11 +59,11 @@ function Customer() {
     const buttonText = target.innerText; // or target.textContent
     console.log(buttonText);
     const newText =
-      buttonText.trim() === "Add to Favorites" ? "Added" : "Add to Favorites";
+      buttonText.trim() === "Add to Favorites" ? "Favorite" : "Add to Favorites";
 
     target.innerHTML = `<img src="/assets/icons/bookmark.svg" alt="" class="h-6 mr-2" /> ${newText}`;
     const { success, data, error } = await put(`/user/favorite?id=${id}`, {
-      fav: buttonText === "Added" ? false : true,
+      fav: buttonText === "Favorite" ? false : true,
     });
     if (success) {
       console.log("Favorite data", data);
@@ -192,7 +192,7 @@ function Customer() {
                     alt=""
                     className="h-6 mr-2"
                   />
-                  {customer?.isFavorite ? "Added" : "Add to Favorites"}
+                  {customer?.isFavorite ? "Favorite" : "Add to Favorites"}
                 </button>
               )}
               <button
