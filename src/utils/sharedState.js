@@ -372,6 +372,7 @@ export const fieldStateNameMap = {
 export const basicInfoFieldLabelMap = {
   firstName: "First Name",
   lastName: "Last Name",
+  email: "Email",
   inmateNumber: "Inmate #",
   age: "Age",
   gender: "Gender",
@@ -402,6 +403,7 @@ export const basicInfoFieldLabelMap = {
 export const basicInfoPlaceholderMap = {
   firstName: "John",
   lastName: "Doe",
+  email: "johndoe@gmail.com",
   inmateNumber: "7283",
   age: "30",
   gender: "Male",
@@ -432,6 +434,7 @@ export const basicInfoPlaceholderMap = {
 export const basicInfoReqFieldMap = {
   firstName: true,
   lastName: true,
+  email: true,
   age: true,
   gender: true,
   orientation: true,

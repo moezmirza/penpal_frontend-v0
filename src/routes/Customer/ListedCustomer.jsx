@@ -90,7 +90,7 @@ function CustomerCard({ customer }) {
         <button
           type="button"
           className="mt-4 bg-fr-blue-200 text-white px-6 py-3 rounded hover:opacity-90"
-          onClick={() => navigate(`/update-customer/${customer?._id}`)}
+          onClick={() => navigate(`/update-inmate/${customer?._id}`)}
         >
           Update
         </button>

@@ -21,7 +21,6 @@ const unAuthNavbarLinkMap = {
 };
 const adminNavbarLinkMap = {
   Home: "https://penpal.musingsinc.co/",
-  Dashboard: "/approve-profiles",
   "Approve Profiles": "/approve-profiles",
   "Approve Updates": "/approve-updates",
 };
@@ -102,7 +101,7 @@ function PCNavbar({ onSignout, onLinkClick, isAdmin, isUser }) {
         {Object.keys(adminNavbarLinkMap).map((linkName) => (
           <li key={linkName} onClick={onLinkClick}>
             <Link
-              to={userNavbarLinkMap[linkName]}
+              to={adminNavbarLinkMap[linkName]}
               className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 dark:hover:text-white"
             >
               {linkName}
