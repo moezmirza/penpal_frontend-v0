@@ -32,12 +32,12 @@ function ManageCustomers() {
   }, []);
   return (
     <div className="flex flex-col gap-y-12 md:gap-y-16 mt-6 md:mt-0 p-4 md:p-6 relative ">
-      <div className="flex flex-col gap-y-6 md:items-center md:flex-row w-3/5  justify-between">
+      <div className="flex flex-col gap-y-6 md:items-center md:flex-row md:w-3/5 justify-between">
         <h1 className="text-3xl font-bold underline">Manange Inmates</h1>
         <div className="md:w-fit w-full ">
           <div id="tabs" className="flex cursor-pointer">
             <div
-              className={`rounded border  md:px-8 md:py-2 md:text-lg text-sm px-2 py-1.5  ${
+              className={`rounded border  md:px-8 md:py-2 md:text-lg text-base px-4 py-2  ${
                 showTab ? "bg-blue-900 text-white" : "bg-white text-black"
               }`}
               onClick={() => setShowTab(true)}
@@ -45,7 +45,7 @@ function ManageCustomers() {
               Listed
             </div>
             <div
-              className={`rounded border   md:px-8 md:py-2 md:text-lg text-sm px-2 py-1.5  ${
+              className={`rounded border md:px-8 md:py-2 md:text-lg text-base px-4 py-2  ${
                 !showTab ? "bg-blue-900 text-white" : "bg-white text-black"
               }`}
               onClick={() => setShowTab(false)}
@@ -60,7 +60,7 @@ function ManageCustomers() {
 
       <button
         onClick={() => navigate("/list-inmate")}
-        className="flex justify-center items-center  text-sm md:text-base mt-6 gap-4 m-auto bg-fr-blue-200  px-6  text-white py-3 text-lg rounded hover:opacity-90"
+        className="flex justify-center items-center text-sm md:text-base mt-6 gap-4 m-auto bg-fr-blue-200  px-6  text-white py-3 text-lg rounded hover:opacity-90"
       >
         <img src="/assets/icons/plus.svg" alt="" className="md:h-6 h-4" />
         List Inmate{" "}

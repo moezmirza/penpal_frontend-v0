@@ -59,7 +59,9 @@ function Customer() {
     const buttonText = target.innerText; // or target.textContent
     console.log(buttonText);
     const newText =
-      buttonText.trim() === "Add to Favorites" ? "Favorite" : "Add to Favorites";
+      buttonText.trim() === "Add to Favorites"
+        ? "Favorite"
+        : "Add to Favorites";
 
     target.innerHTML = `<img src="/assets/icons/bookmark.svg" alt="" class="h-6 mr-2" /> ${newText}`;
     const { success, data, error } = await put(`/user/favorite?id=${id}`, {
@@ -136,11 +138,11 @@ function Customer() {
         )}
         {loading && <LoadingSpinner />}
         <div className="flex flex-col gap-y-8">
-          <div className="flex flex-col md:flex-row md:items-start gap-x-12 relative">
+          <div className="flex flex-col md:flex-row md:items-start gap-x-12 gap-y-6 relative">
             <img
               src={customer?.imageUrl || "/assets/default.jpg"}
               alt=""
-              className="w-full h-auto md:h-44 md:w-44 rounded"
+              className=" h-80 md:h-44 md:w-44 rounded"
             />
             <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">
               <div>
@@ -176,7 +178,7 @@ function Customer() {
               {isAdmin ? (
                 <button
                   type="button"
-                  className="flex items-center justify-center h-fit w-fit mx-auto border text-white text px-8 py-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
+                  className="flex items-center justify-center  mx-auto border text-white text w-full py-2.5 px-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
                   onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
                 >
                   Approve
@@ -184,7 +186,7 @@ function Customer() {
               ) : (
                 <button
                   type="button"
-                  className="flex items-center justify-center h-fit mx-auto  w-fit border text-white px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
+                  className="flex items-center justify-center  mx-auto w-full py-2.5 px-3 border  text-white bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
                   onClick={handleFavouriteUpdate}
                 >
                   <img
@@ -197,7 +199,7 @@ function Customer() {
               )}
               <button
                 type="button"
-                className="mt-4 border text-black px-5 py-3 text-nowrap w-fit border-fr-blue-200 rounded-xl hover:opacity-90"
+                className="mt-4 border text-black text-nowrap w-full py-2.5 px-3  border-fr-blue-200 rounded-xl hover:opacity-90"
                 onClick={() =>
                   (window.location.href = mailTOLink(
                     customer?.email,

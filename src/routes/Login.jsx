@@ -58,7 +58,6 @@ const Login = () => {
           token: user.accessToken,
         };
         const tokenResult = await getIdTokenResult(user);
-        setLoading(false);
         console.log("res", tokenResult);
         if (tokenResult.claims.role == "admin") {
           const currentUser = {
@@ -79,6 +78,7 @@ const Login = () => {
             navigate("/");
           }
         }
+        setLoading(false);
       }
     } catch (err) {
       console.log(err);

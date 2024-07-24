@@ -87,7 +87,7 @@ function AdminCustomer() {
             <img
               src={customer?.profilePic || "/assets/default.jpg"}
               alt=""
-              className="w-full h-auto md:h-44 md:w-44 rounded"
+              className="h-80 md:h-44 md:w-44 rounded"
             />
             <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">
               <div>
@@ -151,7 +151,9 @@ function AdminCustomer() {
                   </span>
                 )}
                 {customer?.bio || (
-                  <p className="italic text-gray-500 text-center w-full md:text-left">No bio added</p>
+                  <p className="italic text-gray-500 text-center w-full md:text-left">
+                    No bio added
+                  </p>
                 )}
               </p>
             </div>

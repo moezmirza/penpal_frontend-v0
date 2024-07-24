@@ -57,7 +57,7 @@ function CustomerCard({ customer }) {
       <img
         src={customer?.imageUrl || "/assets/default.jpg"}
         alt=""
-        className="h-auto w-full md:w-44 md:h-44 rounded"
+        className="h-80 md:w-44 md:h-44 rounded"
       />
       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
         <div>
@@ -65,7 +65,7 @@ function CustomerCard({ customer }) {
             <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
               {customer?.firstName} {customer?.lastName}
             </p>
-            {customer?.profileApproved==false && (
+            {customer?.profileApproved == false && (
               <p className="text-red-500 text-sm font-normal">
                 {" "}
                 Approval needed
