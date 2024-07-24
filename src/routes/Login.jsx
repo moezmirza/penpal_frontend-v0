@@ -49,7 +49,6 @@ const Login = () => {
         formData.email,
         formData.password
       );
-      setLoading(false);
       console.log("user", user);
       if (user) {
         user = user.user;
@@ -59,6 +58,7 @@ const Login = () => {
           token: user.accessToken,
         };
         const tokenResult = await getIdTokenResult(user);
+        setLoading(false);
         console.log("res", tokenResult);
         if (tokenResult.claims.role == "admin") {
           const currentUser = {
