@@ -137,7 +137,7 @@ function Customer() {
               Profile Pending for approval
             </p>
           )}
-          {loading && <LoadingSpinner />}
+          <LoadingSpinner isLoading={loading} />
           <div className="flex flex-col gap-y-8">
             <div className="flex flex-col md:flex-row md:items-start gap-x-12 gap-y-6 relative">
               <img
@@ -352,9 +352,7 @@ export const ContactInfo = ({ name, email, mailingAddress }) => {
           </div>
           <div className="flex flex-col gap-y-4 basis-1/3">
             <p className="text-lg font-semibold">Post mail option</p>
-            <p>
-             {mailingAddress}
-            </p>
+            <p>{mailingAddress}</p>
           </div>
         </div>
       </div>

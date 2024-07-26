@@ -253,7 +253,7 @@ function FindPal() {
             Clear filters
           </button>
         </div>
-        {loading && <LoadingSpinner />}
+        <LoadingSpinner isLoading={loading} />
 
         <div id="filters" className="grid  md:grid-cols-3 gap-6">
           {Object.keys(filterOptionsMap).map((key) => (

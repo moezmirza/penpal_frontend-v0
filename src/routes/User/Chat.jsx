@@ -144,7 +144,7 @@ function Chat() {
   return (
     <div className="py-3 md:py-6 px-2 md:py-4 h-screen">
       <div className="rounded flex bg-c-basic border border-2 border-black h-[90%] relative w-full">
-        {loading && <LoadingSpinner />}
+        <LoadingSpinner isLoading={loading} />
         {error && (
           <p className="text-lg text-red-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
             {error}

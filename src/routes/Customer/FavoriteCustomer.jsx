@@ -30,7 +30,7 @@ function FavoriteCustomer() {
   }, []);
   return (
     <div className="relative ">
-      {loading && <LoadingSpinner />}
+      <LoadingSpinner isLoading={loading} />
       {customers.length == 0 && !loading ? (
         <p className="text-center">You have not listed any inmates</p>
       ) : (

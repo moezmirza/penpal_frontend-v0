@@ -84,7 +84,7 @@ function AdminCustomer() {
           id="profile-details"
           className={`bg-white w-full border rounded-lg flex flex-col gap-y-4 p-6`}
         >
-          {loading && <LoadingSpinner />}
+          <LoadingSpinner isLoading={loading} />
           <div className="flex flex-col gap-y-6">
             <div className="flex flex-col md:flex-row md:items-start gap-x-12 relative">
               <div>
@@ -92,12 +92,12 @@ function AdminCustomer() {
                   src={customer?.imageUrl || "/assets/default.jpg"}
                   alt=""
                   className="h-80 w-full md:h-44 md:w-44 rounded"
-                  />
-                  {updatedFields?.includes("weight") && (
-                    <span className="font-normal text-xs text-green-500">
-                      new
-                    </span>
-                  )}
+                />
+                {updatedFields?.includes("weight") && (
+                  <span className="font-normal text-xs text-green-500">
+                    new
+                  </span>
+                )}
               </div>
 
               <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">

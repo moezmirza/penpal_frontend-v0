@@ -9,10 +9,12 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../services/firebase";
 import { genderList } from "../../../utils/sharedState";
 import { v4 } from "uuid";
+import { Tuple } from "@reduxjs/toolkit";
 function BasicInfo({ onTabSwitch }) {
   const imageRef = useRef(null);
   const currentUser = useSelector((state) => state.user.currentUser);
   const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
   const dispatch = useDispatch();
   const [error, setError] = useState("");
   const put = usePut();
@@ -65,9 +67,9 @@ function BasicInfo({ onTabSwitch }) {
           onTabSwitch(false);
         }
         console.log(currentUser);
+        setDone(true);
       } else {
         console.log(error);
-        setLoading(false);
         setError(mapAuthCodeToMessage(error));
       }
       setLoading(false);
@@ -109,7 +111,8 @@ function BasicInfo({ onTabSwitch }) {
       id="card"
       className="bg-white flex flex-col gap-y-8 pb-10 items-center m-auto rounded-lg relative"
     >
-      {loading && <LoadingSpinner />}
+      <LoadingSpinner isLoading={loading} isDone={done} />
+      
       <div className="bg-gray-300 w-full rounded-lg p-6 flex flex-col items-center gap-y-6">
         <div className="w-fit m-auto relative">
           <img
