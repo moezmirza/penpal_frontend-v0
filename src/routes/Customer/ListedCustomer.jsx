@@ -57,7 +57,7 @@ function CustomerCard({ customer }) {
       <img
         src={customer?.imageUrl || "/assets/default.jpg"}
         alt=""
-        className="h-80 md:w-44 md:h-44 rounded"
+        className="h-80 w-full md:w-44 md:h-44 rounded"
       />
       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
         <div>

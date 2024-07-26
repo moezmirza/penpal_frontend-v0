@@ -143,7 +143,7 @@ function Customer() {
               <img
                 src={customer?.imageUrl || "/assets/default.jpg"}
                 alt=""
-                className=" h-80 md:h-44 md:w-44 rounded"
+                className="h-80 w-full md:h-44 md:w-44 rounded"
               />
               <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">
                 <div>
@@ -334,7 +334,7 @@ export const ContactInfo = ({ name, email, mailingAddress }) => {
         How to contact {name}
       </h1>
       <div className="border rounded-lg">
-        <div className="bg-white flex justify-between flex-col md:flex-row gap-y-12  py-3 px-12 w-full ">
+        <div className="bg-white flex justify-between flex-col md:flex-row gap-y-12  py-3 md:px-12 px-6  w-full ">
           <div className="flex flex-col gap-y-4 basis-1/4">
             <p className="text-lg font-semibold"> Email forwarding option</p>
             <div>

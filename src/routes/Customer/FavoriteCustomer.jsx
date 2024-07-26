@@ -35,8 +35,8 @@ function FavoriteCustomer() {
         <p className="text-center">You have not listed any inmates</p>
       ) : (
         <div className="flex flex-col gap-y-6">
-          {customers.map((customer) => (
-            <CustomerCard customer={customer} />
+          {customers.map((customer, index) => (
+            <CustomerCard customer={customer} key={index} />
           ))}
         </div>
       )}
