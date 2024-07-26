@@ -16,6 +16,7 @@ function Questionairre() {
   );
   const currentUser = useSelector((state) => state.user.currentUser);
   const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,6 +34,8 @@ function Questionairre() {
 
   const handleUpdate = async () => {
     setError("");
+    setLoading(true);
+    setDone(false);
     console.log(personalityInfo);
     for (const key in personalityInfo) {
       if (personalityInfo[key].length === 0) {
@@ -40,31 +43,23 @@ function Questionairre() {
         return;
       }
     }
-    setLoading(true);
+
     const { success, data, error } = await put("/user/personality", {
       personality: personalityInfo,
     });
-    setLoading(false);
     if (success) {
-      console.log(data);
-
+      console.log("personality data", data);
       dispatch(setUserPersonality(data.personality));
       dispatch(setCurrentUserProfileStatus(true));
-      console.log(
-        "cur",
-        currentUser,
-        currentUser.profileComplete,
-        !currentUser.profileComplete
-      );
       if (!currentUser.profileComplete) {
-        console.log("isnide navigate");
         navigate("/#findpal");
       }
+      setDone(true);
     } else {
       console.log(error);
-      setLoading(false);
       setError(mapAuthCodeToMessage(error));
     }
+    setLoading(false);
   };
 
   const handleChange = (key, value, remove) => {
@@ -83,11 +78,9 @@ function Questionairre() {
     });
   };
 
-
   useEffect(() => {
     window.scroll(0, 0);
   }, []);
-
 
   useEffect(() => {
     const fetchPersonalityInfo = async () => {
@@ -117,7 +110,7 @@ function Questionairre() {
     >
       <div className="m-auto font-semibold text-xl md:text-2xl">Edit Info</div>
       {error && <p className="text-red-500 mt-1"> {error} </p>}
-      {loading && <LoadingSpinner />}
+      <LoadingSpinner isLoading={loading} isDone={done} />
 
       {Object.keys(fieldOptionMap).map((key) => (
         <MultiSelectField

@@ -21,6 +21,7 @@ import { usePut } from "../../api/usePut";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { compose } from "@reduxjs/toolkit";
 import { v4, validate } from "uuid";
+import { formattedImageName } from "../User/Profile/BasicInfo";
 
 function CreateCustomer() {
   const imageRef = useRef();
@@ -113,14 +114,28 @@ function CreateCustomer() {
     setLoading(true);
     const uploadedImg = imageRef.current.files[0];
     if (uploadedImg) {
-      console.log("uploading img...", uploadedImg);
-      const userProfileImgRef = ref(storage, `images/${v4()}`);
+      console.log(
+        "uploading img...",
+        uploadedImg,
+        "currentImageUrl",
+        basicInfo.imageUrl
+      );
+      let imageName = formattedImageName(v4());
+      if (basicInfo.imageUrl) {
+        // using the old image
+        let prevName = basicInfo.imageUrl.split("imageNameS")[1];
+        prevName = prevName?.split("imageNameE")[0];
+        if (prevName) {
+          console.log("using old image name")
+          imageName = formattedImageName(prevName);
+        }
+      }
+      const userProfileImgRef = ref(storage, `images/${imageName}`);
       const snapshot = await uploadBytes(userProfileImgRef, uploadedImg);
       const downloadUrl = await getDownloadURL(snapshot.ref);
       console.log("downloadUrl", downloadUrl);
       basicInfo.imageUrl = downloadUrl;
     }
-    console.log("final Object", { ...basicInfo, ...personalityInfo });
 
     const updatedInfo = Object.keys(updatedFields.current).reduce(
       (acc, field) => {
@@ -135,10 +150,12 @@ function CreateCustomer() {
     if (id) {
       const finalObj = {
         ...updatedInfo,
-        personality: {
-          ...personalityInfo,
-        },
       };
+      if (updatedFields.current?.personalityInfo == true) {
+        console.log("personality changed", personalityInfo);
+        finalObj.personalityInfo = personalityInfo;
+      }
+      console.log("finalObjetct", finalObj);
       const { success, data, error } = await put(
         `/customer?id=${id}`,
         finalObj
@@ -211,6 +228,8 @@ function CreateCustomer() {
   const handlePersonalityInfoChange = (label, value, remove) => {
     const stateKey = fieldStateNameMap[label];
     let updatedArr = personalityInfo[stateKey];
+    updatedFields.current["personalityInfo"] = true;
+
     if (remove) {
       updatedArr = updatedArr.filter((item) => item != value);
     } else {

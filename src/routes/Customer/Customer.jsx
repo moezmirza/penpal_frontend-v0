@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGet } from "../../api/useGet";
 import { usePut } from "../../api/usePut";
 import { usePost } from "../../api/usePost";
@@ -21,6 +21,7 @@ function Customer() {
   const post = usePost();
   const put = usePut();
 
+  const navigate = useNavigate();
   useEffect(() => {
     window.scroll(0, 0);
   }, []);
@@ -115,6 +116,7 @@ function Customer() {
     put(`/admin/approve-customer?id=${cid}`).then((response) => {
       const { success, data, error } = response;
       if (success) {
+        navigate("/admin/approve-profiles");
         console.log("Approval update successful:", data);
       } else {
         console.error("Error approving customer:", error);
@@ -123,27 +125,32 @@ function Customer() {
 
     setCustomer({ ...customer, profileApproved: true });
   };
+  const profileApproval =
+    customer?.profileApproved == false && customer?.createdByCurrent;
+  const updateApproval =
+    customer?.updateApproved == false && customer?.createdByCurrent;
   return (
     <div className="bg-c-basic min-h-screen px-3 md:px-0 py-12">
       <div className="flex flex-col items-center gap-y-12 w-full md:w-8/12 mx-auto">
         <div
           id="profile-details"
           className={`bg-white  w-full border ${
-            customer?.profileApproved == false && "border-red-500"
+            (profileApproval || updateApproval) && "border-red-500"
           }  rounded-lg flex flex-col gap-y-4 p-6`}
         >
-          {customer?.profileApproved == false && (
-            <p className="text-red-500 text-center text-xl">
-              Profile Pending for approval
+          {(profileApproval || updateApproval) && (
+            <p className="text-red-500 text-center md:text-xl text-sm ">
+              {profileApproval ? "Profile" : "Profile Updates"} pending for
+              approval
             </p>
           )}
-          {loading && <LoadingSpinner />}
+          <LoadingSpinner isLoading={loading} />
           <div className="flex flex-col gap-y-8">
             <div className="flex flex-col md:flex-row md:items-start gap-x-12 gap-y-6 relative">
               <img
                 src={customer?.imageUrl || "/assets/default.jpg"}
                 alt=""
-                className=" h-80 md:h-44 md:w-44 rounded"
+                className="h-80 w-full md:h-44 md:w-44 rounded"
               />
               <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">
                 <div>
@@ -334,7 +341,7 @@ export const ContactInfo = ({ name, email, mailingAddress }) => {
         How to contact {name}
       </h1>
       <div className="border rounded-lg">
-        <div className="bg-white flex justify-between flex-col md:flex-row gap-y-12  py-3 px-12 w-full ">
+        <div className="bg-white flex justify-between flex-col md:flex-row gap-y-12  py-3 md:px-12 px-6  w-full ">
           <div className="flex flex-col gap-y-4 basis-1/4">
             <p className="text-lg font-semibold"> Email forwarding option</p>
             <div>
@@ -352,9 +359,7 @@ export const ContactInfo = ({ name, email, mailingAddress }) => {
           </div>
           <div className="flex flex-col gap-y-4 basis-1/3">
             <p className="text-lg font-semibold">Post mail option</p>
-            <p>
-             {mailingAddress}
-            </p>
+            <p>{mailingAddress}</p>
           </div>
         </div>
       </div>

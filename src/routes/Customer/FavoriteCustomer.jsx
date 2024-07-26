@@ -30,13 +30,13 @@ function FavoriteCustomer() {
   }, []);
   return (
     <div className="relative ">
-      {loading && <LoadingSpinner />}
+      <LoadingSpinner isLoading={loading} />
       {customers.length == 0 && !loading ? (
         <p className="text-center">You have not listed any inmates</p>
       ) : (
         <div className="flex flex-col gap-y-6">
-          {customers.map((customer) => (
-            <CustomerCard customer={customer} />
+          {customers.map((customer, index) => (
+            <CustomerCard customer={customer} key={index} />
           ))}
         </div>
       )}
@@ -50,7 +50,7 @@ function CustomerCard({ customer }) {
     <div
       id="customer-card"
       className={`bg-gray-100 rounded-md border ${
-        customer?.profileApproved == false
+        customer?.profileApproved == false || customer?.updateApproved == false
           ? "border-red-500"
           : "border-gray-300"
       }  p-2 px-4 w-full md:w-10/12 flex flex-col gap-y-6 gap-x-4 md:flex-row`}
@@ -66,7 +66,8 @@ function CustomerCard({ customer }) {
             <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
               {customer?.firstName} {customer?.lastName}
             </p>
-            {customer?.profileApproved == false && (
+            {(customer?.profileApproved == false ||
+              customer?.updateApproved == false) && (
               <p className="text-red-500 text-sm font-normal">
                 {" "}
                 Approval needed

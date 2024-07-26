@@ -59,8 +59,10 @@ function ApproveUpdates() {
   );
   return (
     <div className="flex flex-col gap-y-12 py-6 px-4   relative">
-      {loading && <LoadingSpinner />}
-      <h1 className="text-2xl md:text-3xl font-bold underline">Approve Profile Updates</h1>
+      <LoadingSpinner isLoading={loading} />
+      <h1 className="text-2xl md:text-3xl font-bold underline">
+        Approve Profile Updates
+      </h1>
       <div className="flex flex-col md:flex-row gap-6  md:w-9/12 items-center">
         <input
           className="bg-transparent block w-full mt-1 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
@@ -106,7 +108,7 @@ function CustomerCard({ customer, onApprove }) {
       <img
         src={customer?.imageUrl || "/assets/default.jpg"}
         alt=""
-        className="h-80 md:w-44 md:h-44 rounded"
+        className="h-80 w-full md:w-44 md:h-44 rounded"
       />
       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
         <div className=" ">

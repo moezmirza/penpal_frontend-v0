@@ -13,6 +13,7 @@ import {
   raceList,
   stateList,
 } from "../../../utils/sharedState";
+import CallSupport from "../../../components/CallSupport";
 
 export const mailTOLink = (email, name) => {
   const intialBody = `Hi ${name}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`;
@@ -253,7 +254,7 @@ function FindPal() {
             Clear filters
           </button>
         </div>
-        {loading && <LoadingSpinner />}
+        <LoadingSpinner isLoading={loading} />
 
         <div id="filters" className="grid  md:grid-cols-3 gap-6">
           {Object.keys(filterOptionsMap).map((key) => (
@@ -311,7 +312,7 @@ function CustomerCard({ customer, name }) {
       <img
         src={customer?.imageUrl || "/assets/default.jpg"}
         alt=""
-        className="h-80 md:w-44 md:h-44 rounded"
+        className="h-80 w-full md:w-44 md:h-44 rounded"
       />
       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
         <div className=" ">
