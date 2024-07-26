@@ -83,10 +83,11 @@ function CreateCustomer() {
   // to keep track of only updatedFields
   const updatedFields = useRef({});
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (e) => {
     // checking for required fields
     setError("");
     setSuccess(false);
+    setLoading(true);
 
     for (const key in basicInfo) {
       if (
@@ -110,8 +111,7 @@ function CreateCustomer() {
       setError("Invalid email format");
       return;
     }
-
-    setLoading(true);
+    e.target.disabled = true;
     const uploadedImg = imageRef.current.files[0];
     if (uploadedImg) {
       console.log(
@@ -126,7 +126,7 @@ function CreateCustomer() {
         let prevName = basicInfo.imageUrl.split("imageNameS")[1];
         prevName = prevName?.split("imageNameE")[0];
         if (prevName) {
-          console.log("using old image name")
+          console.log("using old image name");
           imageName = formattedImageName(prevName);
         }
       }

@@ -161,10 +161,7 @@ function BasicInfo({ onTabSwitch }) {
         </div>
       </div>
 
-      <form
-        className="flex flex-col gap-y-6 text-sm p-2 md:text-base md:p-4 w-full "
-        onSubmit={handleSubmit}
-      >
+      <form className="flex flex-col gap-y-6 text-sm p-2 md:text-base md:p-4 w-full ">
         <div className="m-auto font-semibold text-xl md:text-2xl">
           Edit Info
         </div>
