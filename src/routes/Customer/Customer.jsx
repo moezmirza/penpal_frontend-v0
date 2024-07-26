@@ -123,18 +123,22 @@ function Customer() {
 
     setCustomer({ ...customer, profileApproved: true });
   };
+  const profileApproval =
+    customer?.profileApproved == false && customer?.createdByCurrent;
+  const updateApproval =
+    customer?.updateApproved == false && customer?.createdByCurrent;
   return (
     <div className="bg-c-basic min-h-screen px-3 md:px-0 py-12">
       <div className="flex flex-col items-center gap-y-12 w-full md:w-8/12 mx-auto">
         <div
           id="profile-details"
           className={`bg-white  w-full border ${
-            customer?.profileApproved == false && "border-red-500"
+            (profileApproval || updateApproval) && "border-red-500"
           }  rounded-lg flex flex-col gap-y-4 p-6`}
         >
-          {customer?.profileApproved == false && (
-            <p className="text-red-500 text-center text-xl">
-              Profile Pending for approval
+          {(profileApproval || updateApproval) && (
+            <p className="text-red-500 text-center md:text-xl text-sm ">
+              {profileApproval ? "Profile" : "Profile Updates"} pending for approval
             </p>
           )}
           <LoadingSpinner isLoading={loading} />
