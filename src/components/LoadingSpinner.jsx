@@ -13,9 +13,7 @@ export const LoadingSpinner = ({ isDone = false, isLoading }) => {
   }, [isDone]);
 
   useEffect(() => {
-    if (!isLoading) {
       setHide(false);
-    }
   }, [isLoading]);
   return (
     <div

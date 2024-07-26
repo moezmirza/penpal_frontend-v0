@@ -10,6 +10,11 @@ import { storage } from "../../../services/firebase";
 import { genderList } from "../../../utils/sharedState";
 import { v4 } from "uuid";
 import { Tuple } from "@reduxjs/toolkit";
+
+export const formattedImageName = (name) => {
+  return `imageNameS${name}imageNameE`;
+};
+
 function BasicInfo({ onTabSwitch }) {
   const imageRef = useRef(null);
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -58,7 +63,16 @@ function BasicInfo({ onTabSwitch }) {
           "currentImageUrl",
           basicInfo.imageUrl
         );
-        const userProfileImgRef = ref(storage, `images/${v4()}`);
+        let imageName = formattedImageName(v4());
+        if (basicInfo.imageUrl) {
+          // using the old image
+          let prevName = basicInfo.imageUrl.split("imageNameS")[1];
+          prevName = prevName?.split("imageNameE")[0];
+          if (prevName) {
+            imageName = formattedImageName(prevName);
+          }
+        }
+        const userProfileImgRef = ref(storage, `images/${imageName}`);
         const snapshot = await uploadBytes(userProfileImgRef, uploadedImg);
         const downloadUrl = await getDownloadURL(snapshot.ref);
 
