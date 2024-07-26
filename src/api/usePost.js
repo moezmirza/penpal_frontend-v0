@@ -30,8 +30,15 @@ function usePost() {
       const response = await axios.post(completeUrl, body, {
         headers,
       });
-      console.log("endPoint", url, "response", response.data);
-      return { success: true, data: response.data };
+      console.log(
+        "reqType",
+        "post",
+        "endPoint",
+        url,
+        "response",
+        response.data.data
+      );
+      return { success: true, data: response.data.data };
     } catch (error) {
       console.error("endPoint", url, "error:", error);
       return {
