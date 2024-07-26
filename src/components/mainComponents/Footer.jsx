@@ -44,13 +44,25 @@ function Footer() {
           <img src="/assets/logo.jpeg" alt="" className="h-16 rounded-md" />
           <div className="flex gap-x-4">
             <div className=" border rounded-full p-1.5">
-              <img src="/assets/icons/fb.svg" alt="" className="h-6" />
+              <img
+                src="/assets/icons/fb.svg"
+                alt=""
+                className="h-6 cursor-pointer"
+              />
             </div>
             <div className=" border rounded-full p-1.5">
-              <img src="/assets/icons/twitter.svg" alt="" className="h-6" />
+              <img
+                src="/assets/icons/twitter.svg"
+                alt=""
+                className="h-6 cursor-pointer"
+              />
             </div>
             <div className=" border rounded-full p-1.5">
-              <img src="/assets/icons/insta.svg" alt="" className="h-6" />
+              <img
+                src="/assets/icons/insta.svg"
+                alt=""
+                className="h-6 cursor-pointer"
+              />
             </div>
           </div>
         </div>
@@ -101,14 +113,22 @@ function Footer() {
               <img
                 src="/assets/icons/fb.svg"
                 alt=""
-                className="h-6  rounded-lg"
+                className="h-6 cursor-pointer"
               />
             </div>
             <div className=" border rounded-full p-1.5">
-              <img src="/assets/icons/twitter.svg" alt="" className="h-6" />
+              <img
+                src="/assets/icons/twitter.svg"
+                alt=""
+                className="h-6 cursor-pointer"
+              />
             </div>
             <div className=" border rounded-full p-1.5">
-              <img src="/assets/icons/insta.svg" alt="" className="h-6" />
+              <img
+                src="/assets/icons/insta.svg"
+                alt=""
+                className="h-6 cursor-pointer"
+              />
             </div>
           </div>
         </div>
