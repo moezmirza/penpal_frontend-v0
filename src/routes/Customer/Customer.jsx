@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGet } from "../../api/useGet";
 import { usePut } from "../../api/usePut";
 import { usePost } from "../../api/usePost";
@@ -21,6 +21,7 @@ function Customer() {
   const post = usePost();
   const put = usePut();
 
+  const navigate = useNavigate();
   useEffect(() => {
     window.scroll(0, 0);
   }, []);
@@ -115,6 +116,7 @@ function Customer() {
     put(`/admin/approve-customer?id=${cid}`).then((response) => {
       const { success, data, error } = response;
       if (success) {
+        navigate("/admin/approve-profiles");
         console.log("Approval update successful:", data);
       } else {
         console.error("Error approving customer:", error);
@@ -138,7 +140,8 @@ function Customer() {
         >
           {(profileApproval || updateApproval) && (
             <p className="text-red-500 text-center md:text-xl text-sm ">
-              {profileApproval ? "Profile" : "Profile Updates"} pending for approval
+              {profileApproval ? "Profile" : "Profile Updates"} pending for
+              approval
             </p>
           )}
           <LoadingSpinner isLoading={loading} />

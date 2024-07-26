@@ -120,7 +120,6 @@ function CreateCustomer() {
       console.log("downloadUrl", downloadUrl);
       basicInfo.imageUrl = downloadUrl;
     }
-    console.log("final Object", { ...basicInfo, ...personalityInfo });
 
     const updatedInfo = Object.keys(updatedFields.current).reduce(
       (acc, field) => {
@@ -135,10 +134,12 @@ function CreateCustomer() {
     if (id) {
       const finalObj = {
         ...updatedInfo,
-        personality: {
-          ...personalityInfo,
-        },
       };
+      if (updatedFields.current?.personalityInfo == true) {
+        console.log("personality changed", personalityInfo);
+        finalObj.personalityInfo = personalityInfo;
+      }
+      console.log("finalObjetct", finalObj)
       const { success, data, error } = await put(
         `/customer?id=${id}`,
         finalObj
@@ -211,6 +212,8 @@ function CreateCustomer() {
   const handlePersonalityInfoChange = (label, value, remove) => {
     const stateKey = fieldStateNameMap[label];
     let updatedArr = personalityInfo[stateKey];
+    updatedFields.current["personalityInfo"] = true;
+
     if (remove) {
       updatedArr = updatedArr.filter((item) => item != value);
     } else {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGet } from "../../api/useGet";
 import { usePut } from "../../api/usePut";
 import { usePost } from "../../api/usePost";
@@ -16,6 +16,7 @@ function AdminCustomer() {
   const get = useGet();
   const post = usePost();
   const put = usePut();
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scroll(0, 0);
@@ -48,6 +49,7 @@ function AdminCustomer() {
     put(`/admin/approve-update?id=${cid}`).then((response) => {
       const { success, data, error } = response;
       if (success) {
+        navigate("/admin/approve-updates");
         console.log("Approval update successful:", data);
       } else {
         console.error("Error approving customer:", error);
