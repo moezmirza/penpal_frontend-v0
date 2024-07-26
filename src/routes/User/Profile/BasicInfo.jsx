@@ -41,6 +41,8 @@ function BasicInfo({ onTabSwitch }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
+    setDone(false);
     for (const key in basicInfo) {
       if (!basicInfo[key] && key != "imageUrl") {
         setError("All fields are required!");
@@ -48,10 +50,14 @@ function BasicInfo({ onTabSwitch }) {
       }
     }
     try {
-      setLoading(true);
       const uploadedImg = imageRef.current.files[0];
       if (uploadedImg) {
-        console.log("uploading img...", uploadedImg);
+        console.log(
+          "uploading img...",
+          uploadedImg,
+          "currentImageUrl",
+          basicInfo.imageUrl
+        );
         const userProfileImgRef = ref(storage, `images/${v4()}`);
         const snapshot = await uploadBytes(userProfileImgRef, uploadedImg);
         const downloadUrl = await getDownloadURL(snapshot.ref);
@@ -60,14 +66,14 @@ function BasicInfo({ onTabSwitch }) {
       }
       const { success, data, error } = await put("/user", basicInfo);
       if (success) {
-        console.log("data", data);
+        console.log("success", data);
         dispatch(setCurrentUser(data));
         if (!currentUser.profileComplete) {
           // when the profile is incomplete
           onTabSwitch(false);
         }
-        console.log(currentUser);
         setDone(true);
+        console.log(currentUser);
       } else {
         console.log(error);
         setError(mapAuthCodeToMessage(error));
@@ -112,7 +118,7 @@ function BasicInfo({ onTabSwitch }) {
       className="bg-white flex flex-col gap-y-8 pb-10 items-center m-auto rounded-lg relative"
     >
       <LoadingSpinner isLoading={loading} isDone={done} />
-      
+
       <div className="bg-gray-300 w-full rounded-lg p-6 flex flex-col items-center gap-y-6">
         <div className="w-fit m-auto relative">
           <img

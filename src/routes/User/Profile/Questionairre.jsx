@@ -34,6 +34,8 @@ function Questionairre() {
 
   const handleUpdate = async () => {
     setError("");
+    setLoading(true);
+    setDone(false);
     console.log(personalityInfo);
     for (const key in personalityInfo) {
       if (personalityInfo[key].length === 0) {
@@ -41,7 +43,7 @@ function Questionairre() {
         return;
       }
     }
-    setLoading(true);
+
     const { success, data, error } = await put("/user/personality", {
       personality: personalityInfo,
     });
