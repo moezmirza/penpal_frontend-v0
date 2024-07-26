@@ -13,7 +13,7 @@ import ManageCustomers from "./routes/Customer/ManageCustomers";
 import ApproveProfiles from "./routes/Admin/ApproveProfiles";
 import ApproveUpdates from "./routes/Admin/ApproveUpdates";
 import AdminCustomer from "./routes/Customer/AdminCustomer";
-import CheckoutForm from "./routes/Payment/Payment";
+// import CheckoutForm from "./routes/Payment/Payment";
 
 function App() {
   const UserRoutes = () => {
@@ -46,7 +46,7 @@ function App() {
         <Route path="/list-inmate" element={<CreateCustomer />} />
         <Route path="/update-inmate/:id" element={<CreateCustomer />} />
         <Route path="/manage-inmates" element={<ManageCustomers />} />
-        <Route path="/payment" element={<CheckoutForm />} />
+        {/* <Route path="/payment" element={<CheckoutForm />} /> */}
         <Route path="*" element={<FindPal />} />
       </Route>
     </Routes>
