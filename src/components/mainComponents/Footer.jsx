@@ -41,7 +41,7 @@ function Footer() {
           </li>
         </ul>
         <div className="flex my-auto items-center justify-between gap-x-4">
-          <img src="/assets/logo.jpeg" alt="" className="h-16 rounded-md" />
+          <img src="/assets/logo.jpeg" alt="" className="md:h-16 h-12 rounded-md" />
           <div className="flex gap-x-4">
             <div className=" border rounded-full p-1.5">
               <img

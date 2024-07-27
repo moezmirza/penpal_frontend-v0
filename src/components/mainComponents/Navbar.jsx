@@ -12,7 +12,7 @@ const userNavbarLinkMap = {
   "List Inmates": "/list-inmate",
   "Manage Inmates": "/manage-inmates",
   Profile: "/user-profile",
-  // Subscription: "/",
+  Subscription: "/subcriptions",
 };
 const unAuthNavbarLinkMap = {
   Home: "https://penpal.musingsinc.co/",

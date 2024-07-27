@@ -31,13 +31,13 @@ function ManageCustomers() {
     fetchCustomers();
   }, []);
   return (
-    <div className="flex flex-col gap-y-12 md:gap-y-16 mt-6 md:mt-0 p-4 md:p-6 relative ">
-      <div className="flex flex-col gap-y-6 md:items-center md:flex-row md:w-3/5 justify-between">
-        <h1 className="text-3xl font-bold underline">Manange Inmates</h1>
-        <div className="md:w-fit w-full ">
+    <div className="flex flex-col gap-y-12 md:gap-y-16 mt-6 p-4 md:p-6 relative ">
+      <div className="flex flex-col gap-y-6  items-center justify-between">
+        <h1 className="text-4xl font-bold underline">Manange Inmates</h1>
+        <div className="w-fit ">
           <div id="tabs" className="flex cursor-pointer">
             <div
-              className={`rounded border  md:px-8 md:py-2 md:text-lg text-base px-4 py-2  ${
+              className={`rounded border  md:px-6 md:py-2 md:text-lg text-base px-4 py-2  ${
                 showTab ? "bg-blue-900 text-white" : "bg-white text-black"
               }`}
               onClick={() => setShowTab(true)}
@@ -45,7 +45,7 @@ function ManageCustomers() {
               Listed
             </div>
             <div
-              className={`rounded border md:px-8 md:py-2 md:text-lg text-base px-4 py-2  ${
+              className={`rounded border md:px-5 md:py-2 md:text-lg text-base px-4 py-2  ${
                 !showTab ? "bg-blue-900 text-white" : "bg-white text-black"
               }`}
               onClick={() => setShowTab(false)}

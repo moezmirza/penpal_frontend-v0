@@ -52,7 +52,7 @@ function CustomerCard({ customer }) {
         customer?.profileApproved == false || customer?.updateApproved == false
           ? "border-red-500"
           : "border-gray-300"
-      }  p-2 px-4 w-full md:w-10/12 flex flex-col gap-y-6 gap-x-4 md:flex-row`}
+      }  p-2 px-4 w-full md:w-11/12 mx-auto flex flex-col gap-y-6 gap-x-4 md:flex-row`}
     >
       <img
         src={customer?.imageUrl || "/assets/default.jpg"}

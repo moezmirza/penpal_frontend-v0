@@ -14,6 +14,7 @@ import ApproveProfiles from "./routes/Admin/ApproveProfiles";
 import ApproveUpdates from "./routes/Admin/ApproveUpdates";
 import AdminCustomer from "./routes/Customer/AdminCustomer";
 import CheckoutForm from "./routes/Payment/Payment";
+import Subscription from "./routes/User/Subscription";
 
 function App() {
   const UserRoutes = () => {
@@ -47,6 +48,7 @@ function App() {
         <Route path="/update-inmate/:id" element={<CreateCustomer />} />
         <Route path="/manage-inmates" element={<ManageCustomers />} />
         <Route path="/payment" element={<CheckoutForm />} />
+        <Route path="/subcriptions" element={<Subscription />} />
         <Route path="*" element={<FindPal />} />
       </Route>
     </Routes>
