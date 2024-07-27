@@ -68,12 +68,12 @@ function ApproveProfiles() {
       includesCaseInsensitive(customer.lastName, inputVal)
   );
   return (
-    <div className="flex flex-col gap-y-12 p-4 md:p-6 relative mt-6 md:mt-0">
+    <div className="flex flex-col items-center gap-y-12 p-4 md:p-6 relative mt-6 md:w-10/12 w-full  mx-auto">
       <LoadingSpinner isLoading={loading} />
-      <h1 className="md:text-3xl  text-2xl font-bold underline">
+      <h1 className="md:text-3xl text-2xl font-bold underline">
         Approve Profiles
       </h1>
-      <div className="flex flex-col md:flex-row gap-6 md:w-9/12 items-center">
+      <div className="flex flex-col md:flex-row gap-6 md:w-9/12 w-11/12 items-center">
         <input
           className="bg-transparent block w-full mt-1 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
           placeholder={"Search customer..."}
@@ -88,7 +88,7 @@ function ApproveProfiles() {
       {customers?.length == 0 && !loading ? (
         <p className="text-center">There are no more profiles to approve </p>
       ) : (
-        <div className="flex flex-col gap-y-6 ">
+        <div className="flex flex-col gap-y-6 w-full">
           {filteredCustomers?.map((customer) => (
             <CustomerCard
               customer={customer}
@@ -113,7 +113,7 @@ function CustomerCard({ customer, onApprove }) {
   return (
     <div
       id="customer-card"
-      className="bg-gray-100 rounded-md border border-gray-300 p-2 px-4 w-full  md:w-10/12 flex flex-col gap-y-6 gap-x-4 md:flex-row"
+      className="bg-gray-100 rounded-md border border-gray-300 py-2 px-4 w-full flex flex-col gap-y-6 gap-x-4 md:flex-row"
     >
       <img
         src={customer?.imageUrl || "/assets/default.jpg"}

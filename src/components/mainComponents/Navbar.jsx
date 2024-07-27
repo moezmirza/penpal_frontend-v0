@@ -11,8 +11,8 @@ const userNavbarLinkMap = {
   Dashboard: "/#findpal",
   "List Inmates": "/list-inmate",
   "Manage Inmates": "/manage-inmates",
-  Profile: "/user-profile",
   Subscription: "/subcriptions",
+  Profile: "/user-profile",
 };
 const unAuthNavbarLinkMap = {
   Home: "https://penpal.musingsinc.co/",
