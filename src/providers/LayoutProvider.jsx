@@ -10,7 +10,10 @@ function LayoutProvider({ children }) {
   const currentUser = useSelector((state) => state.user.currentUser);
   const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
   const location = useLocation();
-  const excludeHeaderFooter = ["/payment"].includes(location.pathname);
+  const excludeHeaderFooter = [
+    "/payment",
+    "/payment/result",
+  ].includes(location.pathname);
 
   if (excludeHeaderFooter) return <div>{children}</div>;
   return (

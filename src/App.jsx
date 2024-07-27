@@ -47,7 +47,7 @@ function App() {
         <Route path="/update-inmate/:id" element={<CreateCustomer />} />
         <Route path="/manage-inmates" element={<ManageCustomers />} />
         <Route path="/payment" element={<CheckoutForm />} />
-        <Route path="/payment/success" element={<Result />} />
+        <Route path="/payment/result" element={<Result />} />
         <Route path="/subcriptions" element={<Subscription />} />
         <Route path="*" element={<FindPal />} />
       </Route>

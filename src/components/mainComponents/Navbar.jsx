@@ -11,7 +11,7 @@ const userNavbarLinkMap = {
   Dashboard: "/#findpal",
   "List Inmates": "/list-inmate",
   "Manage Inmates": "/manage-inmates",
-  Subscription: "/subcriptions",
+  Subscriptions: "/subcriptions",
   Profile: "/user-profile",
 };
 const unAuthNavbarLinkMap = {
