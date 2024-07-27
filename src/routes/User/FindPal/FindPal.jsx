@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { MultiSelectField } from "../../../components/mainComponents/MultiSelectField";
 import { LoadingSpinner } from "../../../components/LoadingSpinner";
 import { useGet } from "../../../api/useGet";
-import CompleteProfilePopup from "../../../components/CompleteProfilePopup";
+import ConfirmPopup from "../../../components/ConfrimPopup";
 import {
   ageGrpList,
   educationList,
@@ -211,7 +211,12 @@ function FindPal() {
         className="flex flex-col-reverse lg:flex-row gap-y-6 justify-between bg-fr-blue-200 p-3 mt-2 md:mt-12 w-full md:w-10/12 m-auto rounded relative"
       >
         {getStartedPopup && (
-          <CompleteProfilePopup onCloseClick={setGetStartedPopup} />
+          <ConfirmPopup
+            onCloseClick={setGetStartedPopup}
+            onConfirm={() => navigate("/user-profile")}
+            confirmBtnTxt={"Complete profile"}
+            infoText={"Complete your profile to unlock customers"}
+          />
         )}
         <div className="text-white my-auto ml-0 md:ml-6 flex flex-col gap-y-8">
           <h2 className="hidden md:block text-2xl md:text-7xl font-bold">
@@ -274,9 +279,12 @@ function FindPal() {
             <CustomerCard key={index} customer={customer} />
           ))}
           {viewMorePopup && (
-            <CompleteProfilePopup
-              atEnd={true}
+            <ConfirmPopup
               onCloseClick={setViewMorePopup}
+              onConfirm={() => navigate("/user-profile")}
+              confirmBtnTxt={"Complete profile"}
+              infoText={"Complete your profile to unlock customers"}
+              atEnd={true}
             />
           )}
         </div>

@@ -1,7 +1,15 @@
 import React, { useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-function CompleteProfilePopup({ onCloseClick, atEnd }) {
+function ConfrimPopup({
+  onCloseClick,
+  atEnd,
+  infoText,
+  onConfirm,
+  continueBtnTxt = "",
+  confirmBtnTxt,
+  width="fit",
+}) {
   const handleCloseClick = () => {
     onCloseClick(false);
   };
@@ -9,7 +17,7 @@ function CompleteProfilePopup({ onCloseClick, atEnd }) {
   const popupRef = useRef();
   return (
     <div
-      class={`w-full md:w-fit absolute ${
+      class={`w-11/12 md:w-${width} absolute ${
         atEnd ? "bottom-0" : "top-1/2"
       } left-1/2 -translate-x-1/2 -translate-y-${atEnd ? "0" : "1/2"} z-20`}
       ref={popupRef}
@@ -31,9 +39,9 @@ function CompleteProfilePopup({ onCloseClick, atEnd }) {
             >
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
               />
             </svg>
@@ -56,16 +64,28 @@ function CompleteProfilePopup({ onCloseClick, atEnd }) {
               />
             </svg>
             <h3 class="mb-5 md:text-lg text-sm font-normal text-gray-500 dark:text-gray-400">
-              Complete your profile to unlock inmates.
+              {infoText}
             </h3>
-            <button
-              data-modal-hide="popup-modal"
-              type="button"
-              class="text-white md:text-sm text-xs bg-blue-900 hover:bg-blue-800 font-medium rounded-lg inline-flex items-center px-5 py-2.5 text-center"
-              onClick={() => navigate("/user-profile")}
-            >
-              Complete Profile
-            </button>
+            <div className="flex flex-col gap-y-2 ">
+              {continueBtnTxt != "" && (
+                <button
+                  data-modal-hide="popup-modal"
+                  type="button"
+                  class="text-white md:text-base text-sm bg-red-700 hover:bg-red-800 font-medium rounded-lg  px-5 py-2.5 text-center"
+                  onClick={() => onCloseClick(false)}
+                >
+                  {continueBtnTxt}
+                </button>
+              )}
+              <button
+                data-modal-hide="popup-modal"
+                type="button"
+                class="text-white md:text-base text-sm bg-green-700 hover:bg-green-800 font-medium rounded-lg  px-5 py-2.5 text-center"
+                onClick={onConfirm}
+              >
+                {confirmBtnTxt}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -73,4 +93,4 @@ function CompleteProfilePopup({ onCloseClick, atEnd }) {
   );
 }
 
-export default CompleteProfilePopup;
+export default ConfrimPopup;

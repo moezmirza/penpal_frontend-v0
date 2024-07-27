@@ -3,7 +3,6 @@ import "./App.css";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
 
-import { useLoginState } from "./hooks/useLoginState";
 import UserProfile from "./routes/User/Profile/Profile";
 
 import FindPal from "./routes/User/FindPal/FindPal";
@@ -15,7 +14,7 @@ import ApproveUpdates from "./routes/Admin/ApproveUpdates";
 import AdminCustomer from "./routes/Customer/AdminCustomer";
 import CheckoutForm from "./routes/Payment/Payment";
 import Subscription from "./routes/User/Subscription";
-
+import Result from "./routes/Payment/Result";
 function App() {
   const UserRoutes = () => {
     const userAuth = JSON.parse(localStorage.getItem("userAuth"));
@@ -48,6 +47,7 @@ function App() {
         <Route path="/update-inmate/:id" element={<CreateCustomer />} />
         <Route path="/manage-inmates" element={<ManageCustomers />} />
         <Route path="/payment" element={<CheckoutForm />} />
+        <Route path="/payment/success" element={<Result />} />
         <Route path="/subcriptions" element={<Subscription />} />
         <Route path="*" element={<FindPal />} />
       </Route>

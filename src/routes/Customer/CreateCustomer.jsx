@@ -22,12 +22,14 @@ import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { compose } from "@reduxjs/toolkit";
 import { v4, validate } from "uuid";
 import { formattedImageName } from "../User/Profile/BasicInfo";
+import ConfrimPopup from "../../components/ConfrimPopup";
 
 function CreateCustomer() {
   const imageRef = useRef();
   const [error, setError] = useState();
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showConfirmPop, setShowConfirmPop] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
   console.log("current", currentUser);
   const post = usePost();
@@ -74,6 +76,47 @@ function CreateCustomer() {
     musicGenres: [],
     movieGenres: [],
   });
+
+  const basicInfoIntialState = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    inmateNumber: "",
+    age: "",
+    gender: "",
+    orientation: "",
+    state: [],
+    city: "",
+    mailingAddress: "",
+    zipcode: "",
+    dateOfBirth: "",
+    height: "",
+    weight: "",
+    hairColor: [],
+    eyeColor: [],
+    race: [],
+    spokenLanguages: "",
+    institutionalEmailProvider: [],
+    religiousPref: [],
+    education: [],
+    nameOfCollege: "",
+    bodyType: [],
+    astrologicalSign: [],
+    relationShipStatus: [],
+    veteranStatus: [],
+    bio: "",
+    imageUrl: "",
+  };
+
+  const personalityInitialState = {
+    hobbies: [],
+    sports: [],
+    likes: [],
+    personality: [],
+    bookGenres: [],
+    musicGenres: [],
+    movieGenres: [],
+  };
   const validateEmail = (email) => {
     // Basic regex for email validation
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -88,6 +131,7 @@ function CreateCustomer() {
     setError("");
     setSuccess(false);
     setLoading(true);
+    setShowConfirmPop(false);
 
     for (const key in basicInfo) {
       if (
@@ -187,6 +231,7 @@ function CreateCustomer() {
     }
   };
 
+  const handleBtnClick = () => {};
   const handleImageChange = () => {
     const files = imageRef.current.files;
     updatedFields.current["imageUrl"] = true;
@@ -294,8 +339,11 @@ function CreateCustomer() {
     if (id) {
       console.log("inside here");
       fetchCustomer();
+    } else {
+      setBasicInfo(basicInfoIntialState);
+      setPersonalityInfo(personalityInitialState);
     }
-  }, []);
+  }, [id]);
   return (
     <div className="bg-c-basic flex flex-col items-center gap-y-6 py-8 px-3  md:p-12">
       <h1 className="text-3xl font-bold   md:w-7/12 text-left underline">
@@ -381,11 +429,23 @@ function CreateCustomer() {
         {/* personality info */}
         <div
           id="card"
-          className="bg-white flex flex-col py-6 gap-y-6 md:gap-y-8 pb-10 items-center p-3 md:p-6 lg mb-6"
+          className="bg-white flex flex-col py-6 gap-y-6 md:gap-y-8 pb-10 items-center p-3 md:p-6 lg mb-6 relative"
         >
           <div className="m-auto font-semibold text-xl md:text-3xl underline">
             Personality Info
           </div>
+          {showConfirmPop && (
+            <ConfrimPopup
+              infoText={`Profile ${id ? "updation" : "creation"} will cost ${
+                id ? "$9.95" : "$99.95"
+              }`}
+              continueBtnTxt={"Continue editing"}
+              confirmBtnTxt={`Confirm ${id ? "updation" : "creation"}`}
+              onConfirm={handleUpdate}
+              onCloseClick={setShowConfirmPop}
+              width="1/2"
+            />
+          )}
 
           {Object.keys(fieldOptionMap).map((key) => (
             <MultiSelectField
@@ -410,7 +470,7 @@ function CreateCustomer() {
 
             <button
               className="ml-auto  bg-fr-blue-200 w-1/3 md:w-1/5  text-white p-1.5 rounded hover:opacity-90"
-              onClick={handleUpdate}
+              onClick={() => setShowConfirmPop(true)}
             >
               {id
                 ? loading
