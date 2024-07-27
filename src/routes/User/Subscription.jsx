@@ -43,7 +43,7 @@ function Subscription() {
   };
 
   return (
-    <div className="h-screen flex flex-col  items-center gap-y-10 mt-10">
+    <div className="h-screen flex flex-col  items-center gap-y-10 my-6">
       <h1 className="text-start md:text-4xl text-2xl underline font-bold ">
         Pending Payments
       </h1>

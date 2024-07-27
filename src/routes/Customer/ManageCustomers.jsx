@@ -31,7 +31,7 @@ function ManageCustomers() {
     fetchCustomers();
   }, []);
   return (
-    <div className="flex flex-col gap-y-12 md:gap-y-16 mt-6 p-4 md:p-6 relative ">
+    <div className="flex flex-col gap-y-12 md:gap-y-16 my-6 p-4 md:p-0 relative ">
       <div className="flex flex-col gap-y-6  items-center justify-between">
         <h1 className="text-4xl font-bold underline">Manange Inmates</h1>
         <div className="w-fit ">
