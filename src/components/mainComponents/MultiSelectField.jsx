@@ -12,9 +12,16 @@ const MultiSelectField = memo(
   }) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef();
+    const [customOption, setCustomOption] = useState(false);
+    const [customOptionText, setCustomOptionText] = useState("");
     console.log("labelText", labelText);
+    const totalOptions =
+      selectedOptions.length != 0
+        ? Array.from(new Set(dropdownOptions.concat(selectedOptions)))
+        : dropdownOptions;
+    console.log("totalOptions", totalOptions);
 
-    const modifiedOptions = dropdownOptions.map((op, ind) => {
+    const modifiedOptions = totalOptions.map((op, ind) => {
       if (selectedOptions.includes(op)) {
         return { value: ind + 1, label: op, selected: true };
       } else return { value: ind + 1, label: op, selected: false };
@@ -25,7 +32,11 @@ const MultiSelectField = memo(
     };
 
     const handleTagSelect = (option) => {
-      onChange(labelText, option.label, false);
+      if (option.label == "Other") {
+        setCustomOption(true);
+      } else {
+        onChange(labelText, option.label, false);
+      }
     };
 
     const handleTagRemove = (e, option) => {
@@ -42,6 +53,12 @@ const MultiSelectField = memo(
       if (containerRef.current && !containerRef.current.contains(e.target)) {
         setIsOpen(false);
       }
+    };
+    const handleCustomOption = (e) => {
+      console.log("value", customOptionText);
+      onChange(labelText, customOptionText, false);
+      setCustomOptionText("");
+      setCustomOption(false);
     };
     useEffect(() => {
       window.addEventListener("click", handleClickOutside);
@@ -60,7 +77,22 @@ const MultiSelectField = memo(
             id="selectedValues"
             className="w-full flex flex-wrap gap-x-2 md:gap-x-3 gap-y-2 "
           >
-            {selectedValues.length !== 0 ? (
+            {customOption ? (
+              <div className="flex gap-x-4 w-full items-center">
+                <input
+                  value={customOptionText}
+                  onChange={(e) => setCustomOptionText(e.target.value)}
+                  placeholder="Enter other's name here"
+                  className="bg-transparent block w-full mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
+                />
+                <button
+                  className="text-white bg-green-600 px-2 py-2 rounded-lg"
+                  onClick={handleCustomOption}
+                >
+                  done
+                </button>
+              </div>
+            ) : selectedValues.length !== 0 ? (
               selectedValues.map((val) => (
                 <div
                   key={val.value}

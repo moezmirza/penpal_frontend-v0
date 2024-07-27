@@ -58,8 +58,15 @@ function CreateCustomer() {
     spokenLanguages: "",
     institutionalEmailProvider: [],
     religiousPref: [],
+    highSchool: "",
+    highSchoolState: "",
+    highSchoolCity: "",
     education: [],
-    nameOfCollege: "",
+    collegeName: "",
+    collegeState: "",
+    collegeCity: "",
+    homeTownCity: "",
+    homeTownState: "",
     bodyType: [],
     astrologicalSign: [],
     relationShipStatus: [],
@@ -98,8 +105,15 @@ function CreateCustomer() {
     spokenLanguages: "",
     institutionalEmailProvider: [],
     religiousPref: [],
+    highSchool: "",
+    highSchoolState: "",
+    highSchoolCity: "",
     education: [],
-    nameOfCollege: "",
+    collegeName: "",
+    collegeState: "",
+    collegeCity: "",
+    homeTownCity: "",
+    homeTownState: "",
     bodyType: [],
     astrologicalSign: [],
     relationShipStatus: [],
@@ -251,18 +265,25 @@ function CreateCustomer() {
   const handleBasicInfoOptionsFieldChange = (label, value, remove) => {
     const fieldKeyIndex = Object.values(basicInfoFieldLabelMap).indexOf(label);
     const fieldKey = Object.keys(basicInfoFieldLabelMap)[fieldKeyIndex];
+    console.log("field key", fieldKey);
     let updatedArr = basicInfo[fieldKey];
+    console.log("updated arr", updatedArr);
     updatedFields.current[fieldKey] = true;
     if (remove) {
       updatedArr = updatedArr.filter((item) => item != value);
     } else {
+      console.log("qasim in else", fieldKey)
       if (fieldKey == "spokenLanguages") {
         updatedArr = [...updatedArr, value];
       } else {
+        console.log("qasim not spoken lanagues")
         updatedArr = [value];
+        console.log("qasim updated arr", updatedArr)
       }
     }
-    setBasicInfo((prev) => ({ ...prev, [fieldKey]: updatedArr }));
+    const newObj = { ...basicInfo, [fieldKey]: updatedArr };
+    console.log("updated object", newObj)
+    setBasicInfo(newObj);
   };
 
   const handleBasicInfoTextFieldChange = (e) => {
@@ -344,6 +365,8 @@ function CreateCustomer() {
       setPersonalityInfo(personalityInitialState);
     }
   }, [id]);
+
+  console.log("basicInfo fields", basicInfo)
   return (
     <div className="bg-c-basic flex flex-col items-center gap-y-6 py-8 px-3  md:p-12">
       <h1 className="text-3xl font-bold   md:w-7/12 text-left underline">
@@ -376,6 +399,9 @@ function CreateCustomer() {
               />
             </button>
           </div>
+          <p className="text-gray-600 italic text-sm md:text-base">
+            *Click pencil to upload/update photo
+          </p>
         </div>
 
         <div className="flex flex-col gap-y-6 text-sm  p-2 md:p-6 md:text-base">
@@ -403,9 +429,11 @@ function CreateCustomer() {
                     name="bio"
                     value={basicInfo[field]}
                     onChange={handleBasicInfoTextFieldChange}
-                    placeholder={basicInfoPlaceholderMap[field]}
+                    placeholder={
+                      "Please type your desired profile statement in the bio box below (only 350 words are included FREE, its $9.95 for each additional 100 words over 350)"
+                    }
                     rows={5}
-                    className="bg-transparent block w-full mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
+                    className="bg-transparent block w-full mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700"
                   ></textarea>
                 </label>
               ) : (

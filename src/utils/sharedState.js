@@ -64,7 +64,14 @@ export const ageGrpList = [
   "100-109",
 ];
 
-export const genderList = ["Male", "Female", "Other"];
+export const genderList = [
+  "Male",
+  "Female",
+  "Transgender Male to Female",
+  "Transgender Females to Male",
+  "Gender Non Conforming/Non binary",
+  "Other",
+];
 
 export const orientationList = [
   "LGBTQ+",
@@ -191,7 +198,7 @@ export const institutionalEmailProviderList = [
   "Getting Out",
   "GTL",
   "Corrlincs",
-  "Other (provide space to list other name)",
+  "Other",
 ];
 
 export const hobbies = [
@@ -388,12 +395,19 @@ export const basicInfoFieldLabelMap = {
   eyeColor: "Eye Color",
   religiousPref: "Religious Preference",
   spokenLanguages: "Spoken Languages",
+  highSchool: "High School",
+  highSchoolState: "High School State",
+  highSchoolCity: "High School City",
+  homeTownCity: "Home Town City",
+  homeTownState: "Home Town State",
   education: "Education",
-  nameOfCollege: "Name Of College",
+  collegeName: "College Name",
+  collegeState: "College State",
+  collegeCity: "College City",
   race: "Race",
   bodyType: "Body Type",
   astrologicalSign: "Astrological Sign",
-  relationShipStatus: "Relation Ship Status",
+  relationShipStatus: "RelationShip Status",
   veteranStatus: "Veteran Status",
   institutionalEmailProvider: "Institutional Email Provider",
   referredBy: "Referred By",
@@ -419,7 +433,15 @@ export const basicInfoPlaceholderMap = {
   eyeColor: "Blue",
   religiousPref: "Christianity",
   spokenLanguages: "English",
+  highSchool: "Springfield High School",
+  highSchoolState: "Illinois",
+  highSchoolCity: "Springfield",
   education: "Bachelor's Degree",
+  collegeName: "University of California, Berkeley",
+  collegeState: "California",
+  collegeCity: "Berkeley",
+  homeTownCity: "Austin",
+  homeTownState: "Texas",
   nameOfCollege: "Harvard University",
   race: "Caucasian",
   bodyType: "Athletic",
