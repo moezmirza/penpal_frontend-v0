@@ -3,7 +3,8 @@ import { useGet } from "../../api/useGet";
 import { useNavigate } from "react-router-dom";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import ListedCustomer from "./ListedCustomer";
-import FavoriteCustomer from "./FavoriteCustomer";
+import FavoriteCustomer from "./FindCustomers";
+import FindCustomemrs from "./FindCustomers";
 
 function ManageCustomers() {
   const [customers, setCustomers] = useState([]);
@@ -30,10 +31,11 @@ function ManageCustomers() {
     };
     fetchCustomers();
   }, []);
+  const endpoint = showTab ? "/created-customers" : "/favorite";
   return (
     <div className="flex flex-col gap-y-12 md:gap-y-16 my-6 p-4 md:p-0 relative ">
       <div className="flex flex-col gap-y-6  items-center justify-between">
-        <h1 className="text-4xl font-bold underline">Update Inmates</h1>
+        <h1 className="text-4xl font-bold underline">Manage Inmates</h1>
         <div className="w-fit ">
           <div id="tabs" className="flex cursor-pointer">
             <div
@@ -56,15 +58,15 @@ function ManageCustomers() {
         </div>
       </div>
 
-      {showTab ? <ListedCustomer /> : <FavoriteCustomer />}
+      <FindCustomemrs endpoint={endpoint} key={endpoint} />
 
-      <button
+      {/* <button
         onClick={() => navigate("/list-inmate")}
         className="flex justify-center items-center text-sm md:text-base mt-6 gap-4 m-auto bg-fr-blue-200  px-6  text-white py-3 text-lg rounded hover:opacity-90"
       >
         <img src="/assets/icons/plus.svg" alt="" className="md:h-6 h-4" />
         List Inmate{" "}
-      </button>
+      </button> */}
     </div>
   );
 }

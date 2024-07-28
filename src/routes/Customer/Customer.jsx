@@ -209,7 +209,7 @@ function Customer() {
                     {customer?.isFavorite ? "Favorite" : "Add to Favorites"}
                   </button>
                 )}
-                <button
+                {/* <button
                   type="button"
                   className="mt-4 border text-black text-nowrap w-full py-2.5 px-3  border-fr-blue-200 rounded-xl hover:opacity-90"
                   onClick={() =>
@@ -220,7 +220,7 @@ function Customer() {
                   }
                 >
                   Contact Inmate
-                </button>
+                </button> */}
               </div>
             </div>
 

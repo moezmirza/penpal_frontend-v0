@@ -10,8 +10,8 @@ const userNavbarLinkMap = {
   Home: "https://penpal.musingsinc.co/",
   Dashboard: "/#findpal",
   "Submit a Profile": "/list-inmate",
-  "Manage Inmates": "/update-inmates",
-  "Favorite Inmates": "/favorite-inmates",
+  "Manage Profiles": "/manage-inmates",
+  "Update/Renew Profiles": "/update-inmates",
   "My Account": "/user-profile",
 };
 const unAuthNavbarLinkMap = {

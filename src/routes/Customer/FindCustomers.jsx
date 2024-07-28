@@ -4,7 +4,7 @@ import { useGet } from "../../api/useGet";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { mailTOLink } from "../User/FindPal/FindPal";
 
-function FavoriteCustomer() {
+function FindCustomemrs({ endpoint }) {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showTab, setShowTab] = useState(true);
@@ -14,7 +14,7 @@ function FavoriteCustomer() {
   useEffect(() => {
     const fetchCustomers = async () => {
       setLoading(true);
-      const { success, data, error } = await get("/user/favorite");
+      const { success, data, error } = await get(`/user${endpoint}`);
       if (success) {
         setLoading(false);
         setCustomers(data);
@@ -29,11 +29,11 @@ function FavoriteCustomer() {
     fetchCustomers();
   }, []);
   return (
-    <div className="flex flex-col gap-y-6  items-center justify-between my-6 p-4 md:p-0 relative w-full">
-      <h1 className="text-4xl font-bold underline">Favorite Inmates</h1>{" "}
+    <div className="flex flex-col gap-y-6  items-center justify-between  p-4 md:p-0 relative w-full">
+      {/* <h1 className="text-4xl font-bold underline">Favorite Inmates</h1>{" "} */}
       <LoadingSpinner isLoading={loading} />
       {customers.length == 0 && !loading ? (
-        <p className="text-center">You have not listed any inmates</p>
+        <p className="text-center">{"No profiles to display"}</p>
       ) : (
         <div className="flex flex-col gap-y-6 w-full">
           {customers.map((customer, index) => (
@@ -98,7 +98,7 @@ function CustomerCard({ customer }) {
         >
           View Details
         </button>
-        <button
+        {/* <button
           type="button"
           className="mt-4 border text-black px-5 py-3 border-fr-blue-200 rounded hover:opacity-90"
           onClick={() =>
@@ -109,10 +109,10 @@ function CustomerCard({ customer }) {
           }
         >
           Contact Inmate
-        </button>
+        </button> */}
       </div>
     </div>
   );
 }
 
-export default FavoriteCustomer;
+export default FindCustomemrs;

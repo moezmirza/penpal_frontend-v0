@@ -17,7 +17,7 @@ import CheckoutForm from "./routes/Payment/Payment";
 import Subscription from "./routes/User/Subscription";
 import Result from "./routes/Payment/Result";
 import ListedCustomer from "./routes/Customer/ListedCustomer";
-import FavoriteCustomer from "./routes/Customer/FavoriteCustomer";
+import FavoriteCustomer from "./routes/Customer/FindCustomers";
 function App() {
   const UserRoutes = () => {
     const userAuth = JSON.parse(localStorage.getItem("userAuth"));
@@ -48,7 +48,7 @@ function App() {
         <Route path="/inmate/:id" element={<Customer />} />
         <Route path="/list-inmate" element={<CreateCustomer />} />
         <Route path="/update-inmate/:id" element={<UpdateCustomer />} />
-        {/* <Route path="/manage-inmates" element={<ManageCustomers />} /> */}
+        <Route path="/manage-inmates" element={<ManageCustomers />} />
         <Route path="/update-inmates" element={<ListedCustomer />} />
         <Route path="/favorite-inmates" element={<FavoriteCustomer />} />
         <Route path="/payment" element={<CheckoutForm />} />
