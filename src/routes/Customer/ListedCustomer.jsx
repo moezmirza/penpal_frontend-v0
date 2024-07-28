@@ -92,8 +92,8 @@ function CustomerCard({ customer }) {
           {customer?.inmateNumber || "N/A"}
         </p>
         <p>
-          <span className="font-medium mr-1">Location:</span>
-          {customer?.state || "N/A"}, {customer?.city || "N/A"}
+          <span className="font-medium mr-1"> Expires on:</span>
+          {customer?.expiresAt || "N/A"}
         </p>
         <p>
           <span className="font-medium mr-1"> Mainling Addres:</span>
