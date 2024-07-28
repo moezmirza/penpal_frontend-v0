@@ -387,6 +387,7 @@ export const stateFieldNameMap = {
 };
 
 export const basicInfoFieldLabelMap = {
+  imageUrl: "Photo",
   firstName: "First Name",
   lastName: "Last Name",
   email: "Email",

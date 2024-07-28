@@ -1,5 +1,9 @@
 import React, { useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  basicInfoFieldLabelMap,
+  stateFieldNameMap,
+} from "../utils/sharedState";
 
 function ConfrimPopup({
   onCloseClick,
@@ -8,13 +12,20 @@ function ConfrimPopup({
   onConfirm,
   continueBtnTxt = "",
   confirmBtnTxt,
-  width="fit",
+  width = "fit",
+  updatedFields,
+  total,
 }) {
   const handleCloseClick = () => {
     onCloseClick(false);
   };
   const navigate = useNavigate();
   const popupRef = useRef();
+  console.log(
+    "updated fields",
+    updatedFields,
+    Object.keys(updatedFields?.current).length
+  );
   return (
     <div
       class={`w-11/12 md:w-${width} absolute ${
@@ -63,6 +74,33 @@ function ConfrimPopup({
                 d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
               />
             </svg>
+            {Object.keys(updatedFields?.current).length != 0 && (
+              <div className="flex flex-col gap-y-4 my-4">
+                {Object.keys(updatedFields?.current).map((field) => {
+                  return field == "personalityInfo" ? (
+                    Object.keys(updatedFields?.current["personalityInfo"]).map(
+                      (pfield) => (
+                        <div className="flex justify-between">
+                          <p>{stateFieldNameMap[pfield]}</p>
+                          <p>$9.95</p>
+                        </div>
+                      )
+                    )
+                  ) : (
+                    <div className="flex justify-between">
+                      <p>{basicInfoFieldLabelMap[field]}</p>
+                      <p>$9.95</p>
+                    </div>
+                  );
+                })}
+
+                <hr />
+                <div className="flex justify-between">
+                  <p>Total</p>
+                  <p>${total}</p>
+                </div>
+              </div>
+            )}
             <h3 class="mb-5 md:text-lg text-sm font-normal text-gray-500 dark:text-gray-400">
               {infoText}
             </h3>

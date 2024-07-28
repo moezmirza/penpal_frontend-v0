@@ -23,14 +23,17 @@ import { useGet } from "../../api/useGet";
 import { useParams } from "react-router-dom";
 import { usePut } from "../../api/usePut";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { compose, isAllOf } from "@reduxjs/toolkit";
 import { v4, validate } from "uuid";
 import { formattedImageName } from "../User/Profile/BasicInfo";
 import ConfrimPopup from "../../components/ConfrimPopup";
 
+const roundTo = (num, decimalPlaces) => {
+  const factor = Math.pow(10, decimalPlaces);
+  return Math.round(num * factor) / factor;
+};
 function CreateCustomer() {
   const imageRef = useRef();
-  const [error, setError] = useState();
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showConfirmPop, setShowConfirmPop] = useState(false);
@@ -164,9 +167,6 @@ function CreateCustomer() {
     // checking for required fields
     setLoading(true);
     setShowConfirmPop(false);
-    updatedFields.current = {};
-    e.target.disabled = true;
-    e.target.style.opacity = 0.5;
 
     const uploadedImg = imageRef.current.files[0];
     if (uploadedImg) {
@@ -195,23 +195,39 @@ function CreateCustomer() {
 
     const updatedInfo = Object.keys(updatedFields.current).reduce(
       (acc, field) => {
-        acc[field] = basicInfo[field];
+        if (field == "personalityInfo") {
+          Object.keys(updatedFields.current["personalityInfo"]).forEach(
+            (pField) => {
+              if (!acc["personalityInfo"]) {
+                acc["personalityInfo"] = {};
+              }
+              acc["personalityInfo"][pField] = personalityInfo[pField];
+            }
+          );
+        } else {
+          acc[field] = basicInfo[field];
+        }
         return acc;
       },
       {}
     );
 
-    console.log("updatedInfo", updatedInfo);
+    console.log("log-updatedInfo", updatedInfo);
 
     if (id) {
       const finalObj = {
         ...updatedInfo,
       };
-      if (updatedFields.current?.personalityInfo == true) {
-        console.log("personality changed", personalityInfo);
-        finalObj.personalityInfo = personalityInfo;
+      const pInfoFieldMap = updatedFields.current?.personalityInfo || [];
+      if (Object.keys(pInfoFieldMap).length != 0) {
+        let updatedPersonalityFields = {};
+        Object.keys(pInfoFieldMap).forEach((field) => {
+          if (pInfoFieldMap[field])
+            updatedPersonalityFields[field] = personalityInfo[field];
+        });
+        finalObj.personalityInfo = updatedPersonalityFields;
       }
-      console.log("finalObjetct", finalObj);
+      console.log("log-finalObjetct", finalObj);
       const { success, data, error } = await put(
         `/customer?id=${id}`,
         finalObj
@@ -219,8 +235,8 @@ function CreateCustomer() {
       if (success) {
         setLoading(false);
         setSuccess(true);
+        // Object.keys(updatedFields.current) from here onwards
         setDone(true);
-        console.log("data", data);
       } else {
         setLoading(false);
         setError("An unexpected error occurred");
@@ -253,7 +269,6 @@ function CreateCustomer() {
   const handleImageChange = () => {
     const files = imageRef.current.files;
     updatedFields.current["imageUrl"] = true;
-    setDuesInfo({ ...duesInfo, photo: true });
 
     if (files.length > 0) {
       const src = URL.createObjectURL(files[0]);
@@ -266,9 +281,9 @@ function CreateCustomer() {
     const files = imageRef.current.files;
     if (basicInfo.imageUrl != "") {
       updatedFields.current["imageUrl"] = true;
-      if (id) {
-        setDuesInfo({ ...duesInfo, photo: true });
-      }
+      // if (id) {
+      //   setDuesInfo({ ...duesInfo, photo: true });
+      // }
     }
 
     const preview = document.getElementById("avatar-preview");
@@ -281,10 +296,6 @@ function CreateCustomer() {
     return false;
   };
 
-  const roundTo = (num, decimalPlaces) => {
-    const factor = Math.pow(10, decimalPlaces);
-    return Math.round(num * factor) / factor;
-  };
   const handleBasicInfoOptionsFieldChange = (label, value, remove) => {
     const fieldKeyIndex = Object.values(basicInfoFieldLabelMap).indexOf(label);
     const fieldKey = Object.keys(basicInfoFieldLabelMap)[fieldKeyIndex];
@@ -292,12 +303,7 @@ function CreateCustomer() {
     let updatedArr = basicInfo[fieldKey];
     console.log("updated arr", updatedArr);
     updatedFields.current[fieldKey] = true;
-    if (id) {
-      setDuesInfo({
-        ...duesInfo,
-        basicInfo: { ...duesInfo["basicInfo"], [fieldKey]: true },
-      });
-    }
+
     if (remove) {
       updatedArr = updatedArr.filter((item) => item != value);
     } else {
@@ -317,22 +323,14 @@ function CreateCustomer() {
 
   const handleBasicInfoTextFieldChange = (e) => {
     const fieldName = e.target.name;
-    if (id) {
-      setDuesInfo({
-        ...duesInfo,
-        basicInfo: { ...duesInfo["basicInfo"], [fieldName]: true },
-      });
-    }
 
     if (fieldName == "bio") {
       const text = e.target.value;
       let wordCount = text.split(" ").length;
       if (wordCount > 350) {
         setWordLimit(true);
-        setDuesInfo({ ...duesInfo, wordLimit: true });
       } else {
         setWordLimit(false);
-        setDuesInfo({ ...duesInfo, wordLimit: false });
       }
     }
     updatedFields.current[e.target.name] = true;
@@ -342,13 +340,16 @@ function CreateCustomer() {
   const handlePersonalityInfoChange = (label, value, remove) => {
     const stateKey = fieldStateNameMap[label];
     let updatedArr = personalityInfo[stateKey];
-    updatedFields.current["personalityInfo"] = true;
-    if (id) {
-      setDuesInfo({
-        ...duesInfo,
-        personalityInfo: { ...duesInfo["personalityInfo"], [stateKey]: true },
-      });
+    if (!updatedFields.current["personalityInfo"]) {
+      updatedFields.current["personalityInfo"] = {};
     }
+    updatedFields.current["personalityInfo"][stateKey] = true;
+    // if (id) {
+    //   setDuesInfo({
+    //     ...duesInfo,
+    //     personalityInfo: { ...duesInfo["personalityInfo"], [stateKey]: true },
+    //   });
+    // }
     if (remove) {
       updatedArr = updatedArr.filter((item) => item != value);
     } else {
@@ -425,13 +426,18 @@ function CreateCustomer() {
     setDuesInfo(dueInitiallState);
     setDone(false);
     setSuccess(false);
-    updatedFields.current={}
+    updatedFields.current = {};
   };
 
   const handleSubmitBtn = () => {
-    setError(false);
+    setError("");
     setSuccess(false);
     setDone(false);
+    if (Object.keys(updatedFields.current).length == 0) {
+      setError("No changes made");
+      return;
+    }
+
     for (const key in basicInfo) {
       if (
         basicInfoReqFieldMap[key] &&
@@ -458,227 +464,290 @@ function CreateCustomer() {
     setShowConfirmPop(true);
   };
 
-  let total = Object.keys(duesInfo).reduce((acc, curr) => {
-    if (curr === "basicInfo" || curr === "personalityInfo") {
-      const nestedTotal = Object.keys(duesInfo[curr]).reduce(
-        (nestedAcc, field) => {
-          return duesInfo[curr][field] ? nestedAcc + 9.95 : nestedAcc;
-        },
-        0
-      );
-      return acc + nestedTotal;
+  const handlePaynow = () => {
+    if (success) {
+      console.log("already submitted");
+    } else {
+      console.log("need to be paid");
     }
-    return duesInfo[curr] ? acc + addonStatetoCost[curr] : acc;
-  }, 0);
-  total = roundTo(total, 2);
+  };
 
   const changeOccured = Object.keys(updatedFields.current).length != 0;
-  const bioWordsLenght =
-    basicInfo.bio == "" ? 0 : basicInfo.bio.split(" ").length;
+  console.log("changed Occured", changeOccured);
+
   return (
     <div className="bg-c-basic flex flex-col items-center gap-y-6 py-8 px-3  md:p-12">
       {/* <h1 className="text-4xl font-bold text-left underline">
         Customer Profile
       </h1> */}
       <div className="flex w-full flex-col md:flex-row gap-12">
-        <div className="basis-[60%] bg-white rounded-lg">
-          <div className="bg-gray-300 w-full rounded-lg p-6 flex flex-col items-center gap-y-6">
-            <div className="w-fit m-auto relative">
-              <img
-                className="rounded-full md:w-52 md:h-52 w-36 h-36 object-cover object-top"
-                src={basicInfo?.imageUrl || "/assets/default.jpg"}
-                alt="user avatar"
-                id="avatar-preview"
-              />
-              <input
-                ref={imageRef}
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={handleImageChange}
-              />
-              <div className="absolute md:bottom-2 md:right-2 bottom-4 right-1  z-20">
-                <button
-                  className="bg-white p-1.5 rounded-full"
-                  onClick={() => setImageDropdown(!imageDropdown)}
-                >
-                  <img
-                    src="/assets/icons/edit.svg"
-                    alt="auth"
-                    className="md:h-6 h-3"
-                  />
-                </button>
-                {imageDropdown && (
-                  <div className="absolute bg-white rounded-lg">
-                    <button
-                      onClick={handleClick}
-                      className="border-b-2 px-2 py-1 md:px-4 md:py-2  "
-                    >
-                      Update
-                    </button>
-                    <button
-                      onClick={handleRemoveImage}
-                      className="border-b-2  px-2 py-1 md:px-4 md:py-2  "
-                    >
-                      Remove
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-            <p className="text-gray-600 italic text-sm md:text-base">
-              *Click pencil to update/remove photo
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-y-6 text-sm  p-2 md:p-6 md:text-base">
-            {id && (
-              <p className="text-red-500 text-center">
-                *Each field update will cost $9.95
-              </p>
-            )}
-            <div className="m-auto font-semibold text-xl md:text-3xl underline">
-              Basic Info
-            </div>
-            <div className="flex flex-col gap-y-4">
-              {Object.keys(basicInfo).map((field) =>
-                basicInfoOptionsField.includes(field) ? (
-                  <MultiSelectField
-                    key={field}
-                    labelText={basicInfoFieldLabelMap[field]}
-                    placeholderText={basicInfoFieldDropdownOptions[field][0]}
-                    dropdownOptions={basicInfoFieldDropdownOptions[field]}
-                    selectedOptions={basicInfo[field]}
-                    onChange={handleBasicInfoOptionsFieldChange}
-                    required={basicInfoReqFieldMap[field]}
-                  />
-                ) : field == "bio" ? (
-                  <label key={field}>
-                    <div className="flex gap-x-2 items-center">
-                      <RequiredFieldLabel
-                        labelText={basicInfoFieldLabelMap[field]}
-                      />
-                    </div>
-                    <textarea
-                      name="bio"
-                      value={basicInfo[field]}
-                      onChange={handleBasicInfoTextFieldChange}
-                      placeholder={
-                        "Please type your desired profile statement in the bio box below (only 350 words are included FREE, its $9.95 for each additional 100 words over 350)"
-                      }
-                      rows={5}
-                      className={`bg-transparent block w-full my-1.5 rounded-md p-1.5 border  ${
-                        wordLimit
-                          ? "focus:border-red-500 border-red-500"
-                          : " focus:border-gray-700 border-gray-400"
-                      } outline-none`}
-                    ></textarea>
-                    {wordLimit && (
-                      <p className="text-red-500 text-xs md:text-sm">
-                        free limit of 350 words exceeded, you'll have to pay
-                        $9.95 for each extra 100 words.
-                      </p>
-                    )}
-                    <p className="text-gray-600 text-xs md:text-sm italic ">
-                      Word Count: {bioWordsLenght}
-                    </p>
-                  </label>
-                ) : (
-                  field != "imageUrl" && (
-                    <InputField
-                      key={field}
-                      labelText={basicInfoFieldLabelMap[field]}
-                      type={field === "dateOfBirth" ? "date" : "text"}
-                      placeholder={basicInfoPlaceholderMap[field]}
-                      name={field}
-                      value={basicInfo[field]}
-                      onChange={handleBasicInfoTextFieldChange}
-                      required={basicInfoReqFieldMap[field]}
-                    />
-                  )
-                )
-              )}
-            </div>
-          </div>
-
-          {/* personality info */}
-          <div
-            id="card"
-            className="bg-white flex flex-col py-6 gap-y-6 md:gap-y-8 pb-10 items-center p-3 md:p-6 lg mb-6 relative"
-          >
-            {id && (
-              <p className="text-red-500 text-center">
-                *Each field update will cost $9.95
-              </p>
-            )}
-            <div className="m-auto font-semibold text-xl md:text-3xl underline">
-              Personality Info
-            </div>
-            {showConfirmPop && (
-              <ConfrimPopup
-                infoText={`It will cost a total of $${total}
-                `}
-                continueBtnTxt={"Continue editing"}
-                confirmBtnTxt={`Confirm ${id ? "updation" : "creation"}`}
-                onConfirm={handleUpdate}
-                onCloseClick={setShowConfirmPop}
-                width="3/5"
-              />
-            )}
-
-            {Object.keys(fieldOptionMap).map((key) => (
-              <MultiSelectField
-                key={key}
-                labelText={key}
-                placeholderText={fieldOptionMap[key][0]}
-                dropdownOptions={fieldOptionMap[key]}
-                selectedOptions={personalityInfo[fieldStateNameMap[key]]}
-                onChange={handlePersonalityInfoChange}
-                required={true}
-              />
-            ))}
-            <div className="flex gap-x-6 w-full justify-between">
-              {success && (
-                <p className="text-green-500 w-fit text-sm md:text-base">
-                  Customer {id ? "updated" : "created"} successfully
-                </p>
-              )}
-              {error && (
-                <p className="text-fr-red w-fit text-sm md:text-base">
-                  {error}
-                </p>
-              )}
-
-              <button
-                className={`ml-auto  bg-fr-blue-200 w-1/3 md:w-1/5  text-white p-1.5 rounded ${
-                  !changeOccured
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:opacity-90"
-                }`}
-                onClick={handleSubmitBtn}
-                disabled={!changeOccured}
-              >
-                {id
-                  ? loading
-                    ? "Updating..."
-                    : "Update"
-                  : loading
-                  ? "Creating..."
-                  : "Create"}{" "}
-              </button>
-            </div>
-          </div>
-        </div>
+        <CustomerDetails
+          id={id}
+          basicInfo={basicInfo}
+          personalityInfo={personalityInfo}
+          handlePersonalityInfoChange={handlePersonalityInfoChange}
+          handleBasicInfoOptionsFieldChange={handleBasicInfoOptionsFieldChange}
+          handleBasicInfoTextFieldChange={handleBasicInfoTextFieldChange}
+          error={error}
+          handleSubmitBtn={handleSubmitBtn}
+          changeOccured={changeOccured}
+          imageRef={imageRef}
+          handleImageChange={handleImageChange}
+          setImageDropdown={setImageDropdown}
+          imageDropdown={imageDropdown}
+          handleClick={handleClick}
+          handleRemoveImage={handleRemoveImage}
+          wordLimit={wordLimit}
+          loading={loading}
+          showConfirmPop={showConfirmPop}
+          success={success}
+          handleUpdate={handleUpdate}
+          setShowConfirmPop={setShowConfirmPop}
+          duesInfo={duesInfo}
+          updatedFields={updatedFields}
+        />
         <div className="basis-[40%] flex flex-col gap-y-6">
           <DuesSection
             duesInfo={duesInfo}
-            total={total}
             isDone={done}
             id={id}
             payementBoxRef={payementBoxRef}
             changeOccured={changeOccured}
+            onPaynow={handlePaynow}
           />
           <AddOns onClick={setDuesInfo} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CustomerDetails({
+  id,
+  duesInfo,
+  basicInfo,
+  personalityInfo,
+  handlePersonalityInfoChange,
+  handleBasicInfoTextFieldChange,
+  handleBasicInfoOptionsFieldChange,
+  showConfirmPop,
+  error,
+  success,
+  loading,
+  handleSubmitBtn,
+  changeOccured,
+  imageRef,
+  handleImageChange,
+  setImageDropdown,
+  imageDropdown,
+  handleClick,
+  handleRemoveImage,
+  wordLimit,
+  setShowConfirmPop,
+  handleUpdate,
+  updatedFields,
+}) {
+  const bioWordsLenght =
+    basicInfo.bio == "" ? 0 : basicInfo.bio.split(" ").length;
+  let total = Object.keys(updatedFields?.current).reduce((acc, curr) => {
+    if (curr === "personalityInfo") {
+      const nestedTotal = Object.keys(updatedFields?.current[curr]).reduce(
+        (nestedAcc, field) => {
+          return updatedFields?.current[curr][field]
+            ? nestedAcc + 9.95
+            : nestedAcc;
+        },
+        0
+      );
+      return acc + nestedTotal;
+    }
+    return acc + 9.95;
+  }, 0);
+  total = roundTo(total, 2);
+  return (
+    <div className="basis-[60%] bg-white rounded-lg">
+      <div className="bg-gray-300 w-full rounded-lg p-6 flex flex-col items-center gap-y-6">
+        <div className="w-fit m-auto relative">
+          <img
+            className="rounded-full md:w-52 md:h-52 w-36 h-36 object-cover object-top"
+            src={basicInfo?.imageUrl || "/assets/default.jpg"}
+            alt="user avatar"
+            id="avatar-preview"
+          />
+          <input
+            ref={imageRef}
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={handleImageChange}
+          />
+          <div className="absolute md:bottom-2 md:right-2 bottom-4 right-1  z-20">
+            <button
+              className="bg-white p-1.5 rounded-full"
+              onClick={() => setImageDropdown(!imageDropdown)}
+            >
+              <img
+                src="/assets/icons/edit.svg"
+                alt="auth"
+                className="md:h-6 h-3"
+              />
+            </button>
+            {imageDropdown && (
+              <div className="absolute bg-white rounded-lg">
+                <button
+                  onClick={handleClick}
+                  className="border-b-2 px-2 py-1 md:px-4 md:py-2  "
+                >
+                  Update
+                </button>
+                <button
+                  onClick={handleRemoveImage}
+                  className="border-b-2  px-2 py-1 md:px-4 md:py-2  "
+                >
+                  Remove
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+        <p className="text-gray-600 italic text-sm md:text-base">
+          *Click pencil to update/remove photo
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-y-6 text-sm  p-2 md:p-6 md:text-base">
+        {id && (
+          <p className="text-red-500 text-center">
+            *Each field update will cost $9.95
+          </p>
+        )}
+        <div className="m-auto font-semibold text-xl md:text-3xl underline">
+          Basic Info
+        </div>
+        <div className="flex flex-col gap-y-4">
+          {Object.keys(basicInfo).map((field) =>
+            basicInfoOptionsField.includes(field) ? (
+              <MultiSelectField
+                key={field}
+                labelText={basicInfoFieldLabelMap[field]}
+                placeholderText={basicInfoFieldDropdownOptions[field][0]}
+                dropdownOptions={basicInfoFieldDropdownOptions[field]}
+                selectedOptions={basicInfo[field]}
+                onChange={handleBasicInfoOptionsFieldChange}
+                required={basicInfoReqFieldMap[field]}
+              />
+            ) : field == "bio" ? (
+              <label key={field}>
+                <div className="flex gap-x-2 items-center">
+                  <RequiredFieldLabel
+                    labelText={basicInfoFieldLabelMap[field]}
+                  />
+                </div>
+                <textarea
+                  name="bio"
+                  value={basicInfo[field]}
+                  onChange={handleBasicInfoTextFieldChange}
+                  placeholder={
+                    "Please type your desired profile statement in the bio box below (only 350 words are included FREE, its $9.95 for each additional 100 words over 350)"
+                  }
+                  rows={5}
+                  className={`bg-transparent block w-full my-1.5 rounded-md p-1.5 border  ${
+                    wordLimit
+                      ? "focus:border-red-500 border-red-500"
+                      : " focus:border-gray-700 border-gray-400"
+                  } outline-none`}
+                ></textarea>
+                {wordLimit && (
+                  <p className="text-red-500 text-xs md:text-sm">
+                    free limit of 350 words exceeded, you'll have to pay $9.95
+                    for each extra 100 words.
+                  </p>
+                )}
+                <p className="text-gray-600 text-xs md:text-sm italic ">
+                  Word Count: {bioWordsLenght}
+                </p>
+              </label>
+            ) : (
+              field != "imageUrl" && (
+                <InputField
+                  key={field}
+                  labelText={basicInfoFieldLabelMap[field]}
+                  type={field === "dateOfBirth" ? "date" : "text"}
+                  placeholder={basicInfoPlaceholderMap[field]}
+                  name={field}
+                  value={basicInfo[field]}
+                  onChange={handleBasicInfoTextFieldChange}
+                  required={basicInfoReqFieldMap[field]}
+                />
+              )
+            )
+          )}
+        </div>
+      </div>
+
+      {/* personality info */}
+      <div
+        id="card"
+        className="bg-white flex flex-col py-6 gap-y-6 md:gap-y-8 pb-10 items-center p-3 md:p-6 lg mb-6 relative"
+      >
+        {id && (
+          <p className="text-red-500 text-center">
+            *Each field update will cost $9.95
+          </p>
+        )}
+        <div className="m-auto font-semibold text-xl md:text-3xl underline">
+          Personality Info
+        </div>
+        {showConfirmPop && (
+          <ConfrimPopup
+            infoText={`It will cost a total of $${total}
+                `}
+            total={total}
+            updatedFields={updatedFields}
+            continueBtnTxt={"Continue editing"}
+            confirmBtnTxt={`Confirm ${id ? "updation" : "creation"}`}
+            onConfirm={handleUpdate}
+            onCloseClick={setShowConfirmPop}
+            width="3/5"
+          />
+        )}
+
+        {Object.keys(fieldOptionMap).map((key) => (
+          <MultiSelectField
+            key={key}
+            labelText={key}
+            placeholderText={fieldOptionMap[key][0]}
+            dropdownOptions={fieldOptionMap[key]}
+            selectedOptions={personalityInfo[fieldStateNameMap[key]]}
+            onChange={handlePersonalityInfoChange}
+            required={true}
+          />
+        ))}
+        <div className="flex gap-x-6 w-full justify-between">
+          {success && (
+            <p className="text-green-500 w-fit text-sm md:text-base">
+              Customer {id ? "updated" : "created"} successfully
+            </p>
+          )}
+          {error && (
+            <p className="text-fr-red w-fit text-sm md:text-base">{error}</p>
+          )}
+
+          <button
+            className={`ml-auto  bg-fr-blue-200 w-1/3 md:w-1/5  text-white p-1.5 rounded ${
+              loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
+            }`}
+            onClick={handleSubmitBtn}
+            disabled={loading}
+          >
+            {id
+              ? loading
+                ? "Updating..."
+                : "Update"
+              : loading
+              ? "Creating..."
+              : "Create"}{" "}
+          </button>
         </div>
       </div>
     </div>
@@ -727,15 +796,33 @@ function AddOns({ onClick }) {
 
 function DuesSection({
   duesInfo,
-  total,
   isDone,
   id,
   payementBoxRef,
   changeOccured,
+  onPaynow,
 }) {
   console.log("duesInfo", duesInfo);
 
   console.log("isDone", isDone, "changeOccured", changeOccured);
+  const addonsList = ["featurePlacement", "premiumPlacement", "renewal"];
+  const addons = Object.keys(duesInfo).some(
+    (field) => addonsList.includes(field) && duesInfo[field]
+  );
+  let total = Object.keys(duesInfo).reduce((acc, curr) => {
+    if (curr === "basicInfo" || curr === "personalityInfo") {
+      const nestedTotal = Object.keys(duesInfo[curr]).reduce(
+        (nestedAcc, field) => {
+          return duesInfo[curr][field] ? nestedAcc + 9.95 : nestedAcc;
+        },
+        0
+      );
+      return acc + nestedTotal;
+    }
+    return duesInfo[curr] ? acc + addonStatetoCost[curr] : acc;
+  }, 0);
+  total = roundTo(total, 2);
+  console.log("addons", addons);
   return (
     <div
       ref={payementBoxRef}
@@ -780,20 +867,20 @@ function DuesSection({
       <div className="flex flex-col gap-y-2 text-white">
         <button
           className={`py-2 w-full bg-green-600 rounded-lg ${
-            isDone && !changeOccured
-              ? "curose-pointer"
-              : "opacity-50 cursor-not-allowed"
+            !isDone && !addons
+              ? "opacity-50 cursor-not-allowed"
+              : "curose-pointer"
           }`}
-          disabled={!isDone || changeOccured}
+          disabled={!isDone && !addons}
+          onClick={onPaynow}
         >
           Pay now
         </button>
-        {!isDone ||
-          (changeOccured && (
-            <p className="text-red-500 italic text-center">
-              {`*First ${id ? "update" : "create"} your profile to pay`}
-            </p>
-          ))}
+        {/* {(!isDone || changeOccured || !addons) && ( */}
+        <p className="text-gray-600 italic text-center text-xs md:text-sm">
+          {`*First ${id ? "update" : "create"} your profile to pay for it`}
+        </p>
+        {/* )} */}
         {/* <button className="py-2 w-full bg-red-600 rounded-lg ">
           Pay later
         </button> */}
