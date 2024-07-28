@@ -9,10 +9,10 @@ import { AuthContext } from "../../providers/AuthProvider";
 const userNavbarLinkMap = {
   Home: "https://penpal.musingsinc.co/",
   Dashboard: "/#findpal",
-  "List an Inmate": "/list-inmate",
-  "Update Inmates": "/update-inmates",
+  "Submit a Profile": "/list-inmate",
+  "Manage Inmates": "/update-inmates",
   "Favorite Inmates": "/favorite-inmates",
-  Profile: "/user-profile",
+  "My Account": "/user-profile",
 };
 const unAuthNavbarLinkMap = {
   Home: "https://penpal.musingsinc.co/",
@@ -28,6 +28,7 @@ function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const user = useSelector((state) => state.user.currentUser);
   const { updateAuthInfo } = useContext(AuthContext);
+  const [dropdown, setDropdown] = useState(false);
   const dispatch = useDispatch();
   const handleLinkClick = () => {
     setShowDropdown(false);
@@ -55,6 +56,8 @@ function Navbar() {
           isAdmin={isAdmin}
           onSignout={handleSignout}
           onLinkClick={handleLinkClick}
+          dropdown={dropdown}
+          setDropdown={setDropdown}
         />
       </div>
 
@@ -72,18 +75,55 @@ function Navbar() {
   );
 }
 
-function PCNavbar({ onSignout, onLinkClick, isAdmin, isUser }) {
+function PCNavbar({
+  onSignout,
+  onLinkClick,
+  isAdmin,
+  isUser,
+  dropdown,
+  setDropdown,
+}) {
+  const navigate = useNavigate();
   if (isUser) {
     return (
       <ul className="text-lg flex  text-white list-style-none">
         {Object.keys(userNavbarLinkMap).map((linkName) => (
           <li key={linkName} onClick={onLinkClick}>
-            <Link
-              to={userNavbarLinkMap[linkName]}
-              className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 dark:hover:text-white"
-            >
-              {linkName}
-            </Link>
+            {linkName == "My Account" ? (
+              <div>
+                <div
+                  onClick={() => setDropdown(!dropdown)}
+                  className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 cursor-pointer"
+                >
+                  {linkName}
+                </div>
+                {dropdown && (
+                  <div className="absolute bg-white rounded-lg flex flex-col">
+                    <Link
+                      onClick={() => setDropdown(false)}
+                      to={"/user-profile?sect=profile"}
+                      className="border-b-2 px-2 py-1 md:px-4 md:py-2 text-black  "
+                    >
+                      Profile
+                    </Link>
+                    <Link
+                      onClick={() => setDropdown(false)}
+                      to={"/user-profile?sect=questionnaire"}
+                      className="border-b-2 px-2 py-1 md:px-4 md:py-2 text-black  "
+                    >
+                      Questionnaire
+                    </Link>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                to={userNavbarLinkMap[linkName]}
+                className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                {linkName}
+              </Link>
+            )}
           </li>
         ))}
         <li
