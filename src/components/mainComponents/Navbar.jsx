@@ -9,8 +9,8 @@ import { AuthContext } from "../../providers/AuthProvider";
 const userNavbarLinkMap = {
   Home: "https://penpal.musingsinc.co/",
   Dashboard: "/#findpal",
-  "List Inmates": "/list-inmate",
-  "Manage Inmates": "/manage-inmates",
+  "List an Inmate": "/list-inmate",
+  "Update Inmates": "/manage-inmates",
   Subscriptions: "/subcriptions",
   Profile: "/user-profile",
 };

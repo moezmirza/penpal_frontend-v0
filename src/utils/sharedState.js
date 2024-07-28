@@ -376,6 +376,16 @@ export const fieldStateNameMap = {
   MovieGenres: "movieGenres",
 };
 
+export const stateFieldNameMap = {
+  hobbies: "Hobbies",
+  sports: "Sports",
+  likes: "Likes",
+  personality: "Personality",
+  bookGenres: "BookGenres",
+  musicGenres: "MusicGenres",
+  movieGenres: "MovieGenres",
+};
+
 export const basicInfoFieldLabelMap = {
   firstName: "First Name",
   lastName: "Last Name",

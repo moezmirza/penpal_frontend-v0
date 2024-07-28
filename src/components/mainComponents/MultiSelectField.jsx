@@ -14,7 +14,7 @@ const MultiSelectField = memo(
     const containerRef = useRef();
     const [customOption, setCustomOption] = useState(false);
     const [customOptionText, setCustomOptionText] = useState("");
-    console.log("labelText", labelText);
+    console.log("labelText", labelText, "selectedOptions", selectedOptions);
     const totalOptions =
       selectedOptions.length != 0
         ? Array.from(new Set(dropdownOptions.concat(selectedOptions)))

@@ -22,7 +22,7 @@ function ConfrimPopup({
       } left-1/2 -translate-x-1/2 -translate-y-${atEnd ? "0" : "1/2"} z-20`}
       ref={popupRef}
     >
-      <div class="relative p-4 w-full max-w-md max-h-full ">
+      <div class="relative p-4 w-full max-w-md max-h-full mx-auto">
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
           <button
             type="button"
@@ -57,9 +57,9 @@ function ConfrimPopup({
             >
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
               />
             </svg>
