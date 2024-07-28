@@ -4,6 +4,7 @@ import {
   basicInfoFieldLabelMap,
   stateFieldNameMap,
 } from "../utils/sharedState";
+import { current } from "@reduxjs/toolkit";
 
 function ConfrimPopup({
   onCloseClick,
@@ -13,7 +14,7 @@ function ConfrimPopup({
   continueBtnTxt = "",
   confirmBtnTxt,
   width = "fit",
-  updatedFields,
+  updatedFields = { current: {} },
   total,
 }) {
   const handleCloseClick = () => {
@@ -24,7 +25,7 @@ function ConfrimPopup({
   console.log(
     "updated fields",
     updatedFields,
-    Object.keys(updatedFields?.current).length
+    Object.keys(updatedFields.current).length
   );
   return (
     <div
@@ -74,7 +75,7 @@ function ConfrimPopup({
                 d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
               />
             </svg>
-            {Object.keys(updatedFields?.current).length != 0 && (
+            {Object.keys(updatedFields.current).length != 0 && (
               <div className="flex flex-col gap-y-4 my-4">
                 {Object.keys(updatedFields?.current).map((field) => {
                   return field == "personalityInfo" ? (

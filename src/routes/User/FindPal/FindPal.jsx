@@ -13,7 +13,6 @@ import {
   raceList,
   stateList,
 } from "../../../utils/sharedState";
-import CallSupport from "../../../components/CallSupport";
 
 export const mailTOLink = (email, name) => {
   const intialBody = `Hi ${name}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`;
@@ -29,10 +28,11 @@ function FindPal() {
   const [loading, setLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [getStartedPopup, setGetStartedPopup] = useState(false);
-  const [viewMorePopup, setViewMorePopup] = useState(false);
+  // const [viewMorePopup, setViewMorePopup] = useState(false);
+  const navigate = useNavigate();
   const get = useGet();
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 20;
   const searchSectRef = useRef(null);
   const location = useLocation();
 
@@ -123,33 +123,33 @@ function FindPal() {
   }, []);
 
   const handleFetchMoreCustomers = () => {
-    if (user?.profileComplete) {
-      //  page start from zero
-      const page =
-        customers.length === itemsPerPage
-          ? 1
-          : Math.floor(customers.length / itemsPerPage) + 1;
-      const fetchMoreCustomers = async () => {
-        setIsLoadingMore(true);
-        const { success, data, error } = await get(
-          `/user/matches?p=${page}&l=${itemsPerPage}`
-        );
-        if (success) {
-          setIsLoadingMore(false);
-          if (data.length == 0) {
-            setMatchesAlert("No more matches found.");
-          }
-          console.log("more customers data", data);
-          setCustomers([...customers, ...data]);
-        } else {
-          setMatchesAlert("Error loading matches");
-          setIsLoadingMore(false);
+    // if (user?.profileComplete) {
+    //  page start from zero
+    const page =
+      customers.length === itemsPerPage
+        ? 1
+        : Math.floor(customers.length / itemsPerPage) + 1;
+    const fetchMoreCustomers = async () => {
+      setIsLoadingMore(true);
+      const { success, data, error } = await get(
+        `/user/matches?p=${page}&l=${itemsPerPage}`
+      );
+      if (success) {
+        setIsLoadingMore(false);
+        if (data.length == 0) {
+          setMatchesAlert("No more matches found.");
         }
-      };
-      fetchMoreCustomers();
-    } else {
-      setViewMorePopup(true);
-    }
+        console.log("more customers data", data);
+        setCustomers([...customers, ...data]);
+      } else {
+        setMatchesAlert("Error loading matches");
+        setIsLoadingMore(false);
+      }
+    };
+    fetchMoreCustomers();
+    // } else {
+    //   setViewMorePopup(true);
+    // }
   };
 
   function getAgeGroup(age) {
@@ -215,7 +215,7 @@ function FindPal() {
             onCloseClick={setGetStartedPopup}
             onConfirm={() => navigate("/user-profile")}
             confirmBtnTxt={"Complete profile"}
-            infoText={"Complete your profile to unlock customers"}
+            infoText={"Complete your profile to find your matches"}
           />
         )}
         <div className="text-white my-auto ml-0 md:ml-6 flex flex-col gap-y-8">
@@ -278,7 +278,7 @@ function FindPal() {
           {filteredCustomers.map((customer, index) => (
             <CustomerCard key={index} customer={customer} />
           ))}
-          {viewMorePopup && (
+          {/* {viewMorePopup && (
             <ConfirmPopup
               onCloseClick={setViewMorePopup}
               onConfirm={() => navigate("/user-profile")}
@@ -286,7 +286,7 @@ function FindPal() {
               infoText={"Complete your profile to unlock customers"}
               atEnd={true}
             />
-          )}
+          )} */}
         </div>
         {isLoadingMore ? (
           <p className="text-center">Loading...</p>

@@ -9,7 +9,6 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../services/firebase";
 import { genderList } from "../../../utils/sharedState";
 import { v4 } from "uuid";
-import { Tuple } from "@reduxjs/toolkit";
 
 export const formattedImageName = (name) => {
   return `imageNameS${name}imageNameE`;
