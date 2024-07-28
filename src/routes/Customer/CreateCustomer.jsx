@@ -767,12 +767,10 @@ function CustomerDetails({
 
 function AddOns({ onClick }) {
   const addonsList = [
-    "Profile Renewal",
     "Feature Placement",
     "Premium Placement",
   ];
   const addonCostMap = {
-    "Profile Renewal": "$79.95",
     "Feature Placement": "$14.95",
     "Premium Placement": "$24.95",
   };

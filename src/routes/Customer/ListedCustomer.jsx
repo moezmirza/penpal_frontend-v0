@@ -103,18 +103,35 @@ function CustomerCard({ customer }) {
       <div className="w-full md:w-fit ml-auto flex flex-col my-auto">
         <button
           type="button"
-          className="mt-4 bg-fr-blue-200 text-white px-6 py-3 rounded hover:opacity-90"
+          className="mt-4 bg-green-600 text-white text-base md:text-lg  px-8 py-3 rounded hover:opacity-90"
+          onClick={() =>
+            navigate(`/payment`, {
+              state: {
+                cid: customer?._id,
+                paymentsDetails: {
+                  renewal: customer?.pendingPayments?.renewal,
+                  totalAmount: 79.95,
+                },
+              },
+            })
+          }
+        >
+          Renew
+        </button>
+        <button
+          type="button"
+          className="mt-4 bg-fr-blue-200 text-white text-base md:text-lg  px-8 py-3 rounded hover:opacity-90"
           onClick={() => navigate(`/update-inmate/${customer?._id}`)}
         >
           Update
         </button>
-        <button
+        {/* <button
           type="button"
           className="mt-4 border text-black px-5 py-3 border-fr-blue-200 rounded hover:opacity-90"
           onClick={() => navigate(`/inmate/${customer?._id}`)}
         >
           View Details
-        </button>
+        </button> */}
       </div>
     </div>
   );
