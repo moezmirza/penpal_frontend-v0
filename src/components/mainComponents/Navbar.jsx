@@ -12,6 +12,7 @@ const userNavbarLinkMap = {
   "Submit a Profile": "/list-inmate",
   "Manage Profiles": "/manage-inmates",
   "Update/Renew Profiles": "/update-inmates",
+  "Search Profiles": "/search-profiles",
   "My Account": "/user-profile",
 };
 const unAuthNavbarLinkMap = {
@@ -28,7 +29,6 @@ function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const user = useSelector((state) => state.user.currentUser);
   const { updateAuthInfo } = useContext(AuthContext);
-  const [dropdown, setDropdown] = useState(false);
   const dispatch = useDispatch();
   const handleLinkClick = () => {
     setShowDropdown(false);
@@ -44,24 +44,22 @@ function Navbar() {
   const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
   console.log("type", typeof isAdmin, isAdmin);
   return (
-    <div className="bg-fr-blue-200 flex items-end justify-between w-full p-3 md:py-5 md:px-8 sticky top-0 z-50">
+    <div className="bg-fr-blue-200 flex items-end justify-between w-full p-3 md:py-5 md:px-4 sticky top-0 z-50">
       <div className="text-xl md:text-2xl text-white font-medium ">
         {user?.firstName || "Welcome Pal"}
         <span className="text-4xl">.</span>
       </div>
 
-      <div className="hidden lg:block">
+      <div className="hidden xl:block">
         <PCNavbar
           isUser={isUser}
           isAdmin={isAdmin}
           onSignout={handleSignout}
           onLinkClick={handleLinkClick}
-          dropdown={dropdown}
-          setDropdown={setDropdown}
         />
       </div>
 
-      <div className="lg:hidden">
+      <div className="xl:hidden">
         <MobileNavbar
           isUser={isUser}
           isAdmin={isAdmin}
@@ -75,39 +73,47 @@ function Navbar() {
   );
 }
 
-function PCNavbar({
-  onSignout,
-  onLinkClick,
-  isAdmin,
-  isUser,
-  dropdown,
-  setDropdown,
-}) {
-  const navigate = useNavigate();
+function PCNavbar({ onSignout, onLinkClick, isAdmin, isUser }) {
+  const [profileDropdown, setProfileDropdown] = useState(false);
+  // const [searchDropdown, setSearchDropdown] = useState(false);
+  // const basePath = "/search";
+
+  // const profileDropdownLinkMap = {
+  //   Premium: `${basePath}?find=premium`,
+  //   Featured: `${basePath}?find=feature`,
+  //   "Recently updated": `${basePath}?find=recentlyUpdated`,
+  //   "Newly listed": `${basePath}?find=newlyListed`,
+  //   "LGBTQ+": `${basePath}?find=LGBTQ+`,
+  //   Veteran: `${basePath}?find=veteran`,
+  //   Male: `${basePath}?find=male`,
+  //   Female: `${basePath}?find=fema`,
+  //   "View All": `${basePath}?find=premium`,
+  //   Search: `${basePath}?find=premium`,
+  // };
   if (isUser) {
     return (
-      <ul className="text-lg flex  text-white list-style-none">
+      <ul className="flex text-white list-style-none text-sm md:text-base">
         {Object.keys(userNavbarLinkMap).map((linkName) => (
           <li key={linkName} onClick={onLinkClick}>
             {linkName == "My Account" ? (
               <div>
                 <div
-                  onClick={() => setDropdown(!dropdown)}
+                  onClick={() => setProfileDropdown(!profileDropdown)}
                   className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 cursor-pointer"
                 >
                   {linkName}
                 </div>
-                {dropdown && (
+                {profileDropdown && (
                   <div className="absolute bg-white rounded-lg flex flex-col">
                     <Link
-                      onClick={() => setDropdown(false)}
+                      onClick={() => setProfileDropdown(false)}
                       to={"/user-profile?sect=profile"}
                       className="border-b-2 px-2 py-1 md:px-4 md:py-2 text-black  "
                     >
                       Profile
                     </Link>
                     <Link
-                      onClick={() => setDropdown(false)}
+                      onClick={() => setProfileDropdown(false)}
                       to={"/user-profile?sect=questionnaire"}
                       className="border-b-2 px-2 py-1 md:px-4 md:py-2 text-black  "
                     >

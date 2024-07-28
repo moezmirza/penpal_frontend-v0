@@ -4,7 +4,7 @@ import { useGet } from "../../api/useGet";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { mailTOLink } from "../User/FindPal/FindPal";
 
-function FindCustomemrs({ endpoint }) {
+function FindUserCustomers({ endpoint }) {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showTab, setShowTab] = useState(true);
@@ -115,4 +115,4 @@ function CustomerCard({ customer }) {
   );
 }
 
-export default FindCustomemrs;
+export default FindUserCustomers;

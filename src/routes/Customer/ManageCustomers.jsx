@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useGet } from "../../api/useGet";
 import { useNavigate } from "react-router-dom";
-import { LoadingSpinner } from "../../components/LoadingSpinner";
-import ListedCustomer from "./ListedCustomer";
-import FavoriteCustomer from "./FindCustomers";
-import FindCustomemrs from "./FindCustomers";
+import FindUserCustomers from "./FindUserCustomers";
 
 function ManageCustomers() {
   const [customers, setCustomers] = useState([]);
@@ -58,7 +55,7 @@ function ManageCustomers() {
         </div>
       </div>
 
-      <FindCustomemrs endpoint={endpoint} key={endpoint} />
+      <FindUserCustomers endpoint={endpoint} key={endpoint} />
 
       {/* <button
         onClick={() => navigate("/list-inmate")}
