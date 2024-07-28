@@ -34,7 +34,6 @@ const roundTo = (num, decimalPlaces) => {
 function CreateCustomer() {
   const imageRef = useRef();
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showConfirmPop, setShowConfirmPop] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -234,9 +233,24 @@ function CreateCustomer() {
       );
       if (success) {
         setLoading(false);
-        setSuccess(true);
-        // Object.keys(updatedFields.current) from here onwards
         setDone(true);
+        const updateDuesInfo = {
+          personalityInfo: {},
+          basicInfo: {},
+        };
+        Object.keys(updatedFields.current).forEach((field) => {
+          if (field == "personalityInfo") {
+            Object.keys(updatedFields.current.personalityInfo).forEach(
+              (pField) => {
+                updateDuesInfo["personalityInfo"][pField] = true;
+              }
+            );
+          } else {
+            updateDuesInfo["basicInfo"][field] = true;
+          }
+        });
+        console.log("updatedDues", updateDuesInfo);
+        setDuesInfo(updateDuesInfo);
       } else {
         setLoading(false);
         setError("An unexpected error occurred");
@@ -251,7 +265,6 @@ function CreateCustomer() {
       const { success, data, error } = await post("/customer", finalObj);
       if (success) {
         setLoading(false);
-        setSuccess(true);
         setDone(true);
         setDuesInfo({ ...duesInfo, creation: true });
         console.log("data", data);
@@ -425,13 +438,11 @@ function CreateCustomer() {
     setPersonalityInfo(personalityInfoInitialState);
     setDuesInfo(dueInitiallState);
     setDone(false);
-    setSuccess(false);
     updatedFields.current = {};
   };
 
   const handleSubmitBtn = () => {
     setError("");
-    setSuccess(false);
     setDone(false);
     if (Object.keys(updatedFields.current).length == 0) {
       setError("No changes made");
@@ -465,7 +476,7 @@ function CreateCustomer() {
   };
 
   const handlePaynow = () => {
-    if (success) {
+    if (done) {
       console.log("already submitted");
     } else {
       console.log("need to be paid");
@@ -489,6 +500,7 @@ function CreateCustomer() {
           handleBasicInfoOptionsFieldChange={handleBasicInfoOptionsFieldChange}
           handleBasicInfoTextFieldChange={handleBasicInfoTextFieldChange}
           error={error}
+          done={done}
           handleSubmitBtn={handleSubmitBtn}
           changeOccured={changeOccured}
           imageRef={imageRef}
@@ -500,7 +512,6 @@ function CreateCustomer() {
           wordLimit={wordLimit}
           loading={loading}
           showConfirmPop={showConfirmPop}
-          success={success}
           handleUpdate={handleUpdate}
           setShowConfirmPop={setShowConfirmPop}
           duesInfo={duesInfo}
@@ -532,7 +543,7 @@ function CustomerDetails({
   handleBasicInfoOptionsFieldChange,
   showConfirmPop,
   error,
-  success,
+  done,
   loading,
   handleSubmitBtn,
   changeOccured,
@@ -724,7 +735,7 @@ function CustomerDetails({
           />
         ))}
         <div className="flex gap-x-6 w-full justify-between">
-          {success && (
+          {done && (
             <p className="text-green-500 w-fit text-sm md:text-base">
               Customer {id ? "updated" : "created"} successfully
             </p>
@@ -876,14 +887,9 @@ function DuesSection({
         >
           Pay now
         </button>
-        {/* {(!isDone || changeOccured || !addons) && ( */}
         <p className="text-gray-600 italic text-center text-xs md:text-sm">
           {`*First ${id ? "update" : "create"} your profile to pay for it`}
         </p>
-        {/* )} */}
-        {/* <button className="py-2 w-full bg-red-600 rounded-lg ">
-          Pay later
-        </button> */}
       </div>
     </div>
   );
