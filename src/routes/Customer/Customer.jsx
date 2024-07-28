@@ -74,18 +74,18 @@ function Customer() {
       console.log("error updating rating", error);
     }
   };
-  const handleMsgSend = async (e) => {
-    e.target.disabled = true;
-    e.target.innerText = "Sending...";
-    if (msgText != "") {
-      const { success, data, error } = await post(`/user/chat?id=${id}`, {
-        messageText: msgText,
-      });
-      if (success) {
-        e.target.innerText = "Sent";
-      }
-    }
-  };
+  // const handleMsgSend = async (e) => {
+  //   e.target.disabled = true;
+  //   e.target.innerText = "Sending...";
+  //   if (msgText != "") {
+  //     const { success, data, error } = await post(`/user/chat?id=${id}`, {
+  //       messageText: msgText,
+  //     });
+  //     if (success) {
+  //       e.target.innerText = "Sent";
+  //     }
+  //   }
+  // };
 
   const basicInfoDisplayFields = [
     "inmateNumber",

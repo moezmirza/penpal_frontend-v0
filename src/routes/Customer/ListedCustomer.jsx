@@ -28,12 +28,13 @@ function ListedCustomer() {
     fetchCustomers();
   }, []);
   return (
-    <div className="relative ">
+    <div className="flex flex-col gap-y-6  items-center justify-between my-6 p-4 md:p-0 relative w-full">
+      <h1 className="text-4xl font-bold underline">Update Inmates</h1>
       <LoadingSpinner isLoading={loading} />
       {customers.length == 0 && !loading ? (
         <p className="text-center">You have not listed any inmates</p>
       ) : (
-        <div className="flex flex-col gap-y-6">
+        <div className="flex flex-col gap-y-6 w-full">
           {customers.map((customer, index) => (
             <CustomerCard key={index} customer={customer} />
           ))}
@@ -87,12 +88,12 @@ function CustomerCard({ customer }) {
           </div>
         </div>
         <p>
-          <span className="font-medium mr-1">Location:</span>
-          {customer?.state || "N/A"}, {customer?.city || "N/A"}
+          <span className="font-medium mr-1">Inmate#:</span>
+          {customer?.inmateNumber || "N/A"}
         </p>
         <p>
-          <span className="font-medium mr-1">Education:</span>
-          {customer?.education || "N/A"}
+          <span className="font-medium mr-1">Location:</span>
+          {customer?.state || "N/A"}, {customer?.city || "N/A"}
         </p>
         <p>
           <span className="font-medium mr-1"> Mainling Addres:</span>

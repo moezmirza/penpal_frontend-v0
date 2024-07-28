@@ -10,8 +10,8 @@ const userNavbarLinkMap = {
   Home: "https://penpal.musingsinc.co/",
   Dashboard: "/#findpal",
   "List an Inmate": "/list-inmate",
-  "Update Inmates": "/manage-inmates",
-  Subscriptions: "/subcriptions",
+  "Update Inmates": "/update-inmates",
+  "Favorite Inmates": "/favorite-inmates",
   Profile: "/user-profile",
 };
 const unAuthNavbarLinkMap = {
@@ -49,7 +49,7 @@ function Navbar() {
         <span className="text-4xl">.</span>
       </div>
 
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         <PCNavbar
           isUser={isUser}
           isAdmin={isAdmin}
@@ -58,7 +58,7 @@ function Navbar() {
         />
       </div>
 
-      <div className="md:hidden">
+      <div className="lg:hidden">
         <MobileNavbar
           isUser={isUser}
           isAdmin={isAdmin}
@@ -75,7 +75,7 @@ function Navbar() {
 function PCNavbar({ onSignout, onLinkClick, isAdmin, isUser }) {
   if (isUser) {
     return (
-      <ul className="text-lg flex gap-x-2 text-white list-style-none">
+      <ul className="text-lg flex  text-white list-style-none">
         {Object.keys(userNavbarLinkMap).map((linkName) => (
           <li key={linkName} onClick={onLinkClick}>
             <Link
@@ -149,7 +149,7 @@ function MobileNavbar({
   showDropdown,
 }) {
   return (
-    <div className="flex gap-x-6 items-center md:hidden">
+    <div className="flex gap-x-6 items-center ">
       <div className="relative ">
         <div>
           <input

@@ -29,12 +29,13 @@ function FavoriteCustomer() {
     fetchCustomers();
   }, []);
   return (
-    <div className="relative ">
+    <div className="flex flex-col gap-y-6  items-center justify-between my-6 p-4 md:p-0 relative w-full">
+      <h1 className="text-4xl font-bold underline">Favorite Inmates</h1>{" "}
       <LoadingSpinner isLoading={loading} />
       {customers.length == 0 && !loading ? (
         <p className="text-center">You have not listed any inmates</p>
       ) : (
-        <div className="flex flex-col gap-y-6">
+        <div className="flex flex-col gap-y-6 w-full">
           {customers.map((customer, index) => (
             <CustomerCard customer={customer} key={index} />
           ))}
@@ -49,11 +50,7 @@ function CustomerCard({ customer }) {
   return (
     <div
       id="customer-card"
-      className={`bg-gray-100 rounded-md border ${
-        customer?.profileApproved == false || customer?.updateApproved == false
-          ? "border-red-500"
-          : "border-gray-300"
-      }  p-2 px-4 w-full md:w-10/12 mx-auto flex flex-col gap-y-6 gap-x-4 md:flex-row`}
+      className={`bg-gray-100 rounded-md border "border-gray-300" p-2 px-4 w-full md:w-10/12 mx-auto flex flex-col gap-y-6 gap-x-4 md:flex-row`}
     >
       <img
         src={customer?.imageUrl || "/assets/default.jpg"}
@@ -66,13 +63,6 @@ function CustomerCard({ customer }) {
             <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
               {customer?.firstName} {customer?.lastName}
             </p>
-            {(customer?.profileApproved == false ||
-              customer?.updateApproved == false) && (
-              <p className="text-red-500 text-sm font-normal">
-                {" "}
-                Approval needed
-              </p>
-            )}
           </div>
 
           <div className="flex gap-x-4">

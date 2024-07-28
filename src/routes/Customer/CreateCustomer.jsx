@@ -43,7 +43,6 @@ function CreateCustomer() {
   const basicInfoIntialState = {
     firstName: "",
     lastName: "",
-    email: "",
     inmateNumber: "",
     age: "",
     gender: "",
@@ -152,11 +151,11 @@ function CreateCustomer() {
   const [imageDropdown, setImageDropdown] = useState(false);
   const [done, setDone] = useState(false);
   const payementBoxRef = useRef();
-  const validateEmail = (email) => {
-    // Basic regex for email validation
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
+  // const validateEmail = (email) => {
+  //   // Basic regex for email validation
+  //   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   return regex.test(email);
+  // };
 
   // to keep track of only updatedFields
   const updatedFields = useRef({});
@@ -452,10 +451,10 @@ function CreateCustomer() {
       }
     }
 
-    if (!validateEmail(basicInfo.email)) {
-      setError("Invalid email format");
-      return;
-    }
+    // if (!validateEmail(basicInfo.email)) {
+    //   setError("Invalid email format");
+    //   return;
+    // }
     setShowConfirmPop(true);
   };
 
