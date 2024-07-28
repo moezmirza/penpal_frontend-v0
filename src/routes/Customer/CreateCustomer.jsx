@@ -35,58 +35,10 @@ function CreateCustomer() {
   const [loading, setLoading] = useState(false);
   const [showConfirmPop, setShowConfirmPop] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
-  console.log("current", currentUser);
   const post = usePost();
   const get = useGet();
   const put = usePut();
   const { id } = useParams();
-
-  const [basicInfo, setBasicInfo] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    inmateNumber: "",
-    age: "",
-    gender: "",
-    orientation: "",
-    state: [],
-    city: "",
-    mailingAddress: "",
-    zipcode: "",
-    dateOfBirth: "",
-    height: "",
-    weight: "",
-    hairColor: [],
-    eyeColor: [],
-    race: [],
-    spokenLanguages: "",
-    institutionalEmailProvider: [],
-    religiousPref: [],
-    highSchool: "",
-    highSchoolState: "",
-    highSchoolCity: "",
-    education: [],
-    collegeName: "",
-    collegeState: "",
-    collegeCity: "",
-    homeTownCity: "",
-    homeTownState: "",
-    bodyType: [],
-    astrologicalSign: [],
-    relationShipStatus: [],
-    veteranStatus: [],
-    bio: "",
-    imageUrl: "",
-  });
-  const [personalityInfo, setPersonalityInfo] = useState({
-    hobbies: [],
-    sports: [],
-    likes: [],
-    personality: [],
-    bookGenres: [],
-    musicGenres: [],
-    movieGenres: [],
-  });
 
   const basicInfoIntialState = {
     firstName: "",
@@ -126,7 +78,7 @@ function CreateCustomer() {
     imageUrl: "",
   };
 
-  const personalityInitialState = {
+  const personalityInfoInitialState = {
     hobbies: [],
     sports: [],
     likes: [],
@@ -135,8 +87,7 @@ function CreateCustomer() {
     musicGenres: [],
     movieGenres: [],
   };
-
-  const [duesInfo, setDuesInfo] = useState({
+  const dueInitiallState = {
     basicInfo: {
       firstName: false,
       lastName: false,
@@ -189,7 +140,14 @@ function CreateCustomer() {
     premiumPlacement: false,
     photo: false,
     wordLimit: false,
-  });
+  };
+
+  const [basicInfo, setBasicInfo] = useState(basicInfoIntialState);
+  const [personalityInfo, setPersonalityInfo] = useState(
+    personalityInfoInitialState
+  );
+
+  const [duesInfo, setDuesInfo] = useState(dueInitiallState);
   const [wordLimit, setWordLimit] = useState(false);
   const [imageDropdown, setImageDropdown] = useState(false);
   const [done, setDone] = useState(false);
@@ -458,10 +416,18 @@ function CreateCustomer() {
       console.log("inside here");
       fetchCustomer();
     } else {
-      setBasicInfo(basicInfoIntialState);
-      setPersonalityInfo(personalityInitialState);
+      resetState();
     }
   }, [id]);
+
+  const resetState = () => {
+    setBasicInfo(basicInfoIntialState);
+    setPersonalityInfo(personalityInfoInitialState);
+    setDuesInfo(dueInitiallState);
+    setDone(false);
+    setSuccess(false);
+    updatedFields.current={}
+  };
 
   const handleSubmitBtn = () => {
     setError(false);

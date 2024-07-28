@@ -8,6 +8,7 @@ import UserProfile from "./routes/User/Profile/Profile";
 import FindPal from "./routes/User/FindPal/FindPal";
 import Customer from "./routes/Customer/Customer";
 import CreateCustomer from "./routes/Customer/CreateCustomer";
+import UpdateCustomer from "./routes/Customer/CreateCustomer";
 import ManageCustomers from "./routes/Customer/ManageCustomers";
 import ApproveProfiles from "./routes/Admin/ApproveProfiles";
 import ApproveUpdates from "./routes/Admin/ApproveUpdates";
@@ -44,7 +45,7 @@ function App() {
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/inmate/:id" element={<Customer />} />
         <Route path="/list-inmate" element={<CreateCustomer />} />
-        <Route path="/update-inmate/:id" element={<CreateCustomer />} />
+        <Route path="/update-inmate/:id" element={<UpdateCustomer />} />
         <Route path="/manage-inmates" element={<ManageCustomers />} />
         <Route path="/payment" element={<CheckoutForm />} />
         <Route path="/payment/result" element={<Result />} />
