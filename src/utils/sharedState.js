@@ -518,3 +518,33 @@ export const basicInfoFieldDropdownOptions = {
   veteranStatus: veteranStatusList,
   institutionalEmailProvider: institutionalEmailProviderList,
 };
+
+export const addonNameToStateMap = {
+  "Profile Creation": "creation",
+  "Profile Update": "update",
+  "Profile Renewal": "renewal",
+  "Bio Word Limit": "wordLimit",
+  "Feature Placement": "featurePlacement",
+  "Premium Placement": "premiumPlacement",
+  Photo: "photo",
+};
+
+export const addonStateToNameMap = {
+  creation: "Profile Creation",
+  update: "Profile Update",
+  renewal: "Profile Renewal",
+  wordLimit: "Bio Word Limit",
+  featurePlacement: "Feature Placement",
+  premiumPlacement: "Premium Placement",
+  photo: "Photo",
+};
+
+export const addonStatetoCost = {
+  creation: 99.95,
+  update: 9.95,
+  renewal: 79.95,
+  wordLimit: 9.95,
+  featurePlacement: 14.95,
+  premiumPlacement: 24.95,
+  photo: 9.95,
+};
