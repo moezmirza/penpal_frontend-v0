@@ -4,6 +4,9 @@ import { useGet } from "../../api/useGet";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { usePut } from "../../api/usePut";
 
+export const includesCaseInsensitive = (str, substring) => {
+  return str.toLowerCase().includes(substring.toLowerCase());
+};
 function ApproveUpdates() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -48,9 +51,6 @@ function ApproveUpdates() {
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
-  const includesCaseInsensitive = (str, substring) => {
-    return str.toLowerCase().includes(substring.toLowerCase());
-  };
 
   const filteredCustomers = customers?.filter(
     (customer) =>

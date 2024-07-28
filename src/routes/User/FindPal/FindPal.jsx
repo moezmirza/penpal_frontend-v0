@@ -13,6 +13,7 @@ import {
   raceList,
   stateList,
 } from "../../../utils/sharedState";
+import { includesCaseInsensitive } from "../../Admin/ApproveUpdates";
 
 export const mailTOLink = (email, name) => {
   const intialBody = `Hi ${name}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`;
@@ -35,6 +36,7 @@ function FindPal() {
   const itemsPerPage = 20;
   const searchSectRef = useRef(null);
   const location = useLocation();
+  const [inputVal, setInputVal] = useState("");
 
   const [filter, setFilter] = useState({
     state: [],
@@ -178,10 +180,7 @@ function FindPal() {
     });
   };
 
-  const filteredCustomers = useMemo(
-    () => filterCustomers(),
-    [customers, filter]
-  );
+  let filteredCustomers = useMemo(() => filterCustomers(), [customers, filter]);
 
   const handleClearFilters = () => {
     let newObj = {};
@@ -193,6 +192,7 @@ function FindPal() {
       }
       setFilter(newObj);
     });
+    setInputVal("");
   };
 
   useEffect(() => {
@@ -204,6 +204,11 @@ function FindPal() {
     }
   }, [location]);
 
+  filteredCustomers = filteredCustomers?.filter(
+    (customer) =>
+      includesCaseInsensitive(customer.firstName, inputVal) ||
+      includesCaseInsensitive(customer.lastName, inputVal)
+  );
   return (
     <div className="bg-c-basic flex flex-col gap-y-12 w-full px-3 py-6">
       <div
@@ -260,18 +265,33 @@ function FindPal() {
           </button>
         </div>
         <LoadingSpinner isLoading={loading} />
-
-        <div id="filters" className="grid  md:grid-cols-3 gap-6">
-          {Object.keys(filterOptionsMap).map((key) => (
-            <MultiSelectField
-              key={key}
-              labelText={key}
-              placeholderText={filterOptionsMap[key][0]}
-              dropdownOptions={filterOptionsMap[key]}
-              selectedOptions={filter[filterStateNameMap[key]]}
-              onChange={handleFilterChange}
-            />
-          ))}
+        <div className="flex flex-col gap-y-4">
+          <div id="filters" className="grid  md:grid-cols-3 gap-6">
+            {Object.keys(filterOptionsMap).map((key) => (
+              <MultiSelectField
+                key={key}
+                labelText={key}
+                placeholderText={filterOptionsMap[key][0]}
+                dropdownOptions={filterOptionsMap[key]}
+                selectedOptions={filter[filterStateNameMap[key]]}
+                onChange={handleFilterChange}
+              />
+            ))}
+          </div>
+          <div className="w-9/12">
+            <p className="w-fit">Search</p>
+            <div className="flex justify-between items-center">
+              <input
+                type="text"
+                name="firstName"
+                placeholder="Search customer name here..."
+                value={inputVal}
+                onChange={(e) => setInputVal(e.target.value)}
+                className="bg-transparent block w-11/12 mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
+              />
+              <p className="text-nowrap">Total: {filteredCustomers.length}</p>
+            </div>
+          </div>
         </div>
 
         <div id="customers" className="flex flex-col gap-y-6 relative">
