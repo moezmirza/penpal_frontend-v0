@@ -33,7 +33,7 @@ function FindPal() {
   const navigate = useNavigate();
   const get = useGet();
 
-  const itemsPerPage = 20;
+  const itemsPerPage = 30;
   const searchSectRef = useRef(null);
   const location = useLocation();
   const [inputVal, setInputVal] = useState("");
@@ -253,7 +253,7 @@ function FindPal() {
       <div
         ref={searchSectRef}
         id="findpal"
-        className="flex flex-col  gap-y-12 bg-white p-3 md:p-6 relative"
+        className="flex flex-col gap-y-8 bg-white p-3 md:p-6 relative"
       >
         <div className="flex flex-col items-start gap-y-3 md:justify-between md:flex-row">
           <p className="text-2xl md:text-4xl font-bold">Find your best pal.</p>
@@ -264,7 +264,7 @@ function FindPal() {
             Clear filters
           </button>
         </div>
-        <LoadingSpinner isLoading={loading} />
+        <LoadingSpinner position="absolute" isLoading={loading} />
         <div className="flex flex-col gap-y-4">
           <div id="filters" className="grid  md:grid-cols-3 gap-6">
             {Object.keys(filterOptionsMap).map((key) => (
@@ -278,17 +278,20 @@ function FindPal() {
               />
             ))}
           </div>
-          <label className=" w-full text-sm md:text-base">
-            Search
-            <input
-              type="text"
-              name="firstName"
-              placeholder="Search customer name here..."
-              value={inputVal}
-              onChange={(e) => setInputVal(e.target.value)}
-              className="w-full bg-transparent block mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
-            />
-          </label>
+          <div className="flex flex-col md:flex-row gap-y-4 justify-between md:items-end">
+            <label className="md:w-9/12 w-full text-sm md:text-base">
+              Search
+              <input
+                type="text"
+                name="firstName"
+                placeholder="Search customer name here..."
+                value={inputVal}
+                onChange={(e) => setInputVal(e.target.value)}
+                className="w-full bg-transparent block mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
+              />
+            </label>
+            <p className="font-semibold md:text-2xl">Total : {filteredCustomers.length}</p>
+          </div>
         </div>
 
         <div id="customers" className="flex flex-col gap-y-6 relative">

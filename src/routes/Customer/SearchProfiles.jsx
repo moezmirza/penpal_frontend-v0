@@ -9,11 +9,11 @@ function SearchProfiles() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [matchesAlert, setMatchesAlert] = useState("");
+  const [loadMoreMsg, setLoadMoreMsg] = useState("");
   const [inputVal, setInputVal] = useState("");
   const [searchFilter, setSearchFilter] = useState([]);
   const inputRef = useRef();
-  const itemsPerPage = 20;
+  const itemsPerPage = 30;
 
   const get = useGet();
   console.log("window.location", window.location.search);
@@ -56,12 +56,12 @@ function SearchProfiles() {
       if (success) {
         setIsLoadingMore(false);
         if (data.length == 0) {
-          setMatchesAlert("No more profiles found.");
+          setLoadMoreMsg("No more profiles found.");
         }
         console.log("more customers data", data);
         setCustomers([...customers, ...data]);
       } else {
-        setMatchesAlert("Error loading matches");
+        setLoadMoreMsg("Error loading matches");
         setIsLoadingMore(false);
       }
     };
@@ -131,8 +131,10 @@ function SearchProfiles() {
 
   return (
     <div className="flex flex-col gap-y-6  my-6 items-center justify-between  p-4 md:p-0 relative w-full">
-      <h1 className="text-2xl md:text-4xl font-bold underline">Penpal Profiles</h1>
-      <div className="flex flex-col md:flex-row gap-6 md:w-10/12 w-11/12 items-center">
+      <h1 className="text-2xl md:text-4xl font-bold underline">
+        Penpal Profiles
+      </h1>
+      <div className="flex flex-col gap-6 md:w-10/12 w-full ">
         <div className="flex flex-col md:flex-row justify-between gap-6 w-full">
           <div className="w-full">
             <h1 className="text-lg">Dropdown Filter</h1>
@@ -156,6 +158,9 @@ function SearchProfiles() {
             />
           </div>
         </div>
+          <p className="font-semibold md:text-2xl">
+            Total : {filteredCustomers.length}
+          </p>
       </div>
       <LoadingSpinner isLoading={loading} />
       {filteredCustomers.length == 0 && !loading ? (
@@ -169,8 +174,8 @@ function SearchProfiles() {
       )}
       {isLoadingMore ? (
         <p className="text-center">Loading...</p>
-      ) : matchesAlert ? (
-        <div className="text-center ">{matchesAlert}</div>
+      ) : loadMoreMsg ? (
+        <div className="text-center ">{loadMoreMsg}</div>
       ) : (
         <button
           type="button"

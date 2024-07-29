@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 
-export const LoadingSpinner = ({ isDone = false, isLoading, bgShade = "300" }) => {
+export const LoadingSpinner = ({
+  isDone = false,
+  isLoading,
+  bgShade = "300",
+  position = "fixed",
+}) => {
   const [hide, setHide] = useState(false);
   useEffect(() => {
     let timeoutId = "";
@@ -17,7 +22,7 @@ export const LoadingSpinner = ({ isDone = false, isLoading, bgShade = "300" }) =
   }, [isLoading]);
   return (
     <div
-      className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 ${
+      className={`${position} top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 ${
         hide || (!isLoading && !isDone) ? "hidden" : "block"
       }`}
     >
