@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGet } from "../../api/useGet";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { usePut } from "../../api/usePut";
+import { useDel } from "../../api/useDel";
 import ConfrimPopup from "../../components/ConfrimPopup";
 
-function ApproveProfiles() {
+function DeleteProfiles() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inputVal, setInputVal] = useState("");
@@ -13,14 +13,12 @@ function ApproveProfiles() {
   const clientId = useRef();
   const inputRef = useRef();
   const get = useGet();
-  const put = usePut();
+  const del = useDel();
 
   useEffect(() => {
     const fetchCustomers = async () => {
       setLoading(true);
-      const { success, data, error } = await get(
-        `/admin/customer?approved=${false}`
-      );
+      const { success, data, error } = await get(`/admin/customer`);
       if (success) {
         setLoading(false);
         setCustomers(data);
@@ -35,22 +33,21 @@ function ApproveProfiles() {
     fetchCustomers();
   }, []);
 
-  const handleApprovalUpdate = async (status, cid) => {
+  const handleDelUpdate = (cid) => {
     setShowPopup(true);
     clientId.current = cid;
   };
-
-  const approveProfile = () => {
+  const delProfile = () => {
     setCustomers((customers) =>
       customers.filter((customer) => customer._id != clientId?.current)
     );
     setShowPopup(false);
-    put(`/admin/approve-customer?id=${clientId?.current}`).then((response) => {
+    del(`/customer?id=${clientId?.current}`).then((response) => {
       const { success, data, error } = response;
       if (success) {
-        console.log("Approval update successful:", data);
+        console.log("customer deletion successful:", data);
       } else {
-        console.error("Error approving customer:", error);
+        console.error("Error deletiting customer:", error);
       }
       clientId.current = null;
     });
@@ -74,13 +71,14 @@ function ApproveProfiles() {
       {showPopup && (
         <ConfrimPopup
           onCloseClick={setShowPopup}
-          onConfirm={approveProfile}
-          confirmBtnTxt={"Approve profile"}
+          onConfirm={delProfile}
+          confirmBtnTxt={"Delete profile"}
           infoText={"It will permanently delete prison profile"}
+          confirmBtnColor="red"
         />
       )}
       <h1 className="md:text-3xl text-2xl font-bold underline">
-        Approve Profiles
+        Delete Profiles
       </h1>
       <div className="flex flex-col md:flex-row gap-6 md:w-9/12 w-11/12 items-center">
         <input
@@ -95,14 +93,11 @@ function ApproveProfiles() {
         </p>
       </div>
       {customers?.length == 0 && !loading ? (
-        <p className="text-center">There are no more profiles to approve </p>
+        <p className="text-center">There are no more profiles to delete </p>
       ) : (
         <div className="flex flex-col gap-y-6 w-full">
           {filteredCustomers?.map((customer) => (
-            <CustomerCard
-              customer={customer}
-              onApprove={handleApprovalUpdate}
-            />
+            <CustomerCard customer={customer} onDel={handleDelUpdate} />
           ))}
         </div>
       )}
@@ -117,7 +112,7 @@ function ApproveProfiles() {
   );
 }
 
-function CustomerCard({ customer, onApprove }) {
+function CustomerCard({ customer, onDel }) {
   const navigate = useNavigate();
   return (
     <div
@@ -163,10 +158,10 @@ function CustomerCard({ customer, onApprove }) {
       <div className="w-full md:w-fit ml-auto flex flex-col my-auto">
         <button
           type="button"
-          className="mt-4 bg-green-600 text-white px-6 py-3 rounded hover:opacity-90"
-          onClick={() => onApprove(true, customer._id)}
+          className="mt-4 bg-red-600 text-white px-6 py-3 rounded hover:opacity-90"
+          onClick={() => onDel(customer._id)}
         >
-          Approve
+          Delete
         </button>
         {/* <button
           type="button"
@@ -187,4 +182,4 @@ function CustomerCard({ customer, onApprove }) {
   );
 }
 
-export default ApproveProfiles;
+export default DeleteProfiles;

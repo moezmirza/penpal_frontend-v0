@@ -174,7 +174,7 @@ function AdminCustomer() {
                   )}
                 </p>
               </div>
-              <div className="flex flex-col items-center ">
+              {/* <div className="flex flex-col items-center ">
                 <button
                   type="button"
                   className="flex items-center justify-center  mx-auto border text-white text w-full py-2.5 px-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
@@ -194,7 +194,7 @@ function AdminCustomer() {
                 >
                   Contact Inmate
                 </button>
-              </div>
+              </div> */}
             </div>
 
             <div>

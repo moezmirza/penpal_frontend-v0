@@ -107,7 +107,7 @@ function Customer() {
     "relationShipStatus",
     "veteranStatus",
   ];
-  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
+  const isUser = JSON.parse(localStorage.getItem("userAuth"));
 
   const handleApprovalUpdate = async (e, status, cid) => {
     e.target.innerText = "Approved";
@@ -187,15 +187,15 @@ function Customer() {
                 </p>
               </div>
               <div className="flex flex-col items-center ">
-                {isAdmin ? (
-                  <button
-                    type="button"
-                    className="flex items-center justify-center  mx-auto border text-white text w-full py-2.5 px-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
-                    onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
-                  >
-                    Approve
-                  </button>
-                ) : (
+                {isUser && (
+                  //   <button
+                  //     type="button"
+                  //     className="flex items-center justify-center  mx-auto border text-white text w-full py-2.5 px-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
+                  //     onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
+                  //   >
+                  //     Approve
+                  //   </button>
+                  // ) : (
                   <button
                     type="button"
                     className="flex items-center justify-center  mx-auto w-full py-2.5 px-3 border  text-white bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
@@ -283,7 +283,7 @@ function Customer() {
                   )}
                 </div>
               </div>
-              {!isAdmin && (
+              {isUser && (
                 <div className="">
                   <h1 className="text-3xl md:text-2xl font-semibold underline mb-4 ">
                     Give your rating

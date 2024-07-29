@@ -24,6 +24,7 @@ const adminNavbarLinkMap = {
   Home: "https://penpal.musingsinc.co/",
   "Approve Profiles": "/approve-profiles",
   "Approve Updates": "/approve-updates",
+  "Delete Profiles": "/delete-profiles"
 };
 function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);

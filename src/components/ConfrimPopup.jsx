@@ -15,6 +15,7 @@ function ConfrimPopup({
   confirmBtnTxt,
   width = "fit",
   updatedFields = { current: {} },
+  confirmBtnColor= "green",
   total,
 }) {
   const handleCloseClick = () => {
@@ -29,7 +30,7 @@ function ConfrimPopup({
   );
   return (
     <div
-      class={`w-11/12 md:w-${width} absolute ${
+      class={`w-11/12 md:w-${width} fixed ${
         atEnd ? "bottom-0" : "top-1/2"
       } left-1/2 -translate-x-1/2 -translate-y-${atEnd ? "0" : "1/2"} z-20`}
       ref={popupRef}
@@ -110,7 +111,7 @@ function ConfrimPopup({
                 <button
                   data-modal-hide="popup-modal"
                   type="button"
-                  class="text-white md:text-base text-sm bg-red-700 hover:bg-red-800 font-medium rounded-lg  px-5 py-2.5 text-center"
+                  className="text-white md:text-base text-sm bg-red-700 hover:bg-red-800 font-medium rounded-lg  px-5 py-2.5 text-center"
                   onClick={() => onCloseClick(false)}
                 >
                   {continueBtnTxt}
@@ -119,7 +120,7 @@ function ConfrimPopup({
               <button
                 data-modal-hide="popup-modal"
                 type="button"
-                class="text-white md:text-base text-sm bg-green-700 hover:bg-green-800 font-medium rounded-lg  px-5 py-2.5 text-center"
+                className={`text-white md:text-base text-sm bg-${confirmBtnColor}-700 hover:bg-${confirmBtnColor}-800  font-medium rounded-lg  px-5 py-2.5 text-center`}
                 onClick={onConfirm}
               >
                 {confirmBtnTxt}

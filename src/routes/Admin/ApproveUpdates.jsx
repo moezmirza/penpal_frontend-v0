@@ -3,14 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { useGet } from "../../api/useGet";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { usePut } from "../../api/usePut";
+import ConfrimPopup from "../../components/ConfrimPopup";
 
 export const includesCaseInsensitive = (str, substring) => {
-  return str.toLowerCase().includes(substring.toLowerCase());
+  return str?.toLowerCase().includes(substring.toLowerCase());
 };
 function ApproveUpdates() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inputVal, setInputVal] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const clientId = useRef();
   const inputRef = useRef();
   const get = useGet();
   const put = usePut();
@@ -36,18 +39,26 @@ function ApproveUpdates() {
   }, []);
 
   const handleApprovalUpdate = async (status, cid) => {
+    setShowPopup(true);
+    clientId.current = cid;
+  };
+
+  const approveProfile = () => {
     setCustomers((customers) =>
-      customers.filter((customer) => customer._id != cid)
+      customers.filter((customer) => customer._id != clientId?.current)
     );
-    put(`/admin/approve-update?id=${cid}`).then((response) => {
+    setShowPopup(false);
+    put(`/admin/approve-update?id=${clientId?.current}`).then((response) => {
       const { success, data, error } = response;
       if (success) {
         console.log("Approval update successful:", data);
       } else {
         console.error("Error approving customer:", error);
       }
+      clientId.current = null;
     });
   };
+
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
@@ -60,6 +71,14 @@ function ApproveUpdates() {
   return (
     <div className="flex flex-col items-center gap-y-12 p-4 md:p-6 relative mt-6 md:w-10/12 w-full mx-auto">
       <LoadingSpinner isLoading={loading} />
+      {showPopup && (
+        <ConfrimPopup
+          onCloseClick={setShowPopup}
+          onConfirm={approveProfile}
+          confirmBtnTxt={"Approve update"}
+          infoText={"It will permanently delete prison profile"}
+        />
+      )}
       <h1 className="text-2xl md:text-3xl font-bold underline">
         Approve Profile Updates
       </h1>
@@ -129,12 +148,12 @@ function CustomerCard({ customer, onApprove }) {
           </div>
         </div>
         <p>
-          <span className="font-medium mr-1">Location:</span>
-          {customer?.state || "N/A"}, {customer?.city || "N/A"}
+          <span className="font-medium mr-1">Inmate#:</span>
+          {customer?.inmateNumber || "N/A"}
         </p>
         <p>
-          <span className="font-medium mr-1">Education:</span>
-          {customer?.education || "N/A"}
+          <span className="font-medium mr-1">Location:</span>
+          {customer?.state || "N/A"}, {customer?.city || "N/A"}
         </p>
         <p>
           <span className="font-medium mr-1"> Mainling Addres:</span>

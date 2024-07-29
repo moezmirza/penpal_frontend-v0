@@ -18,6 +18,7 @@ import Subscription from "./routes/User/Subscription";
 import Result from "./routes/Payment/Result";
 import ListedCustomer from "./routes/Customer/ListedCustomer";
 import SearchProfiles from "./routes/Customer/SearchProfiles";
+import DeleteProfiles from "./routes/Admin/DeleteProfiles";
 function App() {
   const UserRoutes = () => {
     const userAuth = JSON.parse(localStorage.getItem("userAuth"));
@@ -40,6 +41,7 @@ function App() {
         <Route path="/approve-updates" element={<ApproveUpdates />} />
         <Route path="/admin/inmate-updates/:id" element={<AdminCustomer />} />
         <Route path="/admin/inmate-profile/:id" element={<Customer />} />
+        <Route path="/delete-profiles" element={<DeleteProfiles />} />
         <Route path="*" element={<ApproveProfiles />} />
       </Route>
       <Route element={<UserRoutes />}>

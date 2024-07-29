@@ -576,7 +576,20 @@ function CustomerDetails({
   }, 0);
   total = roundTo(total, 2);
   return (
-    <div className="basis-[60%] bg-white rounded-lg">
+    <div className="basis-[60%] bg-white rounded-lg relative">
+      {showConfirmPop && (
+        <ConfrimPopup
+          infoText={`It will cost a total of $${total}
+                `}
+          total={total}
+          updatedFields={updatedFields}
+          continueBtnTxt={"Continue editing"}
+          confirmBtnTxt={`Confirm ${id ? "updation" : "creation"}`}
+          onConfirm={handleUpdate}
+          onCloseClick={setShowConfirmPop}
+          width="3/5"
+        />
+      )}
       <div className="bg-gray-300 w-full rounded-lg p-6 flex flex-col items-center gap-y-6">
         <div className="w-fit m-auto relative">
           <img
@@ -709,19 +722,6 @@ function CustomerDetails({
         <div className="m-auto font-semibold text-xl md:text-3xl underline">
           Personality Info
         </div>
-        {showConfirmPop && (
-          <ConfrimPopup
-            infoText={`It will cost a total of $${total}
-                `}
-            total={total}
-            updatedFields={updatedFields}
-            continueBtnTxt={"Continue editing"}
-            confirmBtnTxt={`Confirm ${id ? "updation" : "creation"}`}
-            onConfirm={handleUpdate}
-            onCloseClick={setShowConfirmPop}
-            width="3/5"
-          />
-        )}
 
         {Object.keys(fieldOptionMap).map((key) => (
           <MultiSelectField
@@ -766,10 +766,7 @@ function CustomerDetails({
 }
 
 function AddOns({ onClick }) {
-  const addonsList = [
-    "Feature Placement",
-    "Premium Placement",
-  ];
+  const addonsList = ["Feature Placement", "Premium Placement"];
   const addonCostMap = {
     "Feature Placement": "$14.95",
     "Premium Placement": "$24.95",
