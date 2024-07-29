@@ -278,20 +278,17 @@ function FindPal() {
               />
             ))}
           </div>
-          <div className="w-9/12">
-            <p className="w-fit">Search</p>
-            <div className="flex justify-between items-center">
-              <input
-                type="text"
-                name="firstName"
-                placeholder="Search customer name here..."
-                value={inputVal}
-                onChange={(e) => setInputVal(e.target.value)}
-                className="bg-transparent block w-11/12 mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
-              />
-              <p className="text-nowrap">Total: {filteredCustomers.length}</p>
-            </div>
-          </div>
+          <label className=" w-full text-sm md:text-base">
+            Search
+            <input
+              type="text"
+              name="firstName"
+              placeholder="Search customer name here..."
+              value={inputVal}
+              onChange={(e) => setInputVal(e.target.value)}
+              className="w-full bg-transparent block mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
+            />
+          </label>
         </div>
 
         <div id="customers" className="flex flex-col gap-y-6 relative">

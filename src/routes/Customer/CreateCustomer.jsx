@@ -487,11 +487,12 @@ function CreateCustomer() {
   console.log("changed Occured", changeOccured);
 
   return (
-    <div className="bg-c-basic flex flex-col items-center gap-y-6 py-8 px-3  md:p-12">
+    <div className="bg-c-basic flex flex-col items-center gap-y-6 py-8 px-3  md:p-12 relative">
       {/* <h1 className="text-4xl font-bold text-left underline">
         Customer Profile
-      </h1> */}
-      <div className="flex w-full flex-col md:flex-row gap-12">
+        </h1> */}
+      <div className="flex w-full flex-col md:flex-row gap-12 relative">
+        <LoadingSpinner isLoading={loading} bgShade="400" isDone={done} />
         <CustomerDetails
           id={id}
           basicInfo={basicInfo}
@@ -735,11 +736,11 @@ function CustomerDetails({
           />
         ))}
         <div className="flex gap-x-6 w-full justify-between">
-          {done && (
+          {/* {done && (
             <p className="text-green-500 w-fit text-sm md:text-base">
               Customer {id ? "updated" : "created"} successfully
             </p>
-          )}
+          )} */}
           {error && (
             <p className="text-fr-red w-fit text-sm md:text-base">{error}</p>
           )}

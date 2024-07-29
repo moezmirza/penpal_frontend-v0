@@ -130,10 +130,10 @@ function SearchProfiles() {
   );
 
   return (
-    <div className="flex flex-col gap-y-6  my-12 items-center justify-between  p-4 md:p-0 relative w-full">
-      <h1 className="text-4xl font-bold underline">Penpal Profiles</h1>
+    <div className="flex flex-col gap-y-6  my-6 items-center justify-between  p-4 md:p-0 relative w-full">
+      <h1 className="text-2xl md:text-4xl font-bold underline">Penpal Profiles</h1>
       <div className="flex flex-col md:flex-row gap-6 md:w-10/12 w-11/12 items-center">
-        <div className="flex justify-between gap-x-6 w-full">
+        <div className="flex flex-col md:flex-row justify-between gap-6 w-full">
           <div className="w-full">
             <h1 className="text-lg">Dropdown Filter</h1>
             <MultiSelectField
@@ -159,7 +159,7 @@ function SearchProfiles() {
       </div>
       <LoadingSpinner isLoading={loading} />
       {filteredCustomers.length == 0 && !loading ? (
-        <p className="text-center">{"No profiles to display"}</p>
+        <p className="text-center mt-6">{"No profiles to display"}</p>
       ) : (
         <div className="flex flex-col gap-y-6 w-full">
           {filteredCustomers.map((customer, index) => (

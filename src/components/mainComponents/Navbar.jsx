@@ -24,7 +24,7 @@ const adminNavbarLinkMap = {
   Home: "https://penpal.musingsinc.co/",
   "Approve Profiles": "/approve-profiles",
   "Approve Updates": "/approve-updates",
-  "Delete Profiles": "/delete-profiles"
+  "Delete Profiles": "/delete-profiles",
 };
 function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -76,21 +76,6 @@ function Navbar() {
 
 function PCNavbar({ onSignout, onLinkClick, isAdmin, isUser }) {
   const [profileDropdown, setProfileDropdown] = useState(false);
-  // const [searchDropdown, setSearchDropdown] = useState(false);
-  // const basePath = "/search";
-
-  // const profileDropdownLinkMap = {
-  //   Premium: `${basePath}?find=premium`,
-  //   Featured: `${basePath}?find=feature`,
-  //   "Recently updated": `${basePath}?find=recentlyUpdated`,
-  //   "Newly listed": `${basePath}?find=newlyListed`,
-  //   "LGBTQ+": `${basePath}?find=LGBTQ+`,
-  //   Veteran: `${basePath}?find=veteran`,
-  //   Male: `${basePath}?find=male`,
-  //   Female: `${basePath}?find=fema`,
-  //   "View All": `${basePath}?find=premium`,
-  //   Search: `${basePath}?find=premium`,
-  // };
   if (isUser) {
     return (
       <ul className="flex text-white list-style-none text-sm md:text-base">
@@ -238,6 +223,7 @@ function MobileNavbar({
 }
 
 function NavbarOptions({ onSignout, onLinkClick, isAdmin, isUser }) {
+  const [profileDropdown, setProfileDropdown] = useState(false);
   if (isAdmin) {
     return (
       <>
@@ -263,16 +249,54 @@ function NavbarOptions({ onSignout, onLinkClick, isAdmin, isUser }) {
   if (isUser) {
     return (
       <>
-        {Object.keys(userNavbarLinkMap).map((linkName) => (
-          <li key={linkName} onClick={onLinkClick}>
-            <Link
-              to={userNavbarLinkMap[linkName]}
-              className="block  px-4 py-1.5 md:py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-            >
-              {linkName}
-            </Link>
-          </li>
-        ))}
+        {Object.keys(userNavbarLinkMap).map((linkName) =>
+          linkName == "My Account" ? (
+            <li key={linkName}>
+              <div>
+                <div
+                  onClick={() => setProfileDropdown(!profileDropdown)}
+                  className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 cursor-pointer"
+                >
+                  {linkName}
+                </div>
+                {profileDropdown && (
+                  <div className="absolute bg-white rounded-lg flex flex-col">
+                    <Link
+                      onClick={() => {
+                        setProfileDropdown(false);
+                        onLinkClick();
+                      }}
+                      to={"/user-profile?sect=profile"}
+                      className="border-b-2 px-2 py-1 md:px-4 md:py-2 text-black  "
+                    >
+                      Profile
+                    </Link>
+                    <Link
+                      onClick={() => {
+                        setProfileDropdown(false);
+
+                        onLinkClick();
+                      }}
+                      to={"/user-profile?sect=questionnaire"}
+                      className="border-b-2 px-2 py-1 md:px-4 md:py-2 text-black  "
+                    >
+                      Questionnaire
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </li>
+          ) : (
+            <li key={linkName} onClick={onLinkClick}>
+              <Link
+                to={userNavbarLinkMap[linkName]}
+                className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                {linkName}
+              </Link>
+            </li>
+          )
+        )}
         <li
           className="block px-4 py-1.5 md:py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
           onClick={onSignout}

@@ -32,7 +32,7 @@ function ConfrimPopup({
     <div
       class={`w-11/12 md:w-${width} fixed ${
         atEnd ? "bottom-0" : "top-1/2"
-      } left-1/2 -translate-x-1/2 -translate-y-${atEnd ? "0" : "1/2"} z-20`}
+      } left-1/2 md:left-[30%] -translate-x-1/2 -translate-y-${atEnd ? "0" : "1/2"} z-20`}
       ref={popupRef}
     >
       <div class="relative p-4 w-full max-w-md max-h-full mx-auto">

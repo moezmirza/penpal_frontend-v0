@@ -29,10 +29,12 @@ function ListedCustomer() {
   }, []);
   return (
     <div className="flex flex-col gap-y-6  items-center justify-between my-6 p-4 md:p-0 relative w-full">
-      <h1 className="text-4xl font-bold underline">Update Inmates</h1>
+      <h1 className="text-2xl md:text-4xl font-bold underline">
+        Update/Renew Profiles
+      </h1>
       <LoadingSpinner isLoading={loading} />
       {customers.length == 0 && !loading ? (
-        <p className="text-center">You have not listed any inmates</p>
+        <p className="text-center text-sm md:text-base">No profiles to display</p>
       ) : (
         <div className="flex flex-col gap-y-6 w-full">
           {customers.map((customer, index) => (
@@ -46,8 +48,8 @@ function ListedCustomer() {
 
 function CustomerCard({ customer }) {
   const navigate = useNavigate();
-  const profileApproved = customer?.profileApproved==false;
-  const updateApproved = customer?.updateApproved==false;
+  const profileApproved = customer?.profileApproved == false;
+  const updateApproved = customer?.updateApproved == false;
   const infoText = profileApproved
     ? "Profile approval needed"
     : updateApproved && "Updates approval needed";
@@ -67,8 +69,8 @@ function CustomerCard({ customer }) {
       />
       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
         <div>
-          <div className=" flex flex-col items-center md:flex-row gap-2 ">
-            <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
+          <div className=" flex flex-col items-center md:flex-row md:gap-2 mb-4 md:mb-2">
+            <p className="font-semibold md:text-3xl text-lg ">
               {customer?.firstName} {customer?.lastName}
             </p>
             {(profileApproved == false || updateApproved == false) && (

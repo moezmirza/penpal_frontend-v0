@@ -80,7 +80,7 @@ function ApproveUpdates() {
         />
       )}
       <h1 className="text-2xl md:text-3xl font-bold underline">
-        Approve Profile Updates
+        Approve Updates
       </h1>
       <div className="flex flex-col md:flex-row gap-6  md:w-9/12  w-11/12 items-center">
         <input
