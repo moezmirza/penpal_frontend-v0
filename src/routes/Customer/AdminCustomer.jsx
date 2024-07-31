@@ -91,7 +91,7 @@ function AdminCustomer() {
             <div className="flex flex-col md:flex-row md:items-start gap-x-12 relative">
               <div>
                 <img
-                  src={customer?.imageUrl || "/assets/default.jpg"}
+                  src={customer?.photos?.imageUrl || "/assets/default.jpg"}
                   alt=""
                   className="h-80 w-full md:h-44 md:w-44 rounded"
                 />
@@ -105,7 +105,8 @@ function AdminCustomer() {
               <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">
                 <div>
                   <p className="font-semibold text-3xl mb-2 md:mb-1 text-center md:text-left">
-                    {customer?.firstName} {customer?.lastName}{" "}
+                    {customer?.basicInfo?.firstName}{" "}
+                    {customer?.basicInfo?.lastName}{" "}
                     {(updatedFields?.includes("firstName") ||
                       updatedFields?.includes("lastName")) && (
                       <span className="font-normal text-xs text-green-500 ml-2">
@@ -116,7 +117,7 @@ function AdminCustomer() {
 
                   <div className="flex gap-3 justify-center md:justify-start flex-wrap ">
                     <p className="text-nowrap">
-                      {customer?.age || "N/A"} yrs{" "}
+                      {customer?.basicInfo?.age || "N/A"} yrs{" "}
                       {updatedFields?.includes("age") && (
                         <span className="font-normal text-xs text-green-500 ml-2">
                           new
@@ -124,7 +125,7 @@ function AdminCustomer() {
                       )}
                     </p>
                     <p className="text-nowrap">
-                      {customer?.gender || "N/A"}
+                      {customer?.basicInfo?.gender || "N/A"}
                       {updatedFields?.includes("gender") && (
                         <span className="font-normal text-xs text-green-500 ml-2">
                           new
@@ -132,7 +133,7 @@ function AdminCustomer() {
                       )}
                     </p>
                     <p className="text-nowrap">
-                      {customer?.orientation || "N/A"}
+                      {customer?.basicInfo?.orientation || "N/A"}
                       {updatedFields?.includes("orientation") && (
                         <span className="font-normal text-xs text-green-500 ml-2">
                           new
@@ -140,7 +141,7 @@ function AdminCustomer() {
                       )}
                     </p>
                     <p className="text-nowrap">
-                      {customer?.race || "N/A"}
+                      {customer?.basicInfo?.race || "N/A"}
                       {updatedFields?.includes("race") && (
                         <span className="font-normal text-xs text-green-500 ml-2">
                           new
@@ -153,10 +154,10 @@ function AdminCustomer() {
                         alt=""
                         className="h-4"
                       />{" "}
-                      {customer?.rating || 0}
+                      {customer?.basicInfo?.rating || 0}
                     </span>
                     <p className="underline text-nowrap">
-                      {customer?.numRatings || 0} Reviews
+                      {customer?.basicInfo?.numRatings || 0} Reviews
                     </p>
                   </div>
                 </div>
@@ -167,7 +168,7 @@ function AdminCustomer() {
                       new
                     </span>
                   )}
-                  {customer?.bio || (
+                  {customer?.basicInfo?.bio || (
                     <p className="italic text-gray-500 text-center w-full md:text-left">
                       No bio added
                     </p>
@@ -187,7 +188,7 @@ function AdminCustomer() {
                   className="mt-4 border text-black text-nowrap w-full py-2.5 px-3  border-fr-blue-200 rounded-xl hover:opacity-90"
                   onClick={() =>
                     (window.location.href = mailTOLink(
-                      customer?.email,
+                      customer?.basicInfo?.email,
                       customer.firstName
                     ))
                   }
@@ -206,13 +207,13 @@ function AdminCustomer() {
                 {customer &&
                   basicInfoDisplayFields.map((field) => {
                     return (
-                      customer[field] &&
+                      customer?.basicInfo[field] &&
                       (field == "spokenLanguages" ? (
                         <p className="flex flex-wrap items-end">
                           <span className="font-semibold mr-1 text-lg">
                             {basicInfoFieldLabelMap[field]}:
                           </span>
-                          {customer[field].map((lang) => (
+                          {customer?.basicInfo[field].map((lang) => (
                             <span className="mr-1">{lang}</span>
                           ))}
                         </p>
@@ -222,8 +223,8 @@ function AdminCustomer() {
                             {basicInfoFieldLabelMap[field]}:
                           </span>
                           {field == "dateOfBirth"
-                            ? customer[field].split("T")[0]
-                            : customer[field]}
+                            ? customer?.basicInfo[field].split("T")[0]
+                            : customer?.basicInfo[field]}
                           {updatedFields.includes(field) && (
                             <span className="text-xs text-green-500 ml-2">
                               new
@@ -247,7 +248,7 @@ function AdminCustomer() {
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                  {Object.keys(customer?.personality || []).map(
+                  {Object.keys(customer?.personalityInfo || []).map(
                     (key) =>
                       key != "_id" && (
                         <div key={key}>
@@ -255,7 +256,7 @@ function AdminCustomer() {
                             {key.toUpperCase()}{" "}
                           </p>
                           <ul className="">
-                            {customer?.personality[key].map((value) => (
+                            {customer?.personalityInfo[key].map((value) => (
                               <li className="text-nowrap" key={value}>
                                 {value}
                               </li>

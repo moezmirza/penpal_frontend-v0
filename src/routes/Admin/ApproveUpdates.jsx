@@ -4,6 +4,7 @@ import { useGet } from "../../api/useGet";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { usePut } from "../../api/usePut";
 import ConfrimPopup from "../../components/ConfrimPopup";
+import CustomerCard from "../../components/CustomerCard";
 
 export const includesCaseInsensitive = (str, substring) => {
   return str?.toLowerCase().includes(substring.toLowerCase());
@@ -12,11 +13,13 @@ function ApproveUpdates() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inputVal, setInputVal] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
+  const [showApprovePopup, setShowApprovePopup] = useState(false);
+  const [showRejectPopup, setShowRejectPopup] = useState(false);
   const clientId = useRef();
   const inputRef = useRef();
   const get = useGet();
   const put = usePut();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -38,8 +41,12 @@ function ApproveUpdates() {
     fetchCustomers();
   }, []);
 
-  const handleApprovalUpdate = async (status, cid) => {
-    setShowPopup(true);
+  const handleUpdate = (approve, cid) => {
+    if (approve) {
+      setShowApprovePopup(true);
+    } else {
+      setShowRejectPopup(true);
+    }
     clientId.current = cid;
   };
 
@@ -47,8 +54,24 @@ function ApproveUpdates() {
     setCustomers((customers) =>
       customers.filter((customer) => customer._id != clientId?.current)
     );
-    setShowPopup(false);
+    setShowApprovePopup(false);
     put(`/admin/approve-update?id=${clientId?.current}`).then((response) => {
+      const { success, data, error } = response;
+      if (success) {
+        console.log("Approval update successful:", data);
+      } else {
+        console.error("Error approving customer:", error);
+      }
+      clientId.current = null;
+    });
+  };
+
+  const rejectProfile = () => {
+    setCustomers((customers) =>
+      customers.filter((customer) => customer._id != clientId?.current)
+    );
+    setShowRejectPopup(false);
+    put(`/admin/reject-update?id=${clientId?.current}`).then((response) => {
       const { success, data, error } = response;
       if (success) {
         console.log("Approval update successful:", data);
@@ -65,18 +88,27 @@ function ApproveUpdates() {
 
   const filteredCustomers = customers?.filter(
     (customer) =>
-      includesCaseInsensitive(customer.firstName, inputVal) ||
-      includesCaseInsensitive(customer.lastName, inputVal)
+      includesCaseInsensitive(customer?.basicInfo?.firstName, inputVal) ||
+      includesCaseInsensitive(customer?.basicInfo?.lastName, inputVal)
   );
   return (
     <div className="flex flex-col items-center gap-y-12 p-4 md:p-6 relative mt-6 md:w-10/12 w-full mx-auto">
       <LoadingSpinner isLoading={loading} />
-      {showPopup && (
+      {showApprovePopup && (
         <ConfrimPopup
-          onCloseClick={setShowPopup}
+          onCloseClick={setShowApprovePopup}
           onConfirm={approveProfile}
-          confirmBtnTxt={"Approve update"}
-          infoText={"It will permanently delete prison profile"}
+          confirmBtnTxt={"Confirm approval"}
+          infoText={"It will approve the profile's update"}
+        />
+      )}
+      {showRejectPopup && (
+        <ConfrimPopup
+          onCloseClick={setShowRejectPopup}
+          onConfirm={rejectProfile}
+          confirmBtnTxt={"Confirm rejection"}
+          infoText={"It will reject the profile's update"}
+          confirmBtnColor="red"
         />
       )}
       <h1 className="text-2xl md:text-3xl font-bold underline">
@@ -101,88 +133,14 @@ function ApproveUpdates() {
           {filteredCustomers?.map((customer) => (
             <CustomerCard
               customer={customer}
-              onApprove={handleApprovalUpdate}
+              onUpdateApproval={handleUpdate}
+              onViewUpdate={() =>
+                navigate(`/admin/inmate-updates/${customer._id}`)
+              }
             />
           ))}
         </div>
       )}
-      {/* <button
-        onClick={() => navigate("/list-customer")}
-        className="flex justify-center items-center gap-4 m-auto bg-fr-blue-200  px-6  text-white py-3 text-lg rounded hover:opacity-90"
-      >
-        <img src="/assets/icons/plus.svg" alt="" className="h-6" />
-        List customer{" "}
-      </button> */}
-    </div>
-  );
-}
-
-function CustomerCard({ customer, onApprove }) {
-  const navigate = useNavigate();
-  return (
-    <div
-      id="customer-card"
-      className="bg-gray-100 rounded-md border border-gray-300 py-2 px-4 w-full flex flex-col gap-y-6 gap-x-4 md:flex-row"
-    >
-      <img
-        src={customer?.imageUrl || "/assets/default.jpg"}
-        alt=""
-        className="h-80 w-full md:w-44 md:h-44 rounded"
-      />
-      <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
-        <div className=" ">
-          <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
-            {customer?.firstName} {customer?.lastName}
-          </p>
-
-          <div className="flex gap-x-4">
-            <p className="hidden md:block">{customer?.age || "N/A"} yrs</p>
-            <p className="hidden md:block">{customer?.gender || "N/A"}</p>
-            <p className="hidden md:block">{customer?.orientation || "N/A"}</p>
-            <p className="hidden md:block">{customer?.race || "N/A"}</p>
-            <span className="flex gap-x-1 items-baseline">
-              <img src="/assets/icons/star.svg" alt="" className="h-4" />{" "}
-              {customer?.rating || 0}
-            </span>
-            <p className="underline">{customer?.numRatings || 0} Reviews</p>
-          </div>
-        </div>
-        <p>
-          <span className="font-medium mr-1">Inmate#:</span>
-          {customer?.inmateNumber || "N/A"}
-        </p>
-        <p>
-          <span className="font-medium mr-1">Location:</span>
-          {customer?.state || "N/A"}, {customer?.city || "N/A"}
-        </p>
-        <p>
-          <span className="font-medium mr-1"> Mainling Addres:</span>
-          {customer?.mailingAddress || "N/A"}
-        </p>
-      </div>
-      <div className="w-full md:w-fit ml-auto flex flex-col my-auto">
-        <button
-          type="button"
-          className="mt-4 bg-green-600 text-white px-6 py-3 rounded hover:opacity-90"
-          onClick={() => onApprove(true, customer._id)}
-        >
-          Approve
-        </button>
-        {/* <button
-          type="button"
-          className="mt-4 bg-red-600  text-black px-5 py-3  text-white rounded hover:opacity-90"
-          onClick={() => navigate(`/customer/${customer?._id}`)}
-        >
-          Reject
-        </button> */}
-        <button
-          type="button"
-          className="mt-4 bg-fr-blue-200  text-black px-5 py-3  text-white rounded hover:opacity-90"
-          onClick={() => navigate(`/admin/inmate-updates/${customer?._id}`)}
-        >
-          View Details
-        </button>
-      </div>
     </div>
   );
 }

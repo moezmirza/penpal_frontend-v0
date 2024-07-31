@@ -1130,11 +1130,11 @@ function DuesSection({
       <div className="flex flex-col gap-y-2 text-white">
         <button
           className={`py-2 w-full bg-green-600 rounded-lg ${
-            !isDone && !addons
+            !isDone && !addons && total != 0
               ? "opacity-50 cursor-not-allowed"
               : "curose-pointer"
           }`}
-          disabled={!isDone && !addons}
+          disabled={!isDone && !addons && total != 0}
           onClick={onPaynow}
         >
           Pay now

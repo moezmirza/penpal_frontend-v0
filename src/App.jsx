@@ -40,11 +40,11 @@ function App() {
         <Route path="/approve-profiles" element={<ApproveProfiles />} />
         <Route path="/approve-updates" element={<ApproveUpdates />} />
         <Route path="/admin/inmate-updates/:id" element={<AdminCustomer />} />
-        <Route path="/admin/inmate-profile/:id" element={<Customer />} />
+        <Route path="/admin/inmate/:id" element={<Customer />} />
         <Route path="/delete-profiles" element={<DeleteProfiles />} />
         <Route path="*" element={<ApproveProfiles />} />
       </Route>
-      <Route element={<UserRoutes />}>
+    <Route element={<UserRoutes />}>
         <Route path="/" element={<FindPal />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/inmate/:id" element={<Customer />} />
