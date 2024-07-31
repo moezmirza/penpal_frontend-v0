@@ -307,7 +307,7 @@ function CreateCustomer() {
       ).reduce((acc, item) => {
         acc[item] = basicInfo[item];
         return acc;
-      }, []);
+      }, {});
 
       let updatedPersonalityInfo = Object.keys(
         updatedFields?.current?.personalityInfo
@@ -324,8 +324,11 @@ function CreateCustomer() {
         },
         basicInfo: updatedBasicInfo,
         personalityInfo: updatedPersonalityInfo,
+        wordLimit: (wordLimit || 0) + (duesInfo.wordLimit || 0),
+        totalPaidPhotos:
+          (updatedFields.current.totalPaidPhotos || 0) +
+          (duesInfo.totalPaidPhotos || 0),
       };
-
       console.log("finalObjetct to be putted", finalObj);
 
       const { success, data, error } = await put(
@@ -338,20 +341,36 @@ function CreateCustomer() {
         setDone(true);
 
         const pendingDues = updatedFields.current;
-        console.log("pendingDues", pendingDues);
-        setDuesInfo(pendingDues);
+
+        // Ensure default values for addition
+        const newPendingDues = {
+          ...pendingDues,
+          creation: duesInfo.creation,
+          wordLimit: (pendingDues.wordLimit || 0) + (duesInfo.wordLimit || 0),
+          totalPaidPhotos:
+            (pendingDues.totalPaidPhotos || 0) +
+            (duesInfo.totalPaidPhotos || 0),
+        };
+
+        console.log("pendingDues", newPendingDues);
+        setDuesInfo(newPendingDues);
         updateBtnRef.current.disabled = false;
         payementBoxRef.current.scrollIntoView({
           behavior: "smooth",
         });
       } else {
-        console.log("errorMsg", error);
+        console.log("errorMsg", error, error?.message);
+
+        setLoading(false);
         updateBtnRef.current.disabled = false;
         errorRef.current.scrollIntoView({
           behavior: "smooth",
         });
-        setLoading(false);
-        setError("An unexpected error occurred");
+        if (error?.message == "update pending") {
+          setError("Previous update had to approved to make a new one");
+        } else {
+          setError("An unexpected error occurred");
+        }
       }
     } else {
       const finalObj = {
@@ -362,6 +381,8 @@ function CreateCustomer() {
         },
         basicInfo,
         personalityInfo: personalityInfo,
+        wordLimit: wordLimit,
+        totalPaidPhotos: total > 3 ? total - 3 : 0,
       };
 
       console.log(
@@ -380,16 +401,9 @@ function CreateCustomer() {
         console.log("duesInfo", duesInfo);
         setDuesInfo((prev) => ({
           ...prev,
-          totalPaidPhotos: total - 3,
+          totalPaidPhotos: total > 3 ? total - 3 : 0,
         }));
-        // if (wordLimit) {
-        //   const totalCount =
-        //     Math.ceil(bioWordsLenght / 350) > 1
-        //       ? Math.ceil(bioWordsLenght / 350) - 1
-        //       : 0;
-        console.log("currWordLimit", wordLimit);
         setDuesInfo((prev) => ({ ...prev, wordLimit: wordLimit }));
-        // }
         setDuesInfo((prev) => ({ ...prev, creation: true }));
         payementBoxRef.current.scrollIntoView({
           behavior: "smooth",
@@ -460,6 +474,8 @@ function CreateCustomer() {
           setWordLimit(totalCount);
           // setWordNum(totalCount);
         }
+      } else {
+        setWordLimit(0);
       }
     }
     updatedFields.current.basicInfo[e.target.name] = true;
@@ -471,12 +487,6 @@ function CreateCustomer() {
     let updatedArr = personalityInfo[stateKey];
 
     updatedFields.current.personalityInfo[stateKey] = true;
-    // if (id) {
-    //   setDuesInfo({
-    //     ...duesInfo,
-    //     personalityInfo: { ...duesInfo["personalityInfo"], [stateKey]: true },
-    //   });
-    // }
     if (remove) {
       updatedArr = updatedArr.filter((item) => item != value);
     } else {
@@ -613,11 +623,6 @@ function CreateCustomer() {
         return;
       }
     }
-
-    // if (!validateEmail(basicInfo.email)) {
-    //   setError("Invalid email format");
-    //   return;
-    // }
 
     if (id) {
       setShowUpdateConfirmPop(true);
@@ -788,20 +793,18 @@ function CustomerDetails({
   if (currPhotos.total > 3) {
     recieptForCreation.totalPaidPhotos = currPhotos.total - 3;
   }
-  // if (wordLimit) {
-  //   const bioWordsLenght =
-  //     basicInfo.bio == "" ? 0 : basicInfo.bio.split(" ").length;
-  //   const totalCount =
-  //     Math.ceil(bioWordsLenght / 350) > 1
-  //       ? Math.ceil(bioWordsLenght / 350) - 1
-  //       : 0;
   recieptForCreation.wordLimit = wordLimit;
-  updatedFields.current.wordLimit = wordLimit;
-  // }
-  if (id && photos.total > 3) {
-    updatedFields.current.totalPaidPhotos = currPhotos.total;
+  if (id) {
+    updatedFields.current.wordLimit = wordLimit;
+    if (photos.total > 3) {
+      updatedFields.current.totalPaidPhotos = currPhotos.total;
+    } else {
+      const totalPhotoCount = photos.total + currPhotos.total;
+      if (totalPhotoCount > 3) {
+        updatedFields.current.totalPaidPhotos = totalPhotoCount - 3;
+      }
+    }
   }
-
   return (
     <div className="basis-[60%] bg-white rounded-lg relative">
       {showUpdateConfirmPop && (
@@ -1119,6 +1122,7 @@ function DuesSection({
   total = total + duesInfo.totalPaidPhotos * 9.95;
 
   total = roundTo(total, 2);
+  console.log("total here", total, total != 0);
   console.log("addons", addons);
   return (
     <div
@@ -1130,11 +1134,11 @@ function DuesSection({
       <div className="flex flex-col gap-y-2 text-white">
         <button
           className={`py-2 w-full bg-green-600 rounded-lg ${
-            !isDone && !addons && total != 0
+            !isDone && !addons && total == 0
               ? "opacity-50 cursor-not-allowed"
               : "curose-pointer"
           }`}
-          disabled={!isDone && !addons && total != 0}
+          disabled={!isDone && !addons && total == 0}
           onClick={onPaynow}
         >
           Pay now

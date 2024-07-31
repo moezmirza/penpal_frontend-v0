@@ -95,7 +95,7 @@ function AdminCustomer() {
                   alt=""
                   className="h-80 w-full md:h-44 md:w-44 rounded"
                 />
-                {updatedFields?.includes("weight") && (
+                {updatedFields?.includes("imageUrl") && (
                   <span className="font-normal text-xs text-green-500">
                     new
                   </span>
@@ -240,11 +240,11 @@ function AdminCustomer() {
               <div>
                 <h2 className="font-semibold text-3xl md:text-2xl my-4 flex items-end">
                   <p className="underline">Personality Info</p>
-                  {updatedFields?.includes("personality") && (
+                  {/* {updatedFields?.includes("personality") && (
                     <span className="font-normal text-xs text-green-500 ml-2">
                       new
                     </span>
-                  )}
+                  )} */}
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -254,6 +254,11 @@ function AdminCustomer() {
                         <div key={key}>
                           <p className="font-semibold text-lg ">
                             {key.toUpperCase()}{" "}
+                            {updatedFields.includes(key) && (
+                              <span className="text-xs text-green-500 ml-2">
+                                new
+                              </span>
+                            )}
                           </p>
                           <ul className="">
                             {customer?.personalityInfo[key].map((value) => (
