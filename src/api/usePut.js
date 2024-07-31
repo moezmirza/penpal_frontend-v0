@@ -14,7 +14,6 @@ function usePut() {
       console.log("auhtTOkne", authToken);
       if (Date.now() - tokenInfo?.createdAt > 1000 * 60 * 30) {
         const refreshAccessToken = await auth?.currentUser?.getIdToken(true);
-        console.log("curruserinGet", currUser);
         const authInfo = {
           token: refreshAccessToken,
         };
