@@ -202,13 +202,13 @@ function CreateCustomer() {
 
   const [photos, setPhotos] = useState(photosIntialState);
   const [currPhotos, setCurrPhotos] = useState(photosIntialState);
-  const [basicInfo, setBasicInfo] = useState(basicInfoIntialState);
-  const [personalityInfo, setPersonalityInfo] = useState(
-    personalityInfoInitialState
-  );
+  const [basicInfo, setBasicInfo] = useState(dummyBasicInfo);
+  const [personalityInfo, setPersonalityInfo] = useState(dummyPInfo);
 
   const [duesInfo, setDuesInfo] = useState(dueInitiallState);
   const [wordLimit, setWordLimit] = useState(false);
+  const [wordNum, setWordNum] = useState(0);
+  const [intialWordCount, setIntialWordCount] = useState(0);
   const [done, setDone] = useState(false);
   const payementBoxRef = useRef();
   const errorRef = useRef();
@@ -345,7 +345,7 @@ function CreateCustomer() {
           behavior: "smooth",
         });
       } else {
-        console.log("errorMsg", error)
+        console.log("errorMsg", error);
         updateBtnRef.current.disabled = false;
         errorRef.current.scrollIntoView({
           behavior: "smooth",
@@ -378,17 +378,19 @@ function CreateCustomer() {
         setLoading(false);
         setDone(true);
         console.log("duesInfo", duesInfo);
-        if (total > 3) {
-          setDuesInfo({ ...duesInfo, totalPaidPhotos: (total - 3) * 9.95 });
-        }
-        if (wordLimit) {
-          const totalCount =
-            Math.ceil(bioWordsLenght / 350) > 1
-              ? Math.ceil(bioWordsLenght / 350) - 1
-              : 0;
-          setDuesInfo({ ...duesInfo, wordLimit: totalCount });
-        }
-        setDuesInfo({ ...duesInfo, creation: true });
+        setDuesInfo((prev) => ({
+          ...prev,
+          totalPaidPhotos: total - 3,
+        }));
+        // if (wordLimit) {
+        //   const totalCount =
+        //     Math.ceil(bioWordsLenght / 350) > 1
+        //       ? Math.ceil(bioWordsLenght / 350) - 1
+        //       : 0;
+        console.log("currWordLimit", wordLimit);
+        setDuesInfo((prev) => ({ ...prev, wordLimit: wordLimit }));
+        // }
+        setDuesInfo((prev) => ({ ...prev, creation: true }));
         payementBoxRef.current.scrollIntoView({
           behavior: "smooth",
         });
@@ -435,10 +437,29 @@ function CreateCustomer() {
     if (fieldName == "bio") {
       const text = e.target.value;
       let wordCount = text.split(" ").length;
+      console.log("intialWordCount", intialWordCount);
+      if (wordCount <= intialWordCount) {
+        setWordLimit(0);
+      }
       if (wordCount > 350) {
-        setWordLimit(true);
-      } else {
-        setWordLimit(false);
+        console.log("wordCount", wordCount);
+
+        if (wordCount > intialWordCount && intialWordCount >= 350) {
+          let netWordCount = wordCount - intialWordCount;
+          console.log("netWordCount", netWordCount);
+
+          if (netWordCount > 100) {
+            const totalCount = Math.floor(netWordCount / 100);
+            console.log("totalCount", totalCount);
+            setWordLimit(totalCount);
+            // setWordNum(totalCount);
+          }
+        } else if (intialWordCount < 350) {
+          let netWordCount = wordCount - 350;
+          let totalCount = Math.floor(netWordCount / 100);
+          setWordLimit(totalCount);
+          // setWordNum(totalCount);
+        }
       }
     }
     updatedFields.current.basicInfo[e.target.name] = true;
@@ -467,11 +488,16 @@ function CreateCustomer() {
     });
   };
 
-  const emptyFormat = (field) => {
+  const basicInfoEmptyFormat = (field) => {
     if (typeof basicInfo[field] == "string") return "";
     else return [];
   };
 
+  const duesInfoEmptyFormat = (field) => {
+    if (typeof dueInitiallState[field] == "boolean") return false;
+    else if (typeof dueInitiallState[field] == "number") return 0;
+    else return {};
+  };
   useEffect(() => {
     const fetchCustomer = async () => {
       setLoading(true);
@@ -491,15 +517,25 @@ function CreateCustomer() {
         const fetchedPersonality = data["personalityInfo"];
         const fetchedBasicInfo = data["basicInfo"];
         const fetchedPhotos = data["photos"];
+        const fetchedPendingDues = data["pendingPayments"];
 
         const basicInfoData = {};
+        const duesInfoData = {};
 
         // assigning only state values
         Object.keys(basicInfo).forEach((field) => {
           basicInfoData[field] = fetchedBasicInfo[field]
             ? fetchedBasicInfo[field]
-            : emptyFormat(field);
+            : basicInfoEmptyFormat(field);
         });
+
+        // assigning only state values
+        Object.keys(duesInfo).forEach((field) => {
+          duesInfoData[field] = fetchedPendingDues[field]
+            ? fetchedPendingDues[field]
+            : duesInfoEmptyFormat(field);
+        });
+        console.log("duesInfoData", duesInfoData);
 
         console.log(
           "fetchedPhotos",
@@ -510,9 +546,15 @@ function CreateCustomer() {
           fetchedPersonality
         );
         setLoading(false);
+        setDone(true);
         setPhotos(fetchedPhotos);
         setBasicInfo(basicInfoData);
         setPersonalityInfo(fetchedPersonality);
+        setDuesInfo(duesInfoData);
+        const bioWordsLenght =
+          basicInfoData?.bio == "" ? 0 : (basicInfoData?.bio.split(" ")).length;
+        console.log("intialwordCount", bioWordsLenght);
+        setIntialWordCount(bioWordsLenght);
       } else {
         setLoading(false);
         console.log("error", error);
@@ -746,14 +788,16 @@ function CustomerDetails({
   if (currPhotos.total > 3) {
     recieptForCreation.totalPaidPhotos = currPhotos.total - 3;
   }
-  if (wordLimit) {
-    const totalCount =
-      Math.ceil(bioWordsLenght / 350) > 1
-        ? Math.ceil(bioWordsLenght / 350) - 1
-        : 0;
-    recieptForCreation.wordLimit = totalCount;
-    updatedFields.current.wordLimit = totalCount;
-  }
+  // if (wordLimit) {
+  //   const bioWordsLenght =
+  //     basicInfo.bio == "" ? 0 : basicInfo.bio.split(" ").length;
+  //   const totalCount =
+  //     Math.ceil(bioWordsLenght / 350) > 1
+  //       ? Math.ceil(bioWordsLenght / 350) - 1
+  //       : 0;
+  recieptForCreation.wordLimit = wordLimit;
+  updatedFields.current.wordLimit = wordLimit;
+  // }
   if (id && photos.total > 3) {
     updatedFields.current.totalPaidPhotos = currPhotos.total;
   }
@@ -868,12 +912,12 @@ function CustomerDetails({
                   }
                   rows={5}
                   className={`bg-transparent block w-full my-1.5 rounded-md p-1.5 border  ${
-                    wordLimit
+                    wordLimit != 0
                       ? "focus:border-red-500 border-red-500"
                       : " focus:border-gray-700 border-gray-400"
                   } outline-none`}
                 ></textarea>
-                {wordLimit && (
+                {wordLimit != 0 && (
                   <p className="text-red-500 text-xs md:text-sm">
                     free limit of 350 words exceeded, you'll have to pay $9.95
                     for each extra 100 words.
