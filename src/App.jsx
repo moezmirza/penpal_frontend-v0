@@ -56,7 +56,7 @@ function App() {
         <Route path="/payment" element={<CheckoutForm />} />
         <Route path="/payment/result" element={<Result />} />
         {/* <Route path="/subcriptions" element={<Subscription />} /> */}
-        <Route path="*" element={<FindPal />} />
+        {/* <Route path="*" element={<FindPal />} /> */}
       </Route>
     </Routes>
   );

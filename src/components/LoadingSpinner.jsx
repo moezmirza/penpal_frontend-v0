@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export const LoadingSpinner = ({
   isDone = false,
   isLoading,
-  bgShade = "300",
+  bgShade,
   position = "fixed",
 }) => {
   const [hide, setHide] = useState(false);
@@ -27,7 +27,9 @@ export const LoadingSpinner = ({
       }`}
     >
       <div
-        className={`md:h-20 h-16 md:w-20 w-16  bg-gray-${bgShade} rounded-lg p-6 flex justify-center items-center relative`}
+        className={`md:h-20 h-16 md:w-20 w-16 ${
+          bgShade ? `bg-gray-400` : "bg-gray-300"
+        } rounded-lg p-6 flex justify-center items-center relative`}
       >
         <div
           role="status"

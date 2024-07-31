@@ -198,7 +198,7 @@ export const institutionalEmailProviderList = [
   "Getting Out",
   "GTL",
   "Corrlincs",
-  "Other",
+  "Other provider",
 ];
 
 export const hobbies = [
@@ -423,6 +423,7 @@ export const basicInfoFieldLabelMap = {
   institutionalEmailProvider: "Institutional Email Provider",
   referredBy: "Referred By",
   bio: "Bio",
+  wordLimit:"Bio word Limit"
 };
 
 export const basicInfoPlaceholderMap = {
@@ -552,10 +553,7 @@ export const addonStateToNameMap = {
 
 export const addonStatetoCost = {
   creation: 99.95,
-  update: 9.95,
   renewal: 79.95,
-  wordLimit: 9.95,
   featurePlacement: 14.95,
   premiumPlacement: 24.95,
-  photo: 9.95,
 };

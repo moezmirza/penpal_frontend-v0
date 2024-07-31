@@ -63,7 +63,7 @@ function CustomerCard({ customer }) {
       }  p-2 px-4 w-full md:w-10/12 mx-auto flex flex-col gap-y-6 gap-x-4 md:flex-row`}
     >
       <img
-        src={customer?.imageUrl || "/assets/default.jpg"}
+        src={customer?.photos?.imageUrl || "/assets/default.jpg"}
         alt=""
         className="h-80 w-full md:w-44 md:h-44 rounded"
       />
@@ -71,7 +71,7 @@ function CustomerCard({ customer }) {
         <div>
           <div className=" flex flex-col items-center md:flex-row md:gap-2 mb-4 md:mb-2">
             <p className="font-semibold md:text-3xl text-lg ">
-              {customer?.firstName} {customer?.lastName}
+              {customer?.basicInfo?.firstName} {customer?.basicInfo?.lastName}
             </p>
             {(profileApproved == false || updateApproved == false) && (
               <p className="text-red-500 text-sm font-normal">{infoText}</p>
@@ -79,28 +79,38 @@ function CustomerCard({ customer }) {
           </div>
 
           <div className="flex gap-x-4">
-            <p className="hidden md:block">{customer?.age || "N/A"} yrs</p>
-            <p className="hidden md:block">{customer?.gender || "N/A"}</p>
-            <p className="hidden md:block">{customer?.orientation || "N/A"}</p>
-            <p className="hidden md:block">{customer?.race || "N/A"}</p>
+            <p className="hidden md:block">
+              {customer?.basicInfo?.age || "N/A"} yrs
+            </p>
+            <p className="hidden md:block">
+              {customer?.basicInfo?.gender || "N/A"}
+            </p>
+            <p className="hidden md:block">
+              {customer?.basicInfo?.orientation || "N/A"}
+            </p>
+            <p className="hidden md:block">
+              {customer?.basicInfo?.race || "N/A"}
+            </p>
             <span className="flex gap-x-1 items-baseline">
               <img src="/assets/icons/star.svg" alt="" className="h-4" />{" "}
-              {customer?.rating || 0}
+              {customer?.basicInfo?.rating || 0}
             </span>
-            <p className="underline">{customer?.numRatings || 0} Reviews</p>
+            <p className="underline">
+              {customer?.basicInfo?.numRatings || 0} Reviews
+            </p>
           </div>
         </div>
         <p>
           <span className="font-medium mr-1">Inmate#:</span>
-          {customer?.inmateNumber || "N/A"}
+          {customer?.basicInfo?.inmateNumber || "N/A"}
         </p>
         <p>
           <span className="font-medium mr-1"> Expires on:</span>
-          {customer?.expiresAt || "N/A"}
+          {customer?.basicInfo?.expiresAt || "N/A"}
         </p>
         <p>
           <span className="font-medium mr-1"> Mainling Addres:</span>
-          {customer?.mailingAddress || "N/A"}
+          {customer?.basicInfo?.mailingAddress || "N/A"}
         </p>
       </div>
       <div className="w-full md:w-fit ml-auto flex flex-col my-auto">

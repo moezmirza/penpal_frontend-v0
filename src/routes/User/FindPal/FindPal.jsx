@@ -206,8 +206,8 @@ function FindPal() {
 
   filteredCustomers = filteredCustomers?.filter(
     (customer) =>
-      includesCaseInsensitive(customer.firstName, inputVal) ||
-      includesCaseInsensitive(customer.lastName, inputVal)
+      includesCaseInsensitive(customer?.basicInfo?.firstName, inputVal) ||
+      includesCaseInsensitive(customer?.basicInfo?.lastName, inputVal)
   );
   return (
     <div className="bg-c-basic flex flex-col gap-y-12 w-full px-3 py-6">
@@ -290,7 +290,9 @@ function FindPal() {
                 className="w-full bg-transparent block mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
               />
             </label>
-            <p className="font-semibold md:text-2xl">Total : {filteredCustomers.length}</p>
+            <p className="font-semibold md:text-2xl">
+              Total : {filteredCustomers.length}
+            </p>
           </div>
         </div>
 
@@ -330,6 +332,7 @@ function FindPal() {
 
 function CustomerCard({ customer, name }) {
   const navigate = useNavigate();
+  console.log("customerCard", customer, customer?.basicInfo)
   return (
     <div
       id="customer-card"
@@ -338,7 +341,7 @@ function CustomerCard({ customer, name }) {
       }  rounded-md border border-gray-300 p-4 w-full md:w-9/12 flex flex-col gap-y-6 gap-x-4 md:flex-row`}
     >
       <img
-        src={customer?.imageUrl || "/assets/default.jpg"}
+        src={customer?.photos?.imageUrl || "/assets/default.jpg"}
         alt=""
         className="h-80 w-full md:w-44 md:h-44 rounded"
       />
@@ -346,10 +349,12 @@ function CustomerCard({ customer, name }) {
         <div className=" ">
           <div className="flex gap-x-6 items-baseline">
             <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
-              {customer?.firstName} {customer?.lastName}
+              {customer?.basicInfo?.firstName} {customer?.basicInfo?.lastName}
             </p>
             <img
-              src={`assets/icons/${customer?.isFavorite && "filledHeart.svg"}`}
+              src={`assets/icons/${
+                customer?.basicInfo?.isFavorite && "filledHeart.svg"
+              }`}
               alt=""
               className="h-6"
             />
@@ -357,16 +362,16 @@ function CustomerCard({ customer, name }) {
 
           <div className="flex gap-4 flex-wrap">
             <p className="hidden md:block text-nowrap">
-              {customer?.age || "N/A"} yrs
+              {customer?.basicInfo?.age || "N/A"} yrs
             </p>
             <p className="hidden md:block text-nowrap">
-              {customer?.gender || "N/A"}
+              {customer?.basicInfo?.gender || "N/A"}
             </p>
             <p className="hidden md:block text-nowrap">
-              {customer?.orientation || "N/A"}
+              {customer?.basicInfo?.orientation || "N/A"}
             </p>
             <p className="hidden md:block text-nowrap">
-              {customer?.race || "N/A"}
+              {customer?.basicInfo?.race || "N/A"}
             </p>
             <span className="flex gap-x-1 items-baseline">
               <img
@@ -374,24 +379,25 @@ function CustomerCard({ customer, name }) {
                 alt=""
                 className="h-4  text-nowrap"
               />{" "}
-              {customer?.rating || 0}
+              {customer?.basicInfo?.rating || 0}
             </span>
             <p className="underline  text-nowrap">
-              {customer?.numRatings || 0} Reviews
+              {customer?.basicInfo?.numRatings || 0} Reviews
             </p>
           </div>
         </div>
         <p>
           <span className="font-medium mr-1">Location:</span>
-          {customer?.state || "N/A"}, {customer?.city || "N/A"}
+          {customer?.basicInfo?.state || "N/A"},{" "}
+          {customer?.basicInfo?.city || "N/A"}
         </p>
         <p>
           <span className="font-medium mr-1">Education:</span>
-          {customer?.education || "N/A"}
+          {customer?.basicInfo?.education || "N/A"}
         </p>
         <p>
           <span className="font-medium mr-1"> Mailing Address:</span>
-          {customer?.mailingAddress || "N/A"}
+          {customer?.basicInfo?.mailingAddress || "N/A"}
         </p>
       </div>
       <div className="w-full md:w-fit ml-auto flex flex-col my-auto">
@@ -402,7 +408,7 @@ function CustomerCard({ customer, name }) {
         >
           View Details
         </button>
-        <button
+        {/* <button
           type="button"
           className="mt-4 border text-black px-5 py-3 border-fr-blue-200 rounded hover:opacity-90"
           onClick={() =>
@@ -413,7 +419,7 @@ function CustomerCard({ customer, name }) {
           }
         >
           Contact Inmate
-        </button>
+        </button> */}
       </div>
     </div>
   );

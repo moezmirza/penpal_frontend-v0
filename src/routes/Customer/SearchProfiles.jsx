@@ -26,7 +26,7 @@ function SearchProfiles() {
     const fetchCustomers = async () => {
       setLoading(true);
       const { success, data, error } = await get(
-        `/user/favorite?p=0&l=${itemsPerPage}`
+        `/customer?p=0&l=${itemsPerPage}`
       );
       if (success) {
         setLoading(false);
@@ -51,7 +51,7 @@ function SearchProfiles() {
     const fetchMoreCustomers = async () => {
       setIsLoadingMore(true);
       const { success, data, error } = await get(
-        `/user/favorite?p=${page}&l=${itemsPerPage}`
+        `/customer?p=${page}&l=${itemsPerPage}`
       );
       if (success) {
         setIsLoadingMore(false);
@@ -125,8 +125,8 @@ function SearchProfiles() {
 
   filteredCustomers = filteredCustomers?.filter(
     (customer) =>
-      includesCaseInsensitive(customer.firstName, inputVal) ||
-      includesCaseInsensitive(customer.lastName, inputVal)
+      includesCaseInsensitive(customer?.basicInfo?.firstName, inputVal) ||
+      includesCaseInsensitive(customer?.basicInfo?.lastName, inputVal)
   );
 
   return (
@@ -158,9 +158,9 @@ function SearchProfiles() {
             />
           </div>
         </div>
-          <p className="font-semibold md:text-2xl">
-            Total : {filteredCustomers.length}
-          </p>
+        <p className="font-semibold md:text-2xl">
+          Total : {filteredCustomers.length}
+        </p>
       </div>
       <LoadingSpinner isLoading={loading} />
       {filteredCustomers.length == 0 && !loading ? (
@@ -197,7 +197,7 @@ function CustomerCard({ customer }) {
       className={`bg-gray-100 rounded-md border "border-gray-300" p-2 px-4 w-full md:w-10/12 mx-auto flex flex-col gap-y-6 gap-x-4 md:flex-row`}
     >
       <img
-        src={customer?.imageUrl || "/assets/default.jpg"}
+        src={customer?.photos?.imageUrl || "/assets/default.jpg"}
         alt=""
         className="h-auto w-full md:w-44 md:h-44 rounded"
       />
@@ -205,33 +205,44 @@ function CustomerCard({ customer }) {
         <div className=" ">
           <div className=" flex flex-col items-center md:flex-row gap-2 ">
             <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
-              {customer?.firstName} {customer?.lastName}
+              {customer?.basicInfo?.firstName} {customer?.basicInfo?.lastName}
             </p>
           </div>
 
           <div className="flex gap-x-4">
-            <p className="hidden md:block">{customer?.age || "N/A"} yrs</p>
-            <p className="hidden md:block">{customer?.gender || "N/A"}</p>
-            <p className="hidden md:block">{customer?.orientation || "N/A"}</p>
-            <p className="hidden md:block">{customer?.race || "N/A"}</p>
+            <p className="hidden md:block">
+              {customer?.basicInfo?.age || "N/A"} yrs
+            </p>
+            <p className="hidden md:block">
+              {customer?.basicInfo?.gender || "N/A"}
+            </p>
+            <p className="hidden md:block">
+              {customer?.basicInfo?.orientation || "N/A"}
+            </p>
+            <p className="hidden md:block">
+              {customer?.basicInfo?.race || "N/A"}
+            </p>
             <span className="flex gap-x-1 items-baseline">
               <img src="/assets/icons/star.svg" alt="" className="h-4" />{" "}
-              {customer?.rating || 0}
+              {customer?.basicInfo?.rating || 0}
             </span>
-            <p className="underline">{customer?.numRatings || 0} Reviews</p>
+            <p className="underline">
+              {customer?.basicInfo?.numRatings || 0} Reviews
+            </p>
           </div>
         </div>
         <p>
           <span className="font-medium mr-1">Location:</span>
-          {customer?.state || "N/A"}, {customer?.city || "N/A"}
+          {customer?.basicInfo?.state || "N/A"},{" "}
+          {customer?.basicInfo?.city || "N/A"}
         </p>
         <p>
           <span className="font-medium mr-1">Education:</span>
-          {customer?.education || "N/A"}
+          {customer?.basicInfo?.education || "N/A"}
         </p>
         <p>
           <span className="font-medium mr-1"> Mainling Addres:</span>
-          {customer?.mailingAddress || "N/A"}
+          {customer?.basicInfo?.mailingAddress || "N/A"}
         </p>
       </div>
       <div className="w-full md:w-fit ml-auto flex flex-col my-auto">

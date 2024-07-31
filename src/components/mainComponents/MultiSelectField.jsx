@@ -32,7 +32,7 @@ const MultiSelectField = memo(
     };
 
     const handleTagSelect = (option) => {
-      if (option.label == "Other") {
+      if (option.label == "Other provider") {
         setCustomOption(true);
       } else {
         onChange(labelText, option.label, false);

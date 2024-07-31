@@ -148,38 +148,45 @@ function Customer() {
           <div className="flex flex-col gap-y-8">
             <div className="flex flex-col md:flex-row md:items-start gap-x-12 gap-y-6 relative">
               <img
-                src={customer?.imageUrl || "/assets/default.jpg"}
+                src={customer?.photos?.imageUrl || "/assets/default.jpg"}
                 alt=""
                 className="h-80 w-full md:h-44 md:w-44 rounded"
               />
               <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">
                 <div>
                   <p className="font-semibold text-3xl mb-2 md:mb-1 text-center md:text-left">
-                    {customer?.firstName} {customer?.lastName}
+                    {customer?.basicInfo?.firstName}{" "}
+                    {customer?.basicInfo?.lastName}
                   </p>
 
                   <div className="flex gap-3 justify-center md:justify-start flex-wrap ">
-                    <p className="text-nowrap">{customer?.age || "N/A"} yrs</p>
-                    <p className="text-nowrap">{customer?.gender || "N/A"}</p>
                     <p className="text-nowrap">
-                      {customer?.orientation || "N/A"}
+                      {customer?.basicInfo?.age || "N/A"} yrs
                     </p>
-                    <p className="text-nowrap">{customer?.race || "N/A"}</p>
+                    <p className="text-nowrap">
+                      {customer?.basicInfo?.gender || "N/A"}
+                    </p>
+                    <p className="text-nowrap">
+                      {customer?.basicInfo?.orientation || "N/A"}
+                    </p>
+                    <p className="text-nowrap">
+                      {customer?.basicInfo?.race || "N/A"}
+                    </p>
                     <span className="flex gap-x-1 items-baseline">
                       <img
                         src="/assets/icons/star.svg"
                         alt=""
                         className="h-4"
                       />{" "}
-                      {customer?.rating || 0}
+                      {customer?.basicInfo?.rating || 0}
                     </span>
                     <p className="underline text-nowrap">
-                      {customer?.numRatings || 0} Reviews
+                      {customer?.basicInfo?.numRatings || 0} Reviews
                     </p>
                   </div>
                 </div>
                 <p>
-                  {customer?.bio || (
+                  {customer?.basicInfo?.bio || (
                     <p className="italic mt-6 text-gray-500 text-center md:text-left">
                       No bio added
                     </p>
@@ -206,7 +213,9 @@ function Customer() {
                       alt=""
                       className="h-6 mr-2"
                     />
-                    {customer?.isFavorite ? "Favorite" : "Add to Favorites"}
+                    {customer?.basicInfo?.isFavorite
+                      ? "Favorite"
+                      : "Add to Favorites"}
                   </button>
                 )}
                 {/* <button
@@ -214,7 +223,7 @@ function Customer() {
                   className="mt-4 border text-black text-nowrap w-full py-2.5 px-3  border-fr-blue-200 rounded-xl hover:opacity-90"
                   onClick={() =>
                     (window.location.href = mailTOLink(
-                      customer?.email,
+                      customer?.basicInfo?.email,
                       customer.firstName
                     ))
                   }
@@ -233,13 +242,13 @@ function Customer() {
                 {customer &&
                   basicInfoDisplayFields.map((field) => {
                     return (
-                      customer[field] &&
+                      customer?.basicInfo[field] &&
                       (field == "spokenLanguages" ? (
                         <p className="flex flex-wrap items-end">
                           <span className="font-semibold mr-1 text-lg">
                             {basicInfoFieldLabelMap[field]}:
                           </span>
-                          {customer[field].map((lang) => (
+                          {customer?.basicInfo[field].map((lang) => (
                             <span className="mr-1">{lang}</span>
                           ))}
                         </p>
@@ -249,8 +258,8 @@ function Customer() {
                             {basicInfoFieldLabelMap[field]}:
                           </span>
                           {field == "dateOfBirth"
-                            ? customer[field].split("T")[0]
-                            : customer[field]}
+                            ? customer?.basicInfo[field].split("T")[0]
+                            : customer?.basicInfo[field]}
                         </p>
                       ))
                     );
@@ -264,7 +273,7 @@ function Customer() {
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                  {Object.keys(customer?.personality || []).map(
+                  {Object.keys(customer?.personalityInfo || []).map(
                     (key) =>
                       key != "_id" && (
                         <div key={key}>
@@ -272,7 +281,7 @@ function Customer() {
                             {key.toUpperCase()}
                           </p>
                           <ul className="">
-                            {customer?.personality[key].map((value) => (
+                            {customer?.personalityInfo[key].map((value) => (
                               <li className="text-nowrap" key={value}>
                                 {value}
                               </li>

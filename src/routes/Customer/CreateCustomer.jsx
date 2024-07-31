@@ -25,22 +25,65 @@ import { usePut } from "../../api/usePut";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { v4, validate } from "uuid";
 import { formattedImageName } from "../User/Profile/BasicInfo";
-import ConfrimPopup from "../../components/ConfrimPopup";
+import ConfrimPopup, { PaymentReceipt } from "../../components/ConfrimPopup";
+import { current } from "@reduxjs/toolkit";
 
-const roundTo = (num, decimalPlaces) => {
+export const roundTo = (num, decimalPlaces) => {
   const factor = Math.pow(10, decimalPlaces);
   return Math.round(num * factor) / factor;
 };
+const isEmpty = (key) => {
+  if (typeof key === "string" && key == "") return true;
+  else if (key.length == 0) return true;
+  return false;
+};
 function CreateCustomer() {
-  const imageRef = useRef();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showConfirmPop, setShowConfirmPop] = useState(false);
+  const [showUpdateConfirmPop, setShowUpdateConfirmPop] = useState(false);
+  const [showCreateConfirmPop, setShowCreateConfirmPop] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
+
   const post = usePost();
   const get = useGet();
   const put = usePut();
   const { id } = useParams();
+
+  const dummyBasicInfo = {
+    firstName: "John",
+    lastName: "Doe",
+    inmateNumber: "123456",
+    age: "30",
+    gender: "Male",
+    orientation: "Straight",
+    state: ["California"],
+    city: "Los Angeles",
+    mailingAddress: "1234 Main St",
+    zipcode: "90001",
+    dateOfBirth: "1993-01-01",
+    height: "6'0\"",
+    weight: "180 lbs",
+    hairColor: ["Brown"],
+    eyeColor: ["Blue"],
+    race: ["Other"],
+    spokenLanguages: "English",
+    institutionalEmailProvider: ["example.com"],
+    religiousPref: ["Christian"],
+    highSchool: "Lincoln High",
+    highSchoolState: "California",
+    highSchoolCity: "Los Angeles",
+    education: ["Bachelors degree"],
+    collegeName: "University of California",
+    collegeState: "California",
+    collegeCity: "Los Angeles",
+    homeTownCity: "San Francisco",
+    homeTownState: "California",
+    bodyType: [],
+    astrologicalSign: [],
+    relationShipStatus: ["Single"],
+    veteranStatus: ["Army veteran"],
+    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  };
 
   const basicInfoIntialState = {
     firstName: "",
@@ -76,7 +119,16 @@ function CreateCustomer() {
     relationShipStatus: [],
     veteranStatus: [],
     bio: "",
-    imageUrl: "",
+  };
+
+  const dummyPInfo = {
+    hobbies: ["Reading"],
+    sports: ["Basketball"],
+    likes: ["Traveling"],
+    personality: ["Outgoing"],
+    bookGenres: ["Fiction"],
+    musicGenres: ["Rock"],
+    movieGenres: ["Action"],
   };
 
   const personalityInfoInitialState = {
@@ -139,10 +191,17 @@ function CreateCustomer() {
     renewal: false,
     featurePlacement: false,
     premiumPlacement: false,
-    photo: false,
-    wordLimit: false,
+    wordLimit: 0,
+    totalPaidPhotos: 0,
+  };
+  const photosIntialState = {
+    imageUrl: "",
+    artworks: [],
+    total: 0,
   };
 
+  const [photos, setPhotos] = useState(photosIntialState);
+  const [currPhotos, setCurrPhotos] = useState(photosIntialState);
   const [basicInfo, setBasicInfo] = useState(basicInfoIntialState);
   const [personalityInfo, setPersonalityInfo] = useState(
     personalityInfoInitialState
@@ -150,163 +209,199 @@ function CreateCustomer() {
 
   const [duesInfo, setDuesInfo] = useState(dueInitiallState);
   const [wordLimit, setWordLimit] = useState(false);
-  const [imageDropdown, setImageDropdown] = useState(false);
   const [done, setDone] = useState(false);
   const payementBoxRef = useRef();
+  const errorRef = useRef();
+  const updatedFields = useRef({
+    basicInfo: {},
+    personalityInfo: {},
+  }); // to keep track of updatedFields
+  const updateBtnRef = useRef();
+
   // const validateEmail = (email) => {
   //   // Basic regex for email validation
   //   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   //   return regex.test(email);
   // };
 
-  // to keep track of only updatedFields
-  const updatedFields = useRef({});
+  const uploadImage = async (imageFile, imageName, folder) => {
+    try {
+      const userProfileImgRef = ref(storage, `${folder}/${imageName}`);
+      const snapshot = await uploadBytes(userProfileImgRef, imageFile);
+      const downloadUrl = await getDownloadURL(snapshot.ref);
+      return downloadUrl;
+    } catch {
+      console.log("error uploading image");
+      return "";
+    }
+  };
+
+  const uploadImages = async (images, folder) => {
+    const uploadPromises = images.map((image, index) => {
+      let imageName = formattedImageName(v4());
+      return uploadImage(image, imageName, folder);
+    });
+    const downloadUrls = await Promise.all(uploadPromises);
+    return downloadUrls;
+  };
+  const handleImageUpdate = async () => {
+    //   // to handle image removal
+    // if (currPhotos.imageUrl == "" && photos.imageUrl != "") {
+    //   let prevName = photos.imageUrl.split("imageNameS")[1];
+    //   prevName = prevName?.split("imageNameE")[0];
+    //   if (prevName) {
+    //     imageName = formattedImageName(prevName);
+    //   }
+    //   try {
+    //     const deleteImageRef = ref(storage, `${"images"}/${imageName}`);
+    //     await deleteObject(deleteImageRef);
+    //   } catch {
+    //     console.log("error while deleting");
+    //   }
+    // }
+    let imageDownloadURL = "";
+    let artworksDownloadURL = [];
+    let total = currPhotos.total;
+    console.log("currPhotos.total", total);
+
+    if (currPhotos.imageUrl) {
+      let imageName = formattedImageName(v4());
+      // using the old image name
+      if (photos.imageUrl != "") {
+        let prevName = photos.imageUrl.split("imageNameS")[1];
+        prevName = prevName?.split("imageNameE")[0];
+        if (prevName) {
+          imageName = formattedImageName(prevName);
+        }
+      }
+      imageDownloadURL = await uploadImage(
+        currPhotos.imageUrl,
+        imageName,
+        "images"
+      );
+      // console.log("imageDownloadURL", imageDownloadURL);
+      // console.log("imageUrl.total", total);
+    }
+    if (currPhotos.artworks.length != 0) {
+      artworksDownloadURL = await uploadImages(currPhotos.artworks, "artworks");
+      console.log("imageDownloadUrls", artworksDownloadURL);
+
+      console.log("imageDownloadUrls.total", total);
+    }
+    return { imageDownloadURL, artworksDownloadURL, total: currPhotos.total };
+  };
 
   const handleUpdate = async (e) => {
     // checking for required fields
     setLoading(true);
-    setShowConfirmPop(false);
+    setShowUpdateConfirmPop(false);
+    setShowCreateConfirmPop(false);
 
-    const uploadedImg = imageRef.current.files[0];
-    if (uploadedImg) {
-      console.log(
-        "uploading img...",
-        uploadedImg,
-        "currentImageUrl",
-        basicInfo.imageUrl
-      );
-      let imageName = formattedImageName(v4());
-      if (basicInfo.imageUrl) {
-        // using the old image
-        let prevName = basicInfo.imageUrl.split("imageNameS")[1];
-        prevName = prevName?.split("imageNameE")[0];
-        if (prevName) {
-          console.log("using old image name");
-          imageName = formattedImageName(prevName);
-        }
-      }
-      const userProfileImgRef = ref(storage, `images/${imageName}`);
-      const snapshot = await uploadBytes(userProfileImgRef, uploadedImg);
-      const downloadUrl = await getDownloadURL(snapshot.ref);
-      console.log("downloadUrl", downloadUrl);
-      basicInfo.imageUrl = downloadUrl;
-    }
-
-    const updatedInfo = Object.keys(updatedFields.current).reduce(
-      (acc, field) => {
-        if (field == "personalityInfo") {
-          Object.keys(updatedFields.current["personalityInfo"]).forEach(
-            (pField) => {
-              if (!acc["personalityInfo"]) {
-                acc["personalityInfo"] = {};
-              }
-              acc["personalityInfo"][pField] = personalityInfo[pField];
-            }
-          );
-        } else {
-          acc[field] = basicInfo[field];
-        }
-        return acc;
-      },
-      {}
-    );
-
-    console.log("log-updatedInfo", updatedInfo);
+    const { imageDownloadURL, artworksDownloadURL, total } =
+      await handleImageUpdate();
+    updateBtnRef.current.disabled = true;
 
     if (id) {
+      let updatedBasicInfo = Object.keys(
+        updatedFields?.current?.basicInfo
+      ).reduce((acc, item) => {
+        acc[item] = basicInfo[item];
+        return acc;
+      }, []);
+
+      let updatedPersonalityInfo = Object.keys(
+        updatedFields?.current?.personalityInfo
+      ).reduce((acc, item) => {
+        acc[item] = personalityInfo[item];
+        return acc;
+      }, {});
+
       const finalObj = {
-        ...updatedInfo,
+        photos: {
+          imageUrl: imageDownloadURL,
+          artworks: artworksDownloadURL,
+          total: total,
+        },
+        basicInfo: updatedBasicInfo,
+        personalityInfo: updatedPersonalityInfo,
       };
-      const pInfoFieldMap = updatedFields.current?.personalityInfo || [];
-      if (Object.keys(pInfoFieldMap).length != 0) {
-        let updatedPersonalityFields = {};
-        Object.keys(pInfoFieldMap).forEach((field) => {
-          if (pInfoFieldMap[field])
-            updatedPersonalityFields[field] = personalityInfo[field];
-        });
-        finalObj.personalityInfo = updatedPersonalityFields;
-      }
-      console.log("log-finalObjetct", finalObj);
+
+      console.log("finalObjetct to be putted", finalObj);
+
       const { success, data, error } = await put(
         `/customer?id=${id}`,
         finalObj
       );
+
       if (success) {
         setLoading(false);
         setDone(true);
-        const updateDuesInfo = {
-          personalityInfo: {},
-          basicInfo: {},
-        };
-        Object.keys(updatedFields.current).forEach((field) => {
-          if (field == "personalityInfo") {
-            Object.keys(updatedFields.current.personalityInfo).forEach(
-              (pField) => {
-                updateDuesInfo["personalityInfo"][pField] = true;
-              }
-            );
-          } else {
-            updateDuesInfo["basicInfo"][field] = true;
-          }
+
+        const pendingDues = updatedFields.current;
+        console.log("pendingDues", pendingDues);
+        setDuesInfo(pendingDues);
+        updateBtnRef.current.disabled = false;
+        payementBoxRef.current.scrollIntoView({
+          behavior: "smooth",
         });
-        console.log("updatedDues", updateDuesInfo);
-        setDuesInfo(updateDuesInfo);
       } else {
+        console.log("errorMsg", error)
+        updateBtnRef.current.disabled = false;
+        errorRef.current.scrollIntoView({
+          behavior: "smooth",
+        });
         setLoading(false);
         setError("An unexpected error occurred");
       }
     } else {
       const finalObj = {
-        ...basicInfo,
-        personality: {
-          ...personalityInfo,
+        photos: {
+          imageUrl: imageDownloadURL,
+          artworks: artworksDownloadURL,
+          total: total,
         },
+        basicInfo,
+        personalityInfo: personalityInfo,
       };
+
+      console.log(
+        "finalObjetct",
+        finalObj,
+        "basicInfo",
+        basicInfo,
+        "personalitInfo",
+        personalityInfo
+      );
+
       const { success, data, error } = await post("/customer", finalObj);
       if (success) {
         setLoading(false);
         setDone(true);
+        console.log("duesInfo", duesInfo);
+        if (total > 3) {
+          setDuesInfo({ ...duesInfo, totalPaidPhotos: (total - 3) * 9.95 });
+        }
+        if (wordLimit) {
+          const totalCount =
+            Math.ceil(bioWordsLenght / 350) > 1
+              ? Math.ceil(bioWordsLenght / 350) - 1
+              : 0;
+          setDuesInfo({ ...duesInfo, wordLimit: totalCount });
+        }
         setDuesInfo({ ...duesInfo, creation: true });
-        console.log("data", data);
+        payementBoxRef.current.scrollIntoView({
+          behavior: "smooth",
+        });
       } else {
         setLoading(false);
-        setError(error);
+        setDuesInfo(dueInitiallState);
+        setError("An expected error occured");
+        updateBtnRef.current.disabled = false;
+        errorRef.current.scrollIntoView({
+          behavior: "smooth",
+        });
       }
     }
-
-    payementBoxRef.current.scrollIntoView({
-      behavior: "smooth",
-    });
-  };
-
-  const handleImageChange = () => {
-    const files = imageRef.current.files;
-    updatedFields.current["imageUrl"] = true;
-
-    if (files.length > 0) {
-      const src = URL.createObjectURL(files[0]);
-      const preview = document.getElementById("avatar-preview");
-      preview.src = src;
-    }
-  };
-
-  const handleRemoveImage = () => {
-    const files = imageRef.current.files;
-    if (basicInfo.imageUrl != "") {
-      updatedFields.current["imageUrl"] = true;
-      // if (id) {
-      //   setDuesInfo({ ...duesInfo, photo: true });
-      // }
-    }
-
-    const preview = document.getElementById("avatar-preview");
-    preview.src = "/assets/default.jpg";
-    setImageDropdown(false);
-  };
-  const isEmpty = (key) => {
-    if (typeof key === "string" && key == "") return true;
-    else if (key.length == 0) return true;
-    return false;
   };
 
   const handleBasicInfoOptionsFieldChange = (label, value, remove) => {
@@ -315,7 +410,7 @@ function CreateCustomer() {
     console.log("field key", fieldKey);
     let updatedArr = basicInfo[fieldKey];
     console.log("updated arr", updatedArr);
-    updatedFields.current[fieldKey] = true;
+    updatedFields.current.basicInfo[fieldKey] = true;
 
     if (remove) {
       updatedArr = updatedArr.filter((item) => item != value);
@@ -346,17 +441,15 @@ function CreateCustomer() {
         setWordLimit(false);
       }
     }
-    updatedFields.current[e.target.name] = true;
+    updatedFields.current.basicInfo[e.target.name] = true;
     setBasicInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handlePersonalityInfoChange = (label, value, remove) => {
     const stateKey = fieldStateNameMap[label];
     let updatedArr = personalityInfo[stateKey];
-    if (!updatedFields.current["personalityInfo"]) {
-      updatedFields.current["personalityInfo"] = {};
-    }
-    updatedFields.current["personalityInfo"][stateKey] = true;
+
+    updatedFields.current.personalityInfo[stateKey] = true;
     // if (id) {
     //   setDuesInfo({
     //     ...duesInfo,
@@ -374,52 +467,52 @@ function CreateCustomer() {
     });
   };
 
-  const handleClick = () => {
-    imageRef.current.click();
-    setImageDropdown(false);
-  };
-
   const emptyFormat = (field) => {
     if (typeof basicInfo[field] == "string") return "";
     else return [];
   };
 
   useEffect(() => {
-    console.log("customer id", id);
     const fetchCustomer = async () => {
       setLoading(true);
 
       const { success, data, error } = await get(`/customer?id=${id}`);
-      console.log("success", success);
       if (success) {
         console.log("fetched Customer", data);
-        for (const key in data) {
-          if (
-            key != "personality" &&
-            key != "spokenLanguages" &&
-            basicInfoOptionsField.includes(key)
-          ) {
+        for (const key in data?.basicInfo) {
+          if (key != "spokenLanguages" && basicInfoOptionsField.includes(key)) {
             console.log("conerting to array");
             data[key] = data[key] != "" ? [data[key]] : []; // converting to array
           }
         }
 
-        data.dateOfBirth = data.dateOfBirth.split("T")[0];
+        data.basicInfo.dateOfBirth = data.basicInfo.dateOfBirth.split("T")[0];
 
-        const personality = data["personality"];
-        delete data["personality"];
+        const fetchedPersonality = data["personalityInfo"];
+        const fetchedBasicInfo = data["basicInfo"];
+        const fetchedPhotos = data["photos"];
 
         const basicInfoData = {};
 
         // assigning only state values
         Object.keys(basicInfo).forEach((field) => {
-          basicInfoData[field] = data[field] ? data[field] : emptyFormat(field);
+          basicInfoData[field] = fetchedBasicInfo[field]
+            ? fetchedBasicInfo[field]
+            : emptyFormat(field);
         });
 
-        console.log("updated Data", data, "basicInfoDtaa", basicInfoData);
+        console.log(
+          "fetchedPhotos",
+          fetchedPhotos,
+          "basicInfoDtaa",
+          basicInfoData,
+          "fetchedPersonality",
+          fetchedPersonality
+        );
         setLoading(false);
+        setPhotos(fetchedPhotos);
         setBasicInfo(basicInfoData);
-        setPersonalityInfo(personality);
+        setPersonalityInfo(fetchedPersonality);
       } else {
         setLoading(false);
         console.log("error", error);
@@ -429,32 +522,43 @@ function CreateCustomer() {
       console.log("inside here");
       fetchCustomer();
     } else {
-      resetState();
+      // resetState();
     }
   }, [id]);
 
   const resetState = () => {
+    setPhotos(photosIntialState);
     setBasicInfo(basicInfoIntialState);
     setPersonalityInfo(personalityInfoInitialState);
     setDuesInfo(dueInitiallState);
     setDone(false);
     updatedFields.current = {};
   };
+  const checkObjEmpty = (obj) => {
+    return Object.keys(obj).length === 0;
+  };
+  const checkForChange = (obj) => {
+    return (
+      currPhotos.total == 0 &&
+      checkObjEmpty(obj.basicInfo) &&
+      checkObjEmpty(obj.personalityInfo)
+    );
+  };
 
   const handleSubmitBtn = () => {
     setError("");
     setDone(false);
-    if (Object.keys(updatedFields.current).length == 0) {
-      setError("No changes made");
-      return;
+    if (id) {
+      //only for update
+
+      if (checkForChange(updatedFields.current)) {
+        setError("No changes made");
+        return;
+      }
     }
 
     for (const key in basicInfo) {
-      if (
-        basicInfoReqFieldMap[key] &&
-        isEmpty(basicInfo[key]) &&
-        key != "imageUrl"
-      ) {
+      if (basicInfoReqFieldMap[key] && isEmpty(basicInfo[key])) {
         setError("Fillout all the required fields");
         return;
       }
@@ -472,7 +576,12 @@ function CreateCustomer() {
     //   setError("Invalid email format");
     //   return;
     // }
-    setShowConfirmPop(true);
+
+    if (id) {
+      setShowUpdateConfirmPop(true);
+    } else {
+      setShowCreateConfirmPop(true);
+    }
   };
 
   const handlePaynow = () => {
@@ -504,19 +613,21 @@ function CreateCustomer() {
           done={done}
           handleSubmitBtn={handleSubmitBtn}
           changeOccured={changeOccured}
-          imageRef={imageRef}
-          handleImageChange={handleImageChange}
-          setImageDropdown={setImageDropdown}
-          imageDropdown={imageDropdown}
-          handleClick={handleClick}
-          handleRemoveImage={handleRemoveImage}
           wordLimit={wordLimit}
           loading={loading}
-          showConfirmPop={showConfirmPop}
+          showUpdateConfirmPop={showUpdateConfirmPop}
           handleUpdate={handleUpdate}
-          setShowConfirmPop={setShowConfirmPop}
+          setShowUpdateConfirmPop={setShowUpdateConfirmPop}
           duesInfo={duesInfo}
+          showCreateConfirmPop={showCreateConfirmPop}
+          setShowCreateConfirmPop={setShowCreateConfirmPop}
           updatedFields={updatedFields}
+          photos={photos}
+          setPhotos={setPhotos}
+          setCurrPhotos={setCurrPhotos}
+          currPhotos={currPhotos}
+          errorRef={errorRef}
+          updateBtnRef={updateBtnRef}
         />
         <div className="basis-[40%] flex flex-col gap-y-6">
           <DuesSection
@@ -542,60 +653,140 @@ function CustomerDetails({
   handlePersonalityInfoChange,
   handleBasicInfoTextFieldChange,
   handleBasicInfoOptionsFieldChange,
-  showConfirmPop,
+  showUpdateConfirmPop,
   error,
   done,
   loading,
   handleSubmitBtn,
   changeOccured,
-  imageRef,
-  handleImageChange,
-  setImageDropdown,
-  imageDropdown,
-  handleClick,
-  handleRemoveImage,
   wordLimit,
-  setShowConfirmPop,
+  setShowUpdateConfirmPop,
   handleUpdate,
   updatedFields,
+  showCreateConfirmPop,
+  setShowCreateConfirmPop,
+  photos,
+  setPhotos,
+  setCurrPhotos,
+  currPhotos,
+  errorRef,
+  updateBtnRef,
 }) {
+  const [imageDropdown, setImageDropdown] = useState(false);
+  const imageRef = useRef();
+  const artworkRef = useRef();
+
   const bioWordsLenght =
     basicInfo.bio == "" ? 0 : basicInfo.bio.split(" ").length;
-  let total = Object.keys(updatedFields?.current).reduce((acc, curr) => {
-    if (curr === "personalityInfo") {
-      const nestedTotal = Object.keys(updatedFields?.current[curr]).reduce(
-        (nestedAcc, field) => {
-          return updatedFields?.current[curr][field]
-            ? nestedAcc + 9.95
-            : nestedAcc;
-        },
-        0
-      );
-      return acc + nestedTotal;
+
+  const openImage = () => "helo";
+
+  const handleImageChange = async () => {
+    const files = imageRef.current.files;
+    console.log("original", files[0]);
+    if (files.length > 0) {
+      const src = URL.createObjectURL(files[0]);
+      const avartarPreviw = document.getElementById("avatar-preview");
+      avartarPreviw.src = src;
+      setCurrPhotos((prev) => ({
+        ...prev,
+        imageUrl: files[0],
+        total: prev.artworks.length + 1,
+      }));
     }
-    return acc + 9.95;
-  }, 0);
-  total = roundTo(total, 2);
+  };
+
+  const handleRemoveImage = () => {
+    const files = imageRef.current.files;
+    if (currPhotos.imageUrl != "") {
+      const src = URL.createObjectURL(files[0]);
+      const avartarPreviw = document.getElementById("avatar-preview");
+      avartarPreviw.src = "/assets/default.jpg";
+      setCurrPhotos((prev) => ({
+        ...prev,
+        imageUrl: "",
+        total: prev.total - 1,
+      }));
+    }
+  };
+
+  const handleArtworkChange = (e) => {
+    setCurrPhotos((prev) => ({
+      ...prev,
+      artworks: [...prev.artworks, e.target.files[0]],
+      total: prev.total + 1,
+    }));
+  };
+  const handleRemoveArtwork = (delIndex) => {
+    const filteredArtworks = currPhotos.artworks.filter(
+      (item, index) => index != delIndex
+    );
+    setCurrPhotos((prev) => ({
+      ...prev,
+      artworks: filteredArtworks,
+      total: prev.total - 1,
+    }));
+  };
+  const totalRemainingFreePhotos = photos.total + currPhotos.total;
+  console.log(
+    "totalphoto",
+    totalRemainingFreePhotos,
+    "ptotla",
+    photos.total,
+    "currPhotos",
+    currPhotos.total
+  );
+  let totalPhotos = currPhotos.total + photos.total;
+  const totalPaidPhotos = totalPhotos <= 3 ? 0 : totalPhotos - 3;
+
+  const recieptForCreation = {
+    creation: true,
+  };
+
+  if (currPhotos.total > 3) {
+    recieptForCreation.totalPaidPhotos = currPhotos.total - 3;
+  }
+  if (wordLimit) {
+    const totalCount =
+      Math.ceil(bioWordsLenght / 350) > 1
+        ? Math.ceil(bioWordsLenght / 350) - 1
+        : 0;
+    recieptForCreation.wordLimit = totalCount;
+    updatedFields.current.wordLimit = totalCount;
+  }
+  if (id && photos.total > 3) {
+    updatedFields.current.totalPaidPhotos = currPhotos.total;
+  }
+
   return (
     <div className="basis-[60%] bg-white rounded-lg relative">
-      {showConfirmPop && (
+      {showUpdateConfirmPop && (
         <ConfrimPopup
-          infoText={`It will cost a total of $${total}
-                `}
-          total={total}
           updatedFields={updatedFields}
           continueBtnTxt={"Continue editing"}
           confirmBtnTxt={`Confirm ${id ? "updation" : "creation"}`}
           onConfirm={handleUpdate}
-          onCloseClick={setShowConfirmPop}
+          onCloseClick={setShowUpdateConfirmPop}
           width="3/5"
+          fromLeft={"30"}
+        />
+      )}
+      {showCreateConfirmPop && (
+        <ConfrimPopup
+          updatedFields={{ current: recieptForCreation }}
+          continueBtnTxt={"Continue editing"}
+          confirmBtnTxt={`Confirm ${id ? "updation" : "creation"}`}
+          onConfirm={handleUpdate}
+          onCloseClick={setShowCreateConfirmPop}
+          width="3/5"
+          fromLeft={"30"}
         />
       )}
       <div className="bg-gray-300 w-full rounded-lg p-6 flex flex-col items-center gap-y-6">
         <div className="w-fit m-auto relative">
           <img
             className="rounded-full md:w-52 md:h-52 w-36 h-36 object-cover object-top"
-            src={basicInfo?.imageUrl || "/assets/default.jpg"}
+            src={photos?.imageUrl || "/assets/default.jpg"}
             alt="user avatar"
             id="avatar-preview"
           />
@@ -609,7 +800,7 @@ function CustomerDetails({
           <div className="absolute md:bottom-2 md:right-2 bottom-4 right-1  z-20">
             <button
               className="bg-white p-1.5 rounded-full"
-              onClick={() => setImageDropdown(!imageDropdown)}
+              onClick={() => imageRef.current.click()}
             >
               <img
                 src="/assets/icons/edit.svg"
@@ -617,10 +808,10 @@ function CustomerDetails({
                 className="md:h-6 h-3"
               />
             </button>
-            {imageDropdown && (
+            {/* {imageDropdown && (
               <div className="absolute bg-white rounded-lg">
                 <button
-                  onClick={handleClick}
+                  onClick={() => imageRef.current.click()}
                   className="border-b-2 px-2 py-1 md:px-4 md:py-2  "
                 >
                   Update
@@ -632,11 +823,11 @@ function CustomerDetails({
                   Remove
                 </button>
               </div>
-            )}
+            )} */}
           </div>
         </div>
         <p className="text-gray-600 italic text-sm md:text-base">
-          *Click pencil to update/remove photo
+          *Click pencil to update photo
         </p>
       </div>
 
@@ -707,6 +898,52 @@ function CustomerDetails({
               )
             )
           )}
+          <div className="flex  items-center  gap-6 w-full">
+            <span className="text-lg">Pick your Artworks</span>
+            <button
+              onClick={() => artworkRef.current.click()}
+              className="border border-black border-3 py-1 px-2 rounded w-fit"
+            >
+              Choose here
+            </button>
+            <input
+              ref={artworkRef}
+              className="cursor-pointer"
+              hidden
+              accept="image/*"
+              type="file"
+              onChange={handleArtworkChange}
+            />
+            {photos.total + currPhotos.total < 3 && (
+              <p className="text-red-600 italic md:text-sm text-xs">
+                {3 - (photos.total + currPhotos.total)} remaining free
+                photo/artworks
+              </p>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-4">
+            {photos?.artworks.map((item, index) => (
+              <div className="bg-gray-200 py-1 px-2 flex justify-between rounded w-1/2 ">
+                <a href={openImage(item)} className="hover:underline">
+                  Artwork-{index + 1}
+                </a>
+              </div>
+            ))}
+            {currPhotos?.artworks.map((item, index) => (
+              <div className="bg-gray-200 py-1 px-2 flex justify-between rounded w-1/2 ">
+                <a href={openImage(item)} className="hover:underline">
+                  New Artwork-{index + 1}
+                </a>
+                <span
+                  onClick={() => handleRemoveArtwork(index)}
+                  className="cursor-pointer"
+                >
+                  x
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -741,16 +978,19 @@ function CustomerDetails({
               Customer {id ? "updated" : "created"} successfully
             </p>
           )} */}
-          {error && (
-            <p className="text-fr-red w-fit text-sm md:text-base">{error}</p>
-          )}
+          <div ref={errorRef}>
+            {error && (
+              <p className="text-fr-red w-fit text-sm md:text-base">{error}</p>
+            )}
+          </div>
 
           <button
             className={`ml-auto  bg-fr-blue-200 w-1/3 md:w-1/5  text-white p-1.5 rounded ${
               loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
             }`}
             onClick={handleSubmitBtn}
-            disabled={loading}
+            // disabled={loading}
+            ref={updateBtnRef}
           >
             {id
               ? loading
@@ -783,12 +1023,15 @@ function AddOns({ onClick }) {
 
       <div className="flex flex-col mt-6 gap-y-6 ">
         {addonsList.map((addon) => (
-          <label class="w-full  flex items-center gap-x-3 cursor-pointer">
+          <label
+            key={addon}
+            className="w-full  flex items-center gap-x-3 cursor-pointer"
+          >
             <input
               type="checkbox"
               onChange={() => handleChange(addon)}
               value=""
-              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
             />
             <div className="flex justify-between w-full">
               <p>{addon}</p>
@@ -828,6 +1071,9 @@ function DuesSection({
     }
     return duesInfo[curr] ? acc + addonStatetoCost[curr] : acc;
   }, 0);
+  // adding paid photos
+  total = total + duesInfo.totalPaidPhotos * 9.95;
+
   total = roundTo(total, 2);
   console.log("addons", addons);
   return (
@@ -835,42 +1081,8 @@ function DuesSection({
       ref={payementBoxRef}
       className=" bg-white rounded-lg h-fit px-6 md:px-12 py-6 flex flex-col gap-y-6 border"
     >
-      <h1 className="text-2xl  font-bold text-center">Total Dues</h1>
-      <div className="flex flex-col gap-y-4">
-        {Object.keys(duesInfo)?.map((due) =>
-          due == "basicInfo"
-            ? Object.keys(duesInfo["basicInfo"]).map(
-                (field) =>
-                  duesInfo["basicInfo"][field] && (
-                    <div className="flex justify-between">
-                      <p>{basicInfoFieldLabelMap[field]}</p>
-                      <p>$9.95</p>
-                    </div>
-                  )
-              )
-            : due == "personalityInfo"
-            ? Object.keys(duesInfo["personalityInfo"]).map(
-                (field) =>
-                  duesInfo["personalityInfo"][field] && (
-                    <div className="flex justify-between">
-                      <p>{stateFieldNameMap[field]}</p>
-                      <p>$9.95</p>
-                    </div>
-                  )
-              )
-            : duesInfo[due] && (
-                <div className="flex justify-between">
-                  <p>{addonStateToNameMap[due]}</p>
-                  <p>${addonStatetoCost[due]}</p>
-                </div>
-              )
-        )}
-        <hr />
-        <div className="flex justify-between">
-          <p>Total</p>
-          <p>${total}</p>
-        </div>
-      </div>
+      <h1 className="text-2xl  font-bold text-center">Pending Dues</h1>
+      <PaymentReceipt obj={duesInfo} />
       <div className="flex flex-col gap-y-2 text-white">
         <button
           className={`py-2 w-full bg-green-600 rounded-lg ${
