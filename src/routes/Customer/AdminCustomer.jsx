@@ -5,8 +5,7 @@ import { usePut } from "../../api/usePut";
 import { usePost } from "../../api/usePost";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { basicInfoFieldLabelMap } from "../../utils/sharedState";
-import { ContactInfo } from "./Customer";
-import { mailTOLink } from "../User/FindPal/FindPal";
+import ContactInfo from "../../components/ContactInfo";
 
 function AdminCustomer() {
   const { id } = useParams();
@@ -276,8 +275,10 @@ function AdminCustomer() {
           </div>
         </div>
         <ContactInfo
-          name={customer?.basicInfo?.firstName}
-          email={customer?.basicInfo?.email}
+          firstName={customer?.basicInfo?.firstName}
+          lastName={customer?.basicInfo?.lastName}
+          inmateNumber={customer?.basicInfo?.inmateNumber}
+          emailProvider={customer?.basicInfo?.institutionalEmailProvider}
           mailingAddress={customer?.basicInfo?.mailingAddress}
         />
       </div>

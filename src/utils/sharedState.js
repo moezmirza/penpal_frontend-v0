@@ -571,3 +571,12 @@ export const otherFiltersKeyMap = {
   Premium: "premiumPlacement",
   Featured: "featuredPlacement",
 };
+
+export const emailProvidersLinkMap = {
+  "Securus Technologies": "https://www.securustech.net/",
+  Jpay: "https://www.jpay.com/",
+  "Getting Out": "https://www.gettingout.com/",
+  GTL: "https://www.gtl.net/",
+  Corrlinks: "https://www.corrlinks.com/",
+  "Other provider": "",
+};

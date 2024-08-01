@@ -3,13 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useGet } from "../../api/useGet";
 import { usePut } from "../../api/usePut";
 import { usePost } from "../../api/usePost";
-import { useSelector } from "react-redux";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import {
   basicInfoFieldLabelMap,
-  spokenLanguagesList,
 } from "../../utils/sharedState";
-import { mailTOLink } from "../User/FindPal/FindPal";
+import ContactInfo from "../../components/ContactInfo";
 
 function Customer() {
   const { id } = useParams();
@@ -248,7 +246,7 @@ function Customer() {
                     return (
                       customer?.basicInfo[field] &&
                       (field == "spokenLanguages" ? (
-                        <p className="flex flex-wrap items-end">
+                        <p key={field} className="flex flex-wrap items-end">
                           <span className="font-semibold mr-1 text-lg">
                             {basicInfoFieldLabelMap[field]}:
                           </span>
@@ -257,7 +255,7 @@ function Customer() {
                           ))}
                         </p>
                       ) : (
-                        <p className="">
+                        <p key={field} className="">
                           <span className="font-semibold mr-1 text-lg">
                             {basicInfoFieldLabelMap[field]}:
                           </span>
@@ -314,8 +312,10 @@ function Customer() {
         </div>
 
         <ContactInfo
-          name={customer?.basicInfo?.firstName}
-          email={customer?.basicInfo?.email}
+          firstName={customer?.basicInfo?.firstName}
+          lastName={customer?.basicInfo?.lastName}
+          inmateNumber={customer?.basicInfo?.inmateNumber}
+          emailProvider={customer?.basicInfo?.institutionalEmailProvider}
           mailingAddress={customer?.basicInfo?.mailingAddress}
         />
       </div>
@@ -347,38 +347,7 @@ function Customer() {
   );
 }
 
-export const ContactInfo = ({ name, email, mailingAddress }) => {
-  return (
-    <div className="mr-auto flex flex-col gap-y-6 w-full ">
-      <h1 className="bg-fr-blue-200 text-white py-3 px-4 rounded text-xl px-6">
-        How to contact {name}
-      </h1>
-      <div className="border rounded-lg">
-        <div className="bg-white flex justify-between flex-col md:flex-row gap-y-12  py-3 md:px-12 px-6  w-full ">
-          <div className="flex flex-col gap-y-4 basis-1/4">
-            <p className="text-lg font-semibold"> Email forwarding option</p>
-            <div>
-              <p className="mb-2">{email}</p>
-              <p>
-                <a
-                  href={mailTOLink(email, name)}
-                  className="text-blue-600 underline mr-1 cursor-pointer "
-                >
-                  Click here
-                </a>
-                to email
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-y-4 basis-1/3">
-            <p className="text-lg font-semibold">Post mail option</p>
-            <p>{mailingAddress}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+
 
 const RatingScale = ({ initialRating = 0, onRatingChange }) => {
   const [rating, setRating] = useState(initialRating);
