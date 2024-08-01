@@ -14,7 +14,6 @@ import ApproveProfiles from "./routes/Admin/ApproveProfiles";
 import ApproveUpdates from "./routes/Admin/ApproveUpdates";
 import AdminCustomer from "./routes/Customer/AdminCustomer";
 import CheckoutForm from "./routes/Payment/Payment";
-import Subscription from "./routes/User/Subscription";
 import Result from "./routes/Payment/Result";
 import UpdateCustomers from "./routes/Customer/UpdateCustomers";
 import SearchProfiles from "./routes/Customer/SearchProfiles";
@@ -23,11 +22,11 @@ function App() {
   const UserRoutes = () => {
     const userAuth = JSON.parse(localStorage.getItem("userAuth"));
     console.log("userAuth", userAuth);
-    return userAuth ? <Outlet /> : <Login />;
+    return userAuth ? <Outlet /> : <Navigate to={"/login"} />;
   };
   const AdminRoutes = () => {
     const adminAuth = JSON.parse(localStorage.getItem("adminAuth"));
-    return adminAuth ? <Outlet /> : <Login />;
+    return adminAuth ? <Outlet /> : <Navigate to={"/login"} />;
   };
 
   // intially we used word customers for inmates
@@ -36,15 +35,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      <Route element={<AdminRoutes />}>
-        <Route path="/approve-profiles" element={<ApproveProfiles />} />
-        <Route path="/approve-updates" element={<ApproveUpdates />} />
-        <Route path="/admin/inmate-updates/:id" element={<AdminCustomer />} />
-        <Route path="/admin/inmate/:id" element={<Customer />} />
-        <Route path="/delete-profiles" element={<DeleteProfiles />} />
-        <Route path="*" element={<ApproveProfiles />} />
-      </Route>
-    <Route element={<UserRoutes />}>
+      <Route element={<UserRoutes />}>
         <Route path="/" element={<FindPal />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/inmate/:id" element={<Customer />} />
@@ -55,8 +46,16 @@ function App() {
         <Route path="/search-profiles" element={<SearchProfiles />} />
         <Route path="/payment" element={<CheckoutForm />} />
         <Route path="/payment/result" element={<Result />} />
+        <Route path="*" element={<Navigate to="/" />} />
         {/* <Route path="/subcriptions" element={<Subscription />} /> */}
-        {/* <Route path="*" element={<FindPal />} /> */}
+      </Route>
+      <Route element={<AdminRoutes />}>
+        <Route path="/approve-profiles" element={<ApproveProfiles />} />
+        <Route path="/approve-updates" element={<ApproveUpdates />} />
+        <Route path="/admin/inmate-updates/:id" element={<AdminCustomer />} />
+        <Route path="/admin/inmate/:id" element={<Customer />} />
+        <Route path="/delete-profiles" element={<DeleteProfiles />} />
+        <Route path="*" element={<Navigate to="/approve-profiles" />} />
       </Route>
     </Routes>
   );

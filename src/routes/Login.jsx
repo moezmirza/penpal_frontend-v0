@@ -41,17 +41,25 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("")
     console.log(formData);
     try {
       setLoading(true);
-      let user = await signInWithEmailAndPassword(
+      const result = await signInWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
-      console.log("user", user);
-      if (user) {
-        user = user.user;
+      console.log("result", result);
+      if (result) {
+        const user = result.user;
+        if (user.emailVerified == false) {
+          setLoading(false);
+          setError(
+            "An email has been sent to your email address, verify to login."
+          );
+          return;
+        }
         console.log("user.user", user);
 
         const authInfo = {
@@ -75,7 +83,7 @@ const Login = () => {
             authInfo.userAuth = true;
             dispatch(setCurrentUser(data));
             updateAuthInfo(authInfo);
-            navigate("/");
+            navigate("/");  
           }
         }
         setLoading(false);
@@ -133,7 +141,7 @@ const Login = () => {
         <p className="text-gray-500  text-center">
           Enter your credentionals to login
         </p>
-        {error && <p className="text-red-500 mt-1 "> {error} </p>}
+        {error && <p className="text-red-500 mt-1 text-center"> {error} </p>}
         <form onSubmit={handleSubmit} className="flex flex-col gap-y-6 w-full ">
           <label className="text-left">
             Email
