@@ -536,7 +536,7 @@ export const addonNameToStateMap = {
   "Profile Update": "update",
   "Profile Renewal": "renewal",
   "Bio Word Limit": "wordLimit",
-  "Feature Placement": "featurePlacement",
+  "Feature Placement": "featuredPlacement",
   "Premium Placement": "premiumPlacement",
   Photo: "photo",
 };
@@ -546,7 +546,7 @@ export const addonStateToNameMap = {
   update: "Profile Update",
   renewal: "Profile Renewal",
   wordLimit: "Bio Word Limit",
-  featurePlacement: "Feature Placement",
+  featuredPlacement: "Feature Placement",
   premiumPlacement: "Premium Placement",
   photo: "Photo",
 };
@@ -554,6 +554,6 @@ export const addonStateToNameMap = {
 export const addonStatetoCost = {
   creation: 99.95,
   renewal: 79.95,
-  featurePlacement: 14.95,
+  featuredPlacement: 14.95,
   premiumPlacement: 24.95,
 };

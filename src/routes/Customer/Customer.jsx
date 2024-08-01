@@ -134,16 +134,17 @@ function Customer() {
       <div className="flex flex-col items-center gap-y-12 w-full md:w-8/12 mx-auto">
         <div
           id="profile-details"
-          className={`bg-white  w-full border ${
-            (profileApproval || updateApproval) && "border-red-500"
-          }  rounded-lg flex flex-col gap-y-4 p-6`}
+          className={`bg-white  w-full border rounded-lg flex flex-col gap-y-4 p-6`}
+          // className={`bg-white  w-full border ${
+          //   (profileApproval || updateApproval) && "border-red-500"
+          // }  rounded-lg flex flex-col gap-y-4 p-6`}
         >
-          {(profileApproval || updateApproval) && (
+          {/* {(profileApproval || updateApproval) && (
             <p className="text-red-500 text-center md:text-xl text-sm ">
               {profileApproval ? "Profile" : "Profile Updates"} pending for
               approval
             </p>
-          )}
+          )} */}
           <LoadingSpinner isLoading={loading} />
           <div className="flex flex-col gap-y-8">
             <div className="flex flex-col md:flex-row md:items-start gap-x-12 gap-y-6 relative">

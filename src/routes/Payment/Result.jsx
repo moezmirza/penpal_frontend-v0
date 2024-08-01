@@ -22,10 +22,10 @@ function Result() {
       } else {
         setStatus("open");
       }
-      const tid = setTimeout(() => {
-        navigate("/subcriptions");
-      }, [3000]);
-      return () => clearTimeout(tid);
+      // const tid = setTimeout(() => {
+      //   navigate("/subcriptions");
+      // }, [3000]);
+      // return () => clearTimeout(tid);
     };
 
     if (sessionId) {

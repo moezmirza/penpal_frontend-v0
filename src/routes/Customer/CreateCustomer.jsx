@@ -189,7 +189,7 @@ function CreateCustomer() {
     },
     creation: false,
     renewal: false,
-    featurePlacement: false,
+    featuredPlacement: false,
     premiumPlacement: false,
     wordLimit: 0,
     totalPaidPhotos: 0,
@@ -512,9 +512,10 @@ function CreateCustomer() {
     const fetchCustomer = async () => {
       setLoading(true);
 
-      const { success, data, error } = await get(`/customer?id=${id}`);
+      let { success, data, error } = await get(`/customer?id=${id}`);
       if (success) {
         console.log("fetched Customer", data);
+        data= data[0]
         for (const key in data?.basicInfo) {
           if (key != "spokenLanguages" && basicInfoOptionsField.includes(key)) {
             console.log("conerting to array");
@@ -1098,7 +1099,7 @@ function DuesSection({
   console.log("duesInfo", duesInfo);
 
   console.log("isDone", isDone, "changeOccured", changeOccured);
-  const addonsList = ["featurePlacement", "premiumPlacement", "renewal"];
+  const addonsList = ["featuredPlacement", "premiumPlacement", "renewal"];
   const addons = Object.keys(duesInfo).some(
     (field) => addonsList.includes(field) && duesInfo[field]
   );
@@ -1130,11 +1131,11 @@ function DuesSection({
       <div className="flex flex-col gap-y-2 text-white">
         <button
           className={`py-2 w-full bg-green-600 rounded-lg ${
-            !isDone && !addons && total == 0
+            (!isDone && !addons) || total == 0
               ? "opacity-50 cursor-not-allowed"
               : "curose-pointer"
           }`}
-          disabled={!isDone && !addons && total == 0}
+          disabled={(!isDone && !addons) || total == 0}
           onClick={onPaynow}
         >
           Pay now

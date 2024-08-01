@@ -34,7 +34,9 @@ function ListedCustomer() {
       </h1>
       <LoadingSpinner isLoading={loading} />
       {customers.length == 0 && !loading ? (
-        <p className="text-center text-sm md:text-base">No profiles to display</p>
+        <p className="text-center text-sm md:text-base">
+          No profiles to display
+        </p>
       ) : (
         <div className="flex flex-col gap-y-6 w-full">
           {customers.map((customer, index) => (
@@ -56,11 +58,12 @@ function CustomerCard({ customer }) {
   return (
     <div
       id="customer-card"
-      className={`bg-gray-100 rounded-md border ${
-        profileApproved == false || updateApproved == false
-          ? "border-red-500"
-          : "border-gray-300"
-      }  p-2 px-4 w-full md:w-10/12 mx-auto flex flex-col gap-y-6 gap-x-4 md:flex-row`}
+      className={`bg-gray-100 rounded-md border border-gray-300 p-2 px-4 w-full md:w-10/12 mx-auto flex flex-col gap-y-6 gap-x-4 md:flex-row`}
+      // className={`bg-gray-100 rounded-md border ${
+      //   profileApproved == false || updateApproved == false
+      //     ? "border-red-500"
+      //     : "border-gray-300"
+      // }  p-2 px-4 w-full md:w-10/12 mx-auto flex flex-col gap-y-6 gap-x-4 md:flex-row`}
     >
       <img
         src={customer?.photos?.imageUrl || "/assets/default.jpg"}
@@ -73,9 +76,9 @@ function CustomerCard({ customer }) {
             <p className="font-semibold md:text-3xl text-lg ">
               {customer?.basicInfo?.firstName} {customer?.basicInfo?.lastName}
             </p>
-            {(profileApproved == false || updateApproved == false) && (
+            {/* {(profileApproved == false || updateApproved == false) && (
               <p className="text-red-500 text-sm font-normal">{infoText}</p>
-            )}
+            )} */}
           </div>
 
           <div className="flex gap-x-4">
