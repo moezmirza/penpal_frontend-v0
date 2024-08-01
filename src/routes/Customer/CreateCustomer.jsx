@@ -214,12 +214,15 @@ function CreateCustomer() {
   const [done, setDone] = useState(false);
   const payementBoxRef = useRef();
   const errorRef = useRef();
-  const updatedFields = useRef({
-    basicInfo: {},
-    personalityInfo: {},
-  }); // to keep track of updatedFields
   const updateBtnRef = useRef();
   const navigate = useNavigate();
+
+ 
+   const updatedFieldsInitialState={
+    basicInfo: {},
+    personalityInfo: {},
+  }
+  const updatedFields = useRef(updatedFieldsInitialState); // to keep track of updatedFields
   // const validateEmail = (email) => {
   //   // Basic regex for email validation
   //   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -587,7 +590,7 @@ function CreateCustomer() {
     setPersonalityInfo(personalityInfoInitialState);
     setDuesInfo(dueInitiallState);
     setDone(false);
-    updatedFields.current = {};
+    updatedFields.current = updatedFieldsInitialState;
   };
   const checkObjEmpty = (obj) => {
     return Object.keys(obj).length === 0;
