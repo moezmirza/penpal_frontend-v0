@@ -10,6 +10,8 @@ import {
   educationList,
   genderList,
   orientationList,
+  otherFiltersKeyMap,
+  othersFilterList,
   raceList,
   stateList,
 } from "../../../utils/sharedState";
@@ -44,9 +46,10 @@ function FindPal() {
     age: [],
     gender: [],
     orientation: [],
-    race: [],
+    // race: [],
     education: [],
     isApplied: false,
+    others: [],
   });
   const filterStateNameMap = {
     State: "state",
@@ -55,6 +58,7 @@ function FindPal() {
     Orientation: "orientation",
     Race: "race",
     Education: "education",
+    Others: "others",
   };
 
   const filterOptionsMap = {
@@ -62,8 +66,9 @@ function FindPal() {
     Age: ageGrpList,
     Gender: genderList,
     Orientation: orientationList,
-    Race: raceList,
+    // Race: raceList,
     Education: educationList,
+    Others: othersFilterList,
   };
   const oneChoiceField = ["age", "gender", "race", "education"];
 
@@ -165,6 +170,12 @@ function FindPal() {
     return null;
   }
 
+  const checkCustomerStatus = (customer, options) => {
+    return options.some(
+      (field) => customer?.customerStatus[otherFiltersKeyMap[field]]
+    );
+  };
+
   const filterCustomers = () => {
     return customers.filter((customer) => {
       const ageGroup = getAgeGroup(customer?.basicInfo?.age);
@@ -176,8 +187,10 @@ function FindPal() {
           filter.gender.includes(customer?.basicInfo?.gender)) &&
         (!filter?.orientation.length ||
           filter.orientation.includes(customer?.basicInfo?.orientation)) &&
-        (!filter?.race.length ||
-          filter.race.includes(customer?.basicInfo?.race)) &&
+        (!filter?.others.length ||
+          checkCustomerStatus(customer, filter?.others)) &&
+        // (!filter?.race.length ||
+        //   filter.race.includes(customer?.basicInfo?.race)) &&
         (!filter?.education.length ||
           filter.education.includes(customer?.basicInfo?.education))
       );
@@ -314,7 +327,7 @@ function FindPal() {
         </div>
         {isLoadingMore ? (
           <p className="text-center">Loading...</p>
-        ) : matchesAlert || filter.isApplied ? (
+        ) : matchesAlert != "" ? (
           <div className="text-center ">
             {matchesAlert || "No more matches found."}
           </div>

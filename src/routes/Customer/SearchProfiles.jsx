@@ -104,24 +104,28 @@ function SearchProfiles() {
   const handleFilterChange = (label, value, remove) => {
     console.log("label", label, "value", value, "remove", remove);
     if (remove) {
-      setSearchFilter([]);
+      setSearchFilter(searchFilter.filter((field) => field != value));
     } else {
-      setSearchFilter([value]);
+      setSearchFilter([...searchFilter, value]);
     }
   };
-  let filteredCustomers = customers?.filter((customer) => {
-    if (stringFilters.includes(searchFilter[0])) {
-      return (
-        customer["basicInfo"][filterFieldsKeyMap[searchFilter[0]]] ==
-        searchFilter[0]
-      );
-    }
-    if (boolFilters.includes(searchFilter[0])) {
-      return customer["customerStatus"][filterFieldsKeyMap[searchFilter[0]]];
-    }
 
-    return true;
-  });
+  const filterCustomers = (customer) => {
+    return searchFilter.some((field) => {
+      if (stringFilters.includes(field)) {
+        return customer["basicInfo"][filterFieldsKeyMap[field]] == field;
+      }
+      if (boolFilters.includes(field)) {
+        return customer["customerStatus"][filterFieldsKeyMap[field]];
+      }
+      return true;
+    });
+  };
+
+  let filteredCustomers =
+    searchFilter.length == 0
+      ? customers
+      : customers?.filter((customer) => filterCustomers(customer));
 
   filteredCustomers = filteredCustomers?.filter(
     (customer) =>

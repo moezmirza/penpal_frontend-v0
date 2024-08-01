@@ -423,7 +423,7 @@ export const basicInfoFieldLabelMap = {
   institutionalEmailProvider: "Institutional Email Provider",
   referredBy: "Referred By",
   bio: "Bio",
-  wordLimit:"Bio word Limit"
+  wordLimit: "Bio word Limit",
 };
 
 export const basicInfoPlaceholderMap = {
@@ -556,4 +556,18 @@ export const addonStatetoCost = {
   renewal: 79.95,
   featuredPlacement: 14.95,
   premiumPlacement: 24.95,
+};
+
+export const othersFilterList = [
+  "Recently updated",
+  "Newly listed",
+  "Premium",
+  "Featured",
+];
+
+export const otherFiltersKeyMap = {
+  "Recently updated": "recentlyUpdated",
+  "Newly listed": "newlyListed",
+  Premium: "premiumPlacement",
+  Featured: "featuredPlacement",
 };
