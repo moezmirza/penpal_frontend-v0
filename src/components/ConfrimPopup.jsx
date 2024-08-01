@@ -6,8 +6,7 @@ import {
   basicInfoFieldLabelMap,
   stateFieldNameMap,
 } from "../utils/sharedState";
-import { current } from "@reduxjs/toolkit";
-import { roundTo } from "../routes/Customer/CreateCustomer";
+import { roundTo } from "../utils/sharedMethods";
 
 function ConfrimPopup({
   onCloseClick,

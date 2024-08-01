@@ -26,22 +26,14 @@ import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { v4, validate } from "uuid";
 import { formattedImageName } from "../User/Profile/BasicInfo";
 import ConfrimPopup, { PaymentReceipt } from "../../components/ConfrimPopup";
-import { current } from "@reduxjs/toolkit";
+import { isEmpty, roundTo } from "../../utils/sharedMethods";
 
-export const roundTo = (num, decimalPlaces) => {
-  const factor = Math.pow(10, decimalPlaces);
-  return Math.round(num * factor) / factor;
-};
-const isEmpty = (key) => {
-  if (typeof key === "string" && key == "") return true;
-  else if (key.length == 0) return true;
-  return false;
-};
 function CreateCustomer() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showUpdateConfirmPop, setShowUpdateConfirmPop] = useState(false);
   const [showCreateConfirmPop, setShowCreateConfirmPop] = useState(false);
+  const [createdCustomerId, setCreatedCustomerId] = useState(null);
   const currentUser = useSelector((state) => state.user.currentUser);
 
   const post = usePost();
@@ -217,11 +209,10 @@ function CreateCustomer() {
   const updateBtnRef = useRef();
   const navigate = useNavigate();
 
- 
-   const updatedFieldsInitialState={
+  const updatedFieldsInitialState = {
     basicInfo: {},
     personalityInfo: {},
-  }
+  };
   const updatedFields = useRef(updatedFieldsInitialState); // to keep track of updatedFields
   // const validateEmail = (email) => {
   //   // Basic regex for email validation
@@ -401,8 +392,11 @@ function CreateCustomer() {
 
       const { success, data, error } = await post("/customer", finalObj);
       if (success) {
+        console.log("customer created", data);
+        setCreatedCustomerId(data._id);
         setLoading(false);
         setDone(true);
+
         console.log("duesInfo", duesInfo);
         setDuesInfo((prev) => ({
           ...prev,
@@ -638,7 +632,13 @@ function CreateCustomer() {
   };
 
   const handlePaynow = () => {
-    navigate("/payment", { state: { cid: id, paymentDetails: duesInfo } });
+    if (id) {
+      navigate("/payment", { state: { cid: id, paymentDetails: duesInfo } });
+    } else {
+      navigate("/payment", {
+        state: { cid: createdCustomerId, paymentDetails: duesInfo },
+      });
+    }
   };
 
   const changeOccured = Object.keys(updatedFields.current).length != 0;
