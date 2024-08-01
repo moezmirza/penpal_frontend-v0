@@ -31,8 +31,8 @@ function Customer() {
       setLoading(true);
       const { success, data, error } = await get(`/customer?id=${id}`);
       if (success) {
-        console.log("customer data", data);
-        setCustomer(data);
+        console.log("customer data", data[0]);
+        setCustomer(data[0]);
         setLoading(false);
       } else {
         setLoading(false);
@@ -206,7 +206,7 @@ function Customer() {
                   // ) : (
                   <button
                     type="button"
-                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-3 border  text-white bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
+                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
                     onClick={handleFavouriteUpdate}
                   >
                     <img
@@ -311,9 +311,9 @@ function Customer() {
         </div>
 
         <ContactInfo
-          name={customer?.firstName}
-          email={customer?.email}
-          mailingAddress={customer?.mailingAddress}
+          name={customer?.basicInfo?.firstName}
+          email={customer?.basicInfo?.email}
+          mailingAddress={customer?.basicInfo?.mailingAddress}
         />
       </div>
 

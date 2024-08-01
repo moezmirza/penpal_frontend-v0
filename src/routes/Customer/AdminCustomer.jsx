@@ -276,9 +276,9 @@ function AdminCustomer() {
           </div>
         </div>
         <ContactInfo
-          name={customer?.firstName}
-          email={customer?.email}
-          mailingAddress={customer?.mailingAddress}
+          name={customer?.basicInfo?.firstName}
+          email={customer?.basicInfo?.email}
+          mailingAddress={customer?.basicInfo?.mailingAddress}
         />
       </div>
     </div>

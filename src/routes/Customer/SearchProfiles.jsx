@@ -13,14 +13,8 @@ function SearchProfiles() {
   const [inputVal, setInputVal] = useState("");
   const [searchFilter, setSearchFilter] = useState([]);
   const inputRef = useRef();
-  const itemsPerPage = 30;
-
+  const itemsPerPage = 40;
   const get = useGet();
-  console.log("window.location", window.location.search);
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const filter = urlParams.get("find") ? urlParams.get("find") : "all";
-  console.log("search filter", "all");
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -88,8 +82,8 @@ function SearchProfiles() {
 
   const filterFieldsKeyMap = {
     Premium: "premiumPlacement",
-    Featured: "premiumPlacement",
-    "Recently updated": "recentlyUploaded",
+    Featured: "featuredPlacement",
+    "Recently updated": "recentlyUpdated",
     "Newly listed": "newlyListed",
     "LGBTQ+": "orientation",
     Veteran: "race",
@@ -115,10 +109,14 @@ function SearchProfiles() {
   };
   let filteredCustomers = customers?.filter((customer) => {
     if (stringFilters.includes(searchFilter[0])) {
-      return customer[filterFieldsKeyMap[searchFilter[0]]] == searchFilter[0];
+      return (
+        customer["basicInfo"][filterFieldsKeyMap[searchFilter[0]]] ==
+        searchFilter[0]
+      );
     }
-    if (boolFilters.includes(searchFilter[0]))
-      return customer[filterFieldsKeyMap[searchFilter[0]]];
+    if (boolFilters.includes(searchFilter[0])){
+      return customer["customerStatus"][filterFieldsKeyMap[searchFilter[0]]];
+    }
 
     return true;
   });

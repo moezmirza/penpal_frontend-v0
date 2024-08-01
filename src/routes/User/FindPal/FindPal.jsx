@@ -166,16 +166,19 @@ function FindPal() {
 
   const filterCustomers = () => {
     return customers.filter((customer) => {
-      const ageGroup = getAgeGroup(customer.age);
+      const ageGroup = getAgeGroup(customer?.basicInfo?.age);
       return (
-        (!filter?.state.length || filter.state.includes(customer.state)) &&
+        (!filter?.state.length ||
+          filter.state.includes(customer?.basicInfo?.state)) &&
         (!filter?.age.length || filter.age.includes(ageGroup)) &&
-        (!filter?.gender.length || filter.gender.includes(customer.gender)) &&
+        (!filter?.gender.length ||
+          filter.gender.includes(customer?.basicInfo?.gender)) &&
         (!filter?.orientation.length ||
-          filter.orientation.includes(customer.orientation)) &&
-        (!filter?.race.length || filter.race.includes(customer.race)) &&
+          filter.orientation.includes(customer?.basicInfo?.orientation)) &&
+        (!filter?.race.length ||
+          filter.race.includes(customer?.basicInfo?.race)) &&
         (!filter?.education.length ||
-          filter.education.includes(customer.education))
+          filter.education.includes(customer?.basicInfo?.education))
       );
     });
   };
@@ -332,7 +335,7 @@ function FindPal() {
 
 function CustomerCard({ customer, name }) {
   const navigate = useNavigate();
-  console.log("customerCard", customer, customer?.basicInfo)
+  console.log("customerCard", customer, customer?.basicInfo);
   return (
     <div
       id="customer-card"
@@ -352,9 +355,7 @@ function CustomerCard({ customer, name }) {
               {customer?.basicInfo?.firstName} {customer?.basicInfo?.lastName}
             </p>
             <img
-              src={`assets/icons/${
-                customer?.basicInfo?.isFavorite && "filledHeart.svg"
-              }`}
+              src={`assets/icons/${customer?.isFavorite && "filledHeart.svg"}`}
               alt=""
               className="h-6"
             />

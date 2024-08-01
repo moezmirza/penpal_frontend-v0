@@ -202,8 +202,10 @@ function CreateCustomer() {
 
   const [photos, setPhotos] = useState(photosIntialState);
   const [currPhotos, setCurrPhotos] = useState(photosIntialState);
-  const [basicInfo, setBasicInfo] = useState(dummyBasicInfo);
-  const [personalityInfo, setPersonalityInfo] = useState(dummyPInfo);
+  const [basicInfo, setBasicInfo] = useState(basicInfoIntialState);
+  const [personalityInfo, setPersonalityInfo] = useState(
+    personalityInfoInitialState
+  );
 
   const [duesInfo, setDuesInfo] = useState(dueInitiallState);
   const [wordLimit, setWordLimit] = useState(false);
@@ -515,7 +517,7 @@ function CreateCustomer() {
       let { success, data, error } = await get(`/customer?id=${id}`);
       if (success) {
         console.log("fetched Customer", data);
-        data= data[0]
+        data = data[0];
         for (const key in data?.basicInfo) {
           if (key != "spokenLanguages" && basicInfoOptionsField.includes(key)) {
             console.log("conerting to array");
@@ -575,7 +577,7 @@ function CreateCustomer() {
       console.log("inside here");
       fetchCustomer();
     } else {
-      // resetState();
+      resetState();
     }
   }, [id]);
 
