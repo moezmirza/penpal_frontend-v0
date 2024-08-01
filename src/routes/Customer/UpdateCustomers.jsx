@@ -3,20 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { useGet } from "../../api/useGet";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { includesCaseInsensitive } from "../Admin/ApproveUpdates";
-import { MultiSelectField } from "../../components/mainComponents/MultiSelectField";
 import CustomerCard from "../../components/CustomerCard";
 
-function SearchProfiles() {
+function UpdateCustomers() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [loadMoreMsg, setLoadMoreMsg] = useState("");
   const [inputVal, setInputVal] = useState("");
-  const [searchFilter, setSearchFilter] = useState([]);
   const inputRef = useRef();
   const itemsPerPage = 40;
+
   const get = useGet();
-  const navigate = useNavigate();
+  const navigate= useNavigate()
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -70,108 +69,53 @@ function SearchProfiles() {
     inputRef.current?.focus();
   }, []);
 
-  const filterFields = [
-    "Premium",
-    "Featured",
-    "Recently updated",
-    "Newly listed",
-    "LGBTQ+",
-    "Veteran",
-    "Male",
-    "Female",
-    "View All",
-  ];
-
-  const filterFieldsKeyMap = {
-    Premium: "premiumPlacement",
-    Featured: "featuredPlacement",
-    "Recently updated": "recentlyUpdated",
-    "Newly listed": "newlyListed",
-    "LGBTQ+": "orientation",
-    Veteran: "race",
-    Male: "gender",
-    Female: "gender",
-  };
-
-  const stringFilters = ["LGBTQ+", "Veteran", "Male", "Female"];
-  const boolFilters = [
-    "Premium",
-    "Featured",
-    "Recently updated",
-    "Newly listed",
-  ];
-
-  const handleFilterChange = (label, value, remove) => {
-    console.log("label", label, "value", value, "remove", remove);
-    if (remove) {
-      setSearchFilter([]);
-    } else {
-      setSearchFilter([value]);
-    }
-  };
-  let filteredCustomers = customers?.filter((customer) => {
-    if (stringFilters.includes(searchFilter[0])) {
-      return (
-        customer["basicInfo"][filterFieldsKeyMap[searchFilter[0]]] ==
-        searchFilter[0]
-      );
-    }
-    if (boolFilters.includes(searchFilter[0])) {
-      return customer["customerStatus"][filterFieldsKeyMap[searchFilter[0]]];
-    }
-
-    return true;
-  });
-
-  filteredCustomers = filteredCustomers?.filter(
+  const filteredCustomers = customers?.filter(
     (customer) =>
       includesCaseInsensitive(customer?.basicInfo?.firstName, inputVal) ||
       includesCaseInsensitive(customer?.basicInfo?.lastName, inputVal)
   );
 
   return (
-    <div className="flex flex-col gap-y-6  mt-12 mb-32  items-center justify-between  p-4 md:p-0 relative w-full">
+    <div className="flex flex-col gap-y-6  items-center justify-between mt-12 mb-32  p-4 md:p-0 relative w-full">
       <h1 className="text-2xl md:text-4xl font-bold underline">
-        Search Profiles
+        Update/Renew Profiles
       </h1>
-      <div className="flex flex-col gap-6 md:w-10/12 w-full ">
-        <div className="flex flex-col md:flex-row justify-between gap-6 w-full">
-          <div className="w-full">
-            <h1 className="text-lg">Dropdown Filter</h1>
-            <MultiSelectField
-              placeholderText={"Veteran"}
-              dropdownOptions={filterFields}
-              selectedOptions={searchFilter}
-              onChange={handleFilterChange}
-            />
-          </div>
-
-          <div className="w-full">
-            <h1 className="text-lg ">Search Filter</h1>
-
-            <input
-              className="bg-transparent block w-full mt-1 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
-              placeholder={"Search by customer name..."}
-              value={inputVal}
-              ref={inputRef}
-              onChange={(e) => setInputVal(e.target.value)}
-            />
-          </div>
-        </div>
-        <p className="font-semibold md:text-2xl">
-          Total : {filteredCustomers.length}
+      <div className="flex flex-col md:flex-row gap-6 md:w-7/12 w-11/12 items-center">
+        <input
+          className="bg-transparent block w-full mt-1 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
+          placeholder={"Search customer..."}
+          value={inputVal}
+          ref={inputRef}
+          onChange={(e) => setInputVal(e.target.value)}
+        />
+        <p className="font-semibold md:text-2xl text-nowrap">
+          Total: {filteredCustomers?.length}
         </p>
       </div>
       <LoadingSpinner isLoading={loading} />
       {filteredCustomers.length == 0 && !loading ? (
-        <p className="text-center mt-6">{"No profiles to display"}</p>
+        <p className="text-center text-sm md:text-base">
+          No profiles to display
+        </p>
       ) : (
-        <div className="flex flex-col gap-y-6 w-full md:w-10/12">
+        <div className="flex flex-col gap-y-6 w-full md:w-9/12">
           {filteredCustomers.map((customer, index) => (
             <CustomerCard
-              customer={customer}
               key={index}
-              onViewDetails={() => navigate(`/inmate/${customer?._id}`)}
+              customer={customer}
+              onUpdate={() => navigate(`/update-inmate/${customer?._id}`)}
+              onRenew={() =>
+                navigate(`/payment`, {
+                  state: {
+                    cid: customer?._id,
+                    paymentDetails: {
+                      renewal: true,
+                      totalAmount: 79.95,
+                    },
+                  },
+                })
+              }
+              showExpiresAt={true}
             />
           ))}
         </div>
@@ -195,22 +139,35 @@ function SearchProfiles() {
 
 // function CustomerCard({ customer }) {
 //   const navigate = useNavigate();
+//   const profileApproved = customer?.profileApproved == false;
+//   const updateApproved = customer?.updateApproved == false;
+//   const infoText = profileApproved
+//     ? "Profile approval needed"
+//     : updateApproved && "Updates approval needed";
 //   return (
 //     <div
 //       id="customer-card"
-//       className={`bg-gray-100 rounded-md border "border-gray-300" p-2 px-4 w-full md:w-10/12 mx-auto flex flex-col gap-y-6 gap-x-4 md:flex-row`}
+//       className={`bg-gray-100 rounded-md border border-gray-300 p-2 px-4 w-full md:w-10/12 mx-auto flex flex-col gap-y-6 gap-x-4 md:flex-row`}
+//       // className={`bg-gray-100 rounded-md border ${
+//       //   profileApproved == false || updateApproved == false
+//       //     ? "border-red-500"
+//       //     : "border-gray-300"
+//       // }  p-2 px-4 w-full md:w-10/12 mx-auto flex flex-col gap-y-6 gap-x-4 md:flex-row`}
 //     >
 //       <img
 //         src={customer?.photos?.imageUrl || "/assets/default.jpg"}
 //         alt=""
-//         className="h-auto w-full md:w-44 md:h-44 rounded"
+//         className="h-80 w-full md:w-44 md:h-44 rounded"
 //       />
 //       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
-//         <div className=" ">
-//           <div className=" flex flex-col items-center md:flex-row gap-2 ">
-//             <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
+//         <div>
+//           <div className=" flex flex-col items-center md:flex-row md:gap-2 mb-4 md:mb-2">
+//             <p className="font-semibold md:text-3xl text-lg ">
 //               {customer?.basicInfo?.firstName} {customer?.basicInfo?.lastName}
 //             </p>
+//             {/* {(profileApproved == false || updateApproved == false) && (
+//               <p className="text-red-500 text-sm font-normal">{infoText}</p>
+//             )} */}
 //           </div>
 
 //           <div className="flex gap-x-4">
@@ -236,13 +193,12 @@ function SearchProfiles() {
 //           </div>
 //         </div>
 //         <p>
-//           <span className="font-medium mr-1">Location:</span>
-//           {customer?.basicInfo?.state || "N/A"},{" "}
-//           {customer?.basicInfo?.city || "N/A"}
+//           <span className="font-medium mr-1">Inmate#:</span>
+//           {customer?.basicInfo?.inmateNumber || "N/A"}
 //         </p>
 //         <p>
-//           <span className="font-medium mr-1">Education:</span>
-//           {customer?.basicInfo?.education || "N/A"}
+//           <span className="font-medium mr-1"> Expires on:</span>
+//           {customer?.basicInfo?.expiresAt || "N/A"}
 //         </p>
 //         <p>
 //           <span className="font-medium mr-1"> Mainling Addres:</span>
@@ -252,26 +208,38 @@ function SearchProfiles() {
 //       <div className="w-full md:w-fit ml-auto flex flex-col my-auto">
 //         <button
 //           type="button"
-//           className="mt-4 bg-fr-blue-200 text-white px-6 py-3 rounded hover:opacity-90"
-//           onClick={() => navigate(`/inmate/${customer?._id}`)}
+//           className="mt-4 bg-green-600 text-white text-base md:text-lg  px-8 py-3 rounded hover:opacity-90"
+//           onClick={() =>
+//             navigate(`/payment`, {
+//               state: {
+//                 cid: customer?._id,
+//                 paymentDetails: {
+//                   renewal: true,
+//                   totalAmount: 79.95,
+//                 },
+//               },
+//             })
+//           }
 //         >
-//           View Details
+//           Renew
+//         </button>
+//         <button
+//           type="button"
+//           className="mt-4 bg-fr-blue-200 text-white text-base md:text-lg  px-8 py-3 rounded hover:opacity-90"
+//           onClick={() => navigate(`/update-inmate/${customer?._id}`)}
+//         >
+//           Update
 //         </button>
 //         {/* <button
 //           type="button"
 //           className="mt-4 border text-black px-5 py-3 border-fr-blue-200 rounded hover:opacity-90"
-//           onClick={() =>
-//             (window.location.href = mailTOLink(
-//               customer?.email,
-//               customer.firstName
-//             ))
-//           }
+//           onClick={() => navigate(`/inmate/${customer?._id}`)}
 //         >
-//           Contact Inmate
+//           View Details
 //         </button> */}
 //       </div>
 //     </div>
 //   );
 // }
 
-export default SearchProfiles;
+export default UpdateCustomers;

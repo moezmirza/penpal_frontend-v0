@@ -16,7 +16,7 @@ import AdminCustomer from "./routes/Customer/AdminCustomer";
 import CheckoutForm from "./routes/Payment/Payment";
 import Subscription from "./routes/User/Subscription";
 import Result from "./routes/Payment/Result";
-import ListedCustomer from "./routes/Customer/ListedCustomer";
+import UpdateCustomers from "./routes/Customer/UpdateCustomers";
 import SearchProfiles from "./routes/Customer/SearchProfiles";
 import DeleteProfiles from "./routes/Admin/DeleteProfiles";
 function App() {
@@ -51,7 +51,7 @@ function App() {
         <Route path="/list-inmate" element={<CreateCustomer />} />
         <Route path="/update-inmate/:id" element={<UpdateCustomer />} />
         <Route path="/manage-inmates" element={<ManageCustomers />} />
-        <Route path="/update-inmates" element={<ListedCustomer />} />
+        <Route path="/update-inmates" element={<UpdateCustomers />} />
         <Route path="/search-profiles" element={<SearchProfiles />} />
         <Route path="/payment" element={<CheckoutForm />} />
         <Route path="/payment/result" element={<Result />} />

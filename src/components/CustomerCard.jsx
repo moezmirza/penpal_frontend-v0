@@ -2,11 +2,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 function CustomerCard({
+  showExpiresAt,
   customer,
-  onDelete,
-  onApproveProfile,
   onUpdate,
-  onApproveUpdate,
   onRenew,
   onUpdateApproval,
   onProfileApproval,
@@ -19,7 +17,9 @@ function CustomerCard({
   return (
     <div
       id="customer-card"
-      className="bg-gray-100 rounded-md border border-gray-300 py-2 px-4 w-full flex flex-col gap-y-6 gap-x-4 md:flex-row md:items-center"
+      className={`bg-gray-100 rounded-md border   ${
+        customer?.isFavorite ? "border-green-500" : "border-gray-300"
+      }  py-2 px-4 w-full flex flex-col gap-y-6 gap-x-4 md:flex-row md:items-center`}
     >
       <img
         src={customer?.imageUrl || "/assets/default.jpg"}
@@ -28,9 +28,16 @@ function CustomerCard({
       />
       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
         <div className=" ">
-          <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
-            {customer?.basicInfo?.firstName} {customer?.basicInfo?.lastName}
-          </p>
+          <div className="flex gap-x-6 items-baseline">
+            <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
+              {customer?.basicInfo?.firstName} {customer?.basicInfo?.lastName}
+            </p>
+            <img
+              src={`assets/icons/${customer?.isFavorite && "filledHeart.svg"}`}
+              alt=""
+              className="h-6"
+            />
+          </div>
 
           <div className="flex gap-x-4 gap-y-1 flex-wrap ">
             <p className="hidden md:block">
@@ -47,27 +54,50 @@ function CustomerCard({
             </p>
             <span className="flex gap-x-1 items-baseline">
               <img src="/assets/icons/star.svg" alt="" className="h-4" />{" "}
-              {customer?.basicInfo?.rating || 0}
+              {customer?.rating || 0}
             </span>
-            <p className="underline">
-              {customer?.basicInfo?.numRatings || 0} Reviews
-            </p>
+            <p className="underline">{customer?.numRatings || 0} Reviews</p>
           </div>
         </div>
         <p>
           <span className="font-medium mr-1">Inmate#:</span>
           {customer?.basicInfo?.inmateNumber || "N/A"}
         </p>
-        <p>
-          <span className="font-medium mr-1">Location:</span>
-          {customer?.state || "N/A"}, {customer?.basicInfo?.city || "N/A"}
-        </p>
+        {showExpiresAt ? (
+          <p>
+            <span className="font-medium mr-1">Expires At:</span>
+            {customer?.customerStatus?.expiresAt?.split("T")[0] || "N/A"}
+          </p>
+        ) : (
+          <p>
+            <span className="font-medium mr-1">Location:</span>
+            {customer?.basicInfo?.state || "N/A"}, {customer?.basicInfo?.city || "N/A"}
+          </p>
+        )}
         <p>
           <span className="font-medium mr-1"> Mainling Addres:</span>
           {customer?.basicInfo?.mailingAddress || "N/A"}
         </p>
       </div>
       <div className="w-full md:w-fit ml-auto flex flex-col my-auto">
+        {onRenew && (
+          <button
+            type="button"
+            className="mt-3 bg-green-600 text-white px-3 py-3 rounded-lg hover:opacity-90"
+            onClick={onRenew}
+          >
+            Renew Profile
+          </button>
+        )}
+        {onUpdate && (
+          <button
+            type="button"
+            className="mt-3 bg-fr-blue-200 text-white px-3 py-3 rounded-lg hover:opacity-90"
+            onClick={onUpdate}
+          >
+            Update Profile
+          </button>
+        )}
         {onUpdateApproval && (
           <>
             <button

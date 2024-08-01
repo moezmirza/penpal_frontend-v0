@@ -64,7 +64,10 @@ function Customer() {
         ? "Favorite"
         : "Add to Favorites";
 
-    target.innerHTML = `<img src="/assets/icons/bookmark.svg" alt="" class="h-6 mr-2" /> ${newText}`;
+    target.innerHTML =
+      newText == "Favorite"
+        ? `<img src="/assets/icons/bookmark.svg" alt="" class="h-6 mr-2" /> ${newText}`
+        : newText;
     const { success, data, error } = await put(`/user/favorite?id=${id}`, {
       fav: buttonText === "Favorite" ? false : true,
     });
@@ -179,10 +182,10 @@ function Customer() {
                         alt=""
                         className="h-4"
                       />{" "}
-                      {customer?.basicInfo?.rating || 0}
+                      {customer?.rating || 0}
                     </span>
                     <p className="underline text-nowrap">
-                      {customer?.basicInfo?.numRatings || 0} Reviews
+                      {customer?.numRatings || 0} Reviews
                     </p>
                   </div>
                 </div>
@@ -209,14 +212,14 @@ function Customer() {
                     className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
                     onClick={handleFavouriteUpdate}
                   >
-                    <img
-                      src="/assets/icons/bookmark.svg"
-                      alt=""
-                      className="h-6 mr-2"
-                    />
-                    {customer?.basicInfo?.isFavorite
-                      ? "Favorite"
-                      : "Add to Favorites"}
+                    {customer?.isFavorite && (
+                      <img
+                        src="/assets/icons/bookmark.svg"
+                        alt=""
+                        className="h-6 mr-2"
+                      />
+                    )}
+                    {customer?.isFavorite ? "Favorite" : "Add to Favorites"}
                   </button>
                 )}
                 {/* <button
