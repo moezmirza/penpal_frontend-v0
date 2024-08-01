@@ -20,7 +20,7 @@ import { storage } from "../../services/firebase";
 import { useSelector } from "react-redux";
 import { usePost } from "../../api/usePost";
 import { useGet } from "../../api/useGet";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { usePut } from "../../api/usePut";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { v4, validate } from "uuid";
@@ -217,7 +217,7 @@ function CreateCustomer() {
     personalityInfo: {},
   }); // to keep track of updatedFields
   const updateBtnRef = useRef();
-
+  const navigate = useNavigate();
   // const validateEmail = (email) => {
   //   // Basic regex for email validation
   //   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -632,11 +632,7 @@ function CreateCustomer() {
   };
 
   const handlePaynow = () => {
-    if (done) {
-      console.log("already submitted");
-    } else {
-      console.log("need to be paid");
-    }
+    navigate("/payment", { state: { cid: id, paymentDetails: duesInfo } });
   };
 
   const changeOccured = Object.keys(updatedFields.current).length != 0;
