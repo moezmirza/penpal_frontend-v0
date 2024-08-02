@@ -11,7 +11,6 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import { baseUrl } from "../../utils/authCodeMap";
 import { usePost } from "../../api/usePost";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 
@@ -21,7 +20,6 @@ import { LoadingSpinner } from "../../components/LoadingSpinner";
 const stripePromise = loadStripe(
   "pk_test_51PgWq2Euyj8xye751S0KM3U2HKAM0aKKCO1sgNePM9n0N22CMLvzOgGjReo4ikEcqIhqL9j6f0VRtdlELPP7Ht1q00PMKpRLgM"
 );
-const productName = "year_profile";
 
 const CheckoutForm = () => {
   const [clientSecret, setClientSecret] = useState("");

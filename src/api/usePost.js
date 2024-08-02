@@ -1,23 +1,14 @@
 import axios from "axios";
-import { baseUrl } from "../utils/authCodeMap";
 import { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
+import { baseApi } from "../utils/config";
 
 function usePost() {
-  const { updateAuthInfo } = useContext(AuthContext);
+  const { updateAuthInfo, authInfo } = useContext(AuthContext);
 
   const post = async (url, body, auth = true) => {
     try {
-      const tokenInfo = JSON.parse(localStorage.getItem("tokenInfo"));
-      const authToken = tokenInfo?.token;
-      if (Date.now() - tokenInfo?.createdAt > 1000 * 60 * 30) {
-        const refreshAccessToken = await auth?.currentUser?.getIdToken(true);
-        const authInfo = {
-          token: refreshAccessToken,
-        };
-        console.log("authInfo", authInfo);
-        updateAuthInfo(authInfo);
-      }
+      const authToken = authInfo.token;
 
       let headers = {
         "Content-Type": "application/json",
@@ -26,7 +17,7 @@ function usePost() {
         headers.Authorization = `Bearer ${authToken}`;
       }
 
-      const completeUrl = baseUrl + url;
+      const completeUrl = baseApi + url;
       const response = await axios.post(completeUrl, body, {
         headers,
       });

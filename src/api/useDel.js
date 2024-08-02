@@ -1,23 +1,14 @@
 import axios from "axios";
-import { baseUrl } from "../utils/authCodeMap";
 import { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
+import { baseApi } from "../utils/config";
 
 function useDel() {
-  const { updateAuthInfo } = useContext(AuthContext);
+  const { updateAuthInfo, authInfo } = useContext(AuthContext);
 
   const del = async (url) => {
     try {
-      const tokenInfo = JSON.parse(localStorage.getItem("tokenInfo"));
-      const authToken = tokenInfo?.token;
-      if (Date.now() - tokenInfo?.createdAt > 1000 * 60 * 30) {
-        const refreshAccessToken = await auth?.currentUser?.getIdToken(true);
-        const authInfo = {
-          token: refreshAccessToken,
-        };
-        console.log("authInfo", authInfo);
-        updateAuthInfo(authInfo);
-      }
+      const authToken = authInfo.token;
 
       let headers = {
         "Content-Type": "application/json",
@@ -26,7 +17,7 @@ function useDel() {
         headers.Authorization = `Bearer ${authToken}`;
       }
 
-      const completeUrl = baseUrl + url;
+      const completeUrl = baseApi + url;
       const response = await axios.delete(completeUrl, {
         headers,
       });

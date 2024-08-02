@@ -1,32 +1,21 @@
 import axios from "axios";
-import { baseUrl } from "../utils/authCodeMap";
 import { auth } from "../services/firebase";
 import { AuthContext } from "../providers/AuthProvider";
 import { useContext } from "react";
+import { baseApi } from "../utils/config";
 
 // Custom hook
 function useGet() {
-  const { updateAuthInfo } = useContext(AuthContext);
+  const { updateAuthInfo, authInfo } = useContext(AuthContext);
 
   const get = async (url) => {
     console.log("here inside of get");
 
     try {
-      const tokenInfo = JSON.parse(localStorage.getItem("tokenInfo"));
-      console.log("tokeninfro", tokenInfo);
-      const authToken = tokenInfo?.token;
-      console.log("auhtTOkne", authToken);
-      if (!authToken || Date.now() - tokenInfo?.createdAt > 1000 * 60 * 30) {
-        const refreshAccessToken = await auth?.currentUser?.getIdToken(true);
-        const authInfo = {
-          token: refreshAccessToken,
-        };
-        updateAuthInfo(authInfo);
-        //30 mins
-      }
+      const authToken = authInfo.token;
 
       console.log("url and token", url, authToken);
-      const completeUrl = baseUrl + url;
+      const completeUrl = baseApi + url;
       let headers = {
         "Content-Type": "application/json",
       };

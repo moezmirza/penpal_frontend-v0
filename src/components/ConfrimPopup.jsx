@@ -82,7 +82,8 @@ function ConfrimPopup({
               />
             </svg>
             {Object.keys(updatedFields.current).length != 0 ? (
-              <PaymentReceipt obj={updatedFields.current} />
+                <PaymentReceipt obj={updatedFields.current} />
+
             ) : (
               <p className="text-gray-600 my-8">{infoText}</p>
             )}
