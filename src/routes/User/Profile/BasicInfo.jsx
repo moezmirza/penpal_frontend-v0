@@ -44,15 +44,15 @@ function BasicInfo({ onTabSwitch }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
-    setDone(false);
     for (const key in basicInfo) {
       if (!basicInfo[key] && key != "imageUrl") {
         setError("All fields are required!");
         return;
       }
     }
+    setError("");
+    setLoading(true);
+    setDone(false);
     try {
       const uploadedImg = imageRef.current.files[0];
       if (uploadedImg) {

@@ -33,9 +33,6 @@ function Questionairre() {
   });
 
   const handleUpdate = async () => {
-    setError("");
-    setLoading(true);
-    setDone(false);
     console.log(personalityInfo);
     for (const key in personalityInfo) {
       if (personalityInfo[key].length === 0) {
@@ -43,6 +40,9 @@ function Questionairre() {
         return;
       }
     }
+    setError("");
+    setLoading(true);
+    setDone(false);
 
     const { success, data, error } = await put("/user/personality", {
       personality: personalityInfo,
@@ -57,7 +57,7 @@ function Questionairre() {
         navigate("/#findpal");
       }
     } else {
-      console.log(error);
+      console.log("errorMsg", error);
       setError(mapAuthCodeToMessage(error));
     }
     setLoading(false);
