@@ -139,7 +139,7 @@ const Login = () => {
     if (!resendEmailStatus) {
       setError("");
       setResendEmailStatus(true);
-      // sendEmailVerification(firebaseUser);
+      sendEmailVerification(firebaseUser);
       setTimeout(() => {
         setResendEmailStatus(false);
       }, 60000);
