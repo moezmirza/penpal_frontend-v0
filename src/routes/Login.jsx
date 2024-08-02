@@ -61,15 +61,12 @@ const Login = () => {
         setFirebaseUser(user);
         if (user.emailVerified == false) {
           setLoading(false);
+          sendEmailVerification(user);
           setError("Email unverified, verification email sent!");
           setResendEmail(true);
           return;
         }
-        console.log("user.user", user);
 
-        const authInfo = {
-          token: user.accessToken,
-        };
         const tokenResult = await getIdTokenResult(user);
         console.log("res", tokenResult);
         if (tokenResult.claims.role == "admin") {
@@ -77,19 +74,28 @@ const Login = () => {
             firstName: "Admin",
             email: user.email,
           };
-          authInfo.adminAuth = true;
-          dispatch(setCurrentUser(currentUser));
+          const authInfo = {
+            token: user.accessToken,
+            adminAuth: true,
+          };
           updateAuthInfo(authInfo);
+          dispatch(setCurrentUser(currentUser));
           navigate("/approve-profiles");
         } else {
-          let { success, data, error } = await get("/user");
+          const authInfo = {
+            token: user.accessToken,
+            userAuth: true,
+          };
+          let { success, data, error } = await get("/user", authInfo.token);
           console.log(success, "UserData", data);
           if (success) {
-            authInfo.userAuth = true;
             dispatch(setCurrentUser(data));
-            updateAuthInfo(authInfo);
             navigate("/");
+          } else {
+            console.log("error while getting user creds");
           }
+          updateAuthInfo(authInfo);
+          navigate("/");
         }
         setLoading(false);
       }
@@ -109,22 +115,22 @@ const Login = () => {
     }
   }, []);
 
-  const handleSignInWithGoogle = async () => {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    const currentUser = {
-      name: user.displayName,
-      email: user.email,
-    };
-    const authInfo = {
-      token: user.accessToken,
-      userAuth: true,
-    };
-    dispatch(setCurrentUser(currentUser));
-    updateAuthInfo(authInfo);
+  // const handleSignInWithGoogle = async () => {
+  //   const result = await signInWithPopup(auth, provider);
+  //   const user = result.user;
+  //   const currentUser = {
+  //     name: user.displayName,
+  //     email: user.email,
+  //   };
+  //   const authInfo = {
+  //     token: user.accessToken,
+  //     userAuth: true,
+  //   };
+  //   dispatch(setCurrentUser(currentUser));
+  //   updateAuthInfo(authInfo);
 
-    navigate("/");
-  };
+  //   navigate("/");
+  // };
   const changePassInputType = () => {
     console.log("inside drop", passwordRef.current.type);
     if (passwordRef.current.type == "password") {
@@ -146,8 +152,8 @@ const Login = () => {
     }
   };
   return (
-    <div className="flex  justify-center bg-b-general  md:items-center h-screen px-3 md:h-full">
-      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-[35%] w-full h-fit md:mt-0 mt-32  rounded-lg relative text-sm md:text-base">
+    <div className="flex  justify-center bg-b-general  md:items-center py-16 px-3 h-full">
+      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-[35%] w-full h-fit  rounded-lg relative text-sm md:text-base">
         <LoadingSpinner isLoading={loading} />
         <h2 className="text-2xl md:text-4xl font-bold text-gray-900 flex gap-x-3">
           Welcome Back
@@ -159,7 +165,11 @@ const Login = () => {
         {error && <p className="text-red-500 mt-1 text-center"> {error} </p>}
         {resendEmail && (
           <div className="flex gap-x-2">
-            <button disabled={resendEmailStatus} className="hover:underline" onClick={handleResendEmail}>
+            <button
+              disabled={resendEmailStatus}
+              className="hover:underline"
+              onClick={handleResendEmail}
+            >
               {resendEmailStatus
                 ? "Sent to your email"
                 : "Resend verification email"}
@@ -215,7 +225,7 @@ const Login = () => {
           </button>
         </form>
 
-        <Separater text={"OR"} />
+        {/* <Separater text={"OR"} />
 
         <div className="flex items-center justify-center">
           <button
@@ -230,7 +240,7 @@ const Login = () => {
             />
             <span>Login with Google</span>
           </button>
-        </div>
+        </div> */}
 
         <p className="m-auto ">
           Don't have an account?

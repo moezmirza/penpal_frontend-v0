@@ -47,7 +47,7 @@ function Navbar() {
   return (
     <div className="bg-fr-blue-200 flex items-end justify-between w-full p-3 md:py-5 md:px-4 sticky top-0 z-50">
       <div className="text-xl md:text-2xl text-white font-medium ">
-        {user?.firstName || "Welcome Pal"}
+        {isUser ? user?.firstName : isAdmin ? "Admin" : "Welcome Pal"}
         <span className="text-4xl">.</span>
       </div>
 

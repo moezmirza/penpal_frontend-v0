@@ -7,13 +7,12 @@ import CallSupport from "../components/CallSupport";
 import { useLocation } from "react-router-dom";
 
 function LayoutProvider({ children }) {
-  const currentUser = useSelector((state) => state.user.currentUser);
+  const isUser = JSON.parse(localStorage.getItem("userAuth"));
   const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
   const location = useLocation();
-  const excludeHeaderFooter = [
-    "/payment",
-    "/payment/result",
-  ].includes(location.pathname);
+  const excludeHeaderFooter = ["/payment", "/payment/result"].includes(
+    location.pathname
+  );
 
   if (excludeHeaderFooter) return <div>{children}</div>;
   return (
@@ -22,7 +21,7 @@ function LayoutProvider({ children }) {
       <div className="flex-grow">{children}</div>
       <CallSupport />
 
-      {currentUser && !isAdmin && (
+      {isUser && !isAdmin && (
         <div className="flex-none">
           <Footer />
         </div>

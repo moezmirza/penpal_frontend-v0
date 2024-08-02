@@ -1,14 +1,14 @@
 import axios from "axios";
 import { auth } from "../services/firebase";
-import { AuthContext } from "../providers/AuthProvider";
 import { useContext } from "react";
 import { baseApi } from "../utils/config";
+import { AuthContext } from "../providers/AuthProvider";
 
 // Custom hook
 function useGet() {
   const { authInfo } = useContext(AuthContext);
 
-  const get = async (url) => {
+  const get = async (url, initialToken = null) => {
     console.log("here inside of get");
 
     try {
@@ -19,6 +19,9 @@ function useGet() {
       };
       if (authToken) {
         headers.Authorization = `Bearer ${authToken}`;
+      }
+      if (initialToken) {
+        headers.Authorization = `Bearer ${initialToken}`;
       }
       console.log("complete URL and headers", completeUrl, headers);
       const response = await axios.get(completeUrl, {
