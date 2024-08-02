@@ -51,10 +51,11 @@ function Questionairre() {
       console.log("personality data", data);
       dispatch(setUserPersonality(data.personality));
       dispatch(setCurrentUserProfileStatus(true));
+      setDone(true);
+      console.log("currentUser", currentUser);
       if (!currentUser.profileComplete) {
         navigate("/#findpal");
       }
-      setDone(true);
     } else {
       console.log(error);
       setError(mapAuthCodeToMessage(error));
