@@ -30,7 +30,7 @@ function DeleteProfiles() {
     const fetchMoreCustomers = async () => {
       setIsLoadingMore(true);
       const { success, data, error } = await get(
-        `/customer?p=${page}&l=${itemsPerPage}`
+        `/admin/customer?p=${page}&l=${itemsPerPage}`
       );
       if (success) {
         setIsLoadingMore(false);
