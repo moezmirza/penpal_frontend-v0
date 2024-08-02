@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import {
   getIdTokenResult,
+  sendEmailVerification,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
@@ -13,6 +14,7 @@ import mapAuthCodeToMessage from "../utils/authCodeMap";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { useGet } from "../api/useGet";
 import { AuthContext } from "../providers/AuthProvider";
+import Timeout from "../components/Timeout";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -20,7 +22,10 @@ const Login = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [resendEmail, setResendEmail] = useState(false);
+  const [resendEmailStatus, setResendEmailStatus] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [firebaseUser, setFirebaseUser] = useState(null);
   const get = useGet();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -41,7 +46,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("")
+    setError("");
     console.log(formData);
     try {
       setLoading(true);
@@ -53,11 +58,11 @@ const Login = () => {
       console.log("result", result);
       if (result) {
         const user = result.user;
+        setFirebaseUser(user);
         if (user.emailVerified == false) {
           setLoading(false);
-          setError(
-            "An email has been sent to your email address, verify to login."
-          );
+          setError("Email unverified, verification email sent!");
+          setResendEmail(true);
           return;
         }
         console.log("user.user", user);
@@ -83,7 +88,7 @@ const Login = () => {
             authInfo.userAuth = true;
             dispatch(setCurrentUser(data));
             updateAuthInfo(authInfo);
-            navigate("/");  
+            navigate("/");
           }
         }
         setLoading(false);
@@ -130,9 +135,19 @@ const Login = () => {
       imageRef.current.src = "assets/icons/eyeSlash.svg";
     }
   };
+  const handleResendEmail = (e) => {
+    if (!resendEmailStatus) {
+      setError("");
+      setResendEmailStatus(true);
+      // sendEmailVerification(firebaseUser);
+      setTimeout(() => {
+        setResendEmailStatus(false);
+      }, 60000);
+    }
+  };
   return (
     <div className="flex  justify-center bg-b-general  md:items-center h-screen px-3 md:h-full">
-      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-1/3 w-full h-fit md:mt-0 mt-32  rounded-lg relative text-sm md:text-base">
+      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-[35%] w-full h-fit md:mt-0 mt-32  rounded-lg relative text-sm md:text-base">
         <LoadingSpinner isLoading={loading} />
         <h2 className="text-2xl md:text-4xl font-bold text-gray-900 flex gap-x-3">
           Welcome Back
@@ -142,6 +157,17 @@ const Login = () => {
           Enter your credentionals to login
         </p>
         {error && <p className="text-red-500 mt-1 text-center"> {error} </p>}
+        {resendEmail && (
+          <div className="flex gap-x-2">
+            <button disabled={resendEmailStatus} className="hover:underline" onClick={handleResendEmail}>
+              {resendEmailStatus
+                ? "Sent to your email"
+                : "Resend verification email"}
+            </button>
+            {resendEmailStatus && <Timeout timeInSec={60} />}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-y-6 w-full ">
           <label className="text-left">
             Email
