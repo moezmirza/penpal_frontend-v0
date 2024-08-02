@@ -61,11 +61,11 @@ const Login = () => {
         setFirebaseUser(user);
         if (user.emailVerified == false) {
           setLoading(false);
+          sendEmailVerification(user);
           setError("Email unverified, verification email sent!");
           setResendEmail(true);
           return;
         }
-        console.log("user.user", user);
 
         const tokenResult = await getIdTokenResult(user);
         console.log("res", tokenResult);
@@ -86,7 +86,6 @@ const Login = () => {
             token: user.accessToken,
             userAuth: true,
           };
-          updateAuthInfo(authInfo);
           let { success, data, error } = await get("/user", authInfo.token);
           console.log(success, "UserData", data);
           if (success) {
@@ -95,6 +94,8 @@ const Login = () => {
           } else {
             console.log("error while getting user creds");
           }
+          updateAuthInfo(authInfo);
+          navigate("/");
         }
         setLoading(false);
       }

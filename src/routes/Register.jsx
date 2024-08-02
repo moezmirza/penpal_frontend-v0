@@ -65,7 +65,6 @@ const Register = () => {
         return;
       }
     }
-    console.log(formData);
     setLoading(true);
     const { success, data, error } = await post("/user", formData);
     if (success) {
