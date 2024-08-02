@@ -4,7 +4,7 @@ import { AuthContext } from "../providers/AuthProvider";
 import { baseApi } from "../utils/config";
 
 function usePost() {
-  const { updateAuthInfo, authInfo } = useContext(AuthContext);
+  const { authInfo } = useContext(AuthContext);
 
   const post = async (url, body, auth = true) => {
     try {
@@ -31,7 +31,7 @@ function usePost() {
       );
       return { success: true, data: response.data.data };
     } catch (error) {
-      console.error("endPoint", url, "error:", error);
+      console.error("reqType", "post", "endPoint", url, "error:", error);
       return {
         success: false,
         error: error.response ? error.response.data : error.message,

@@ -56,7 +56,7 @@ function DeleteProfiles() {
       customers.filter((customer) => customer._id != clientId?.current)
     );
     setShowPopup(false);
-    del(`/customer?id=${clientId?.current}`).then((response) => {
+    del(`/admin/customer?id=${clientId?.current}`).then((response) => {
       const { success, data, error } = response;
       if (success) {
         console.log("customer deletion successful:", data);

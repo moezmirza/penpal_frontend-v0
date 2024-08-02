@@ -22,11 +22,18 @@ function usePut() {
       const response = await axios.put(completeUrl, body, {
         headers,
       });
-      console.log("endPoint", url, "response", response.data.data);
+      console.log(
+        "reqType",
+        "put",
+        "endPoint",
+        url,
+        "response",
+        response.data.data
+      );
 
       return { success: true, data: response.data.data };
     } catch (error) {
-      console.error("endPoint", url, "error:", error);
+      console.error("reqType", "put", "endPoint", url, "error:", error);
 
       return {
         success: false,
