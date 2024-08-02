@@ -151,8 +151,8 @@ const Login = () => {
     }
   };
   return (
-    <div className="flex  justify-center bg-b-general  md:items-center h-screen px-3 md:h-full">
-      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-[35%] w-full h-fit md:mt-0 mt-32  rounded-lg relative text-sm md:text-base">
+    <div className="flex  justify-center bg-b-general  md:items-center py-16 px-3 h-full">
+      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-[35%] w-full h-fit  rounded-lg relative text-sm md:text-base">
         <LoadingSpinner isLoading={loading} />
         <h2 className="text-2xl md:text-4xl font-bold text-gray-900 flex gap-x-3">
           Welcome Back
