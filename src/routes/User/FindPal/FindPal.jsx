@@ -4,16 +4,19 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { MultiSelectField } from "../../../components/mainComponents/MultiSelectField";
 import { LoadingSpinner } from "../../../components/LoadingSpinner";
 import { useGet } from "../../../api/useGet";
-import CompleteProfilePopup from "../../../components/CompleteProfilePopup";
+import ConfirmPopup from "../../../components/ConfrimPopup";
 import {
   ageGrpList,
   educationList,
   genderList,
   orientationList,
+  otherFiltersKeyMap,
+  othersFilterList,
   raceList,
   stateList,
 } from "../../../utils/sharedState";
-import CallSupport from "../../../components/CallSupport";
+import { includesCaseInsensitive } from "../../Admin/ApproveUpdates";
+import CustomerCard from "../../../components/CustomerCard";
 
 export const mailTOLink = (email, name) => {
   const intialBody = `Hi ${name}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`;
@@ -29,21 +32,24 @@ function FindPal() {
   const [loading, setLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [getStartedPopup, setGetStartedPopup] = useState(false);
-  const [viewMorePopup, setViewMorePopup] = useState(false);
+  // const [viewMorePopup, setViewMorePopup] = useState(false);
+  const navigate = useNavigate();
   const get = useGet();
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 30;
   const searchSectRef = useRef(null);
   const location = useLocation();
+  const [inputVal, setInputVal] = useState("");
 
   const [filter, setFilter] = useState({
     state: [],
     age: [],
     gender: [],
     orientation: [],
-    race: [],
+    // race: [],
     education: [],
     isApplied: false,
+    others: [],
   });
   const filterStateNameMap = {
     State: "state",
@@ -52,6 +58,7 @@ function FindPal() {
     Orientation: "orientation",
     Race: "race",
     Education: "education",
+    Others: "others",
   };
 
   const filterOptionsMap = {
@@ -59,8 +66,9 @@ function FindPal() {
     Age: ageGrpList,
     Gender: genderList,
     Orientation: orientationList,
-    Race: raceList,
+    // Race: raceList,
     Education: educationList,
+    Others: othersFilterList,
   };
   const oneChoiceField = ["age", "gender", "race", "education"];
 
@@ -123,33 +131,33 @@ function FindPal() {
   }, []);
 
   const handleFetchMoreCustomers = () => {
-    if (user?.profileComplete) {
-      //  page start from zero
-      const page =
-        customers.length === itemsPerPage
-          ? 1
-          : Math.floor(customers.length / itemsPerPage) + 1;
-      const fetchMoreCustomers = async () => {
-        setIsLoadingMore(true);
-        const { success, data, error } = await get(
-          `/user/matches?p=${page}&l=${itemsPerPage}`
-        );
-        if (success) {
-          setIsLoadingMore(false);
-          if (data.length == 0) {
-            setMatchesAlert("No more matches found.");
-          }
-          console.log("more customers data", data);
-          setCustomers([...customers, ...data]);
-        } else {
-          setMatchesAlert("Error loading matches");
-          setIsLoadingMore(false);
+    // if (user?.profileComplete) {
+    //  page start from zero
+    const page =
+      customers.length === itemsPerPage
+        ? 1
+        : Math.floor(customers.length / itemsPerPage) + 1;
+    const fetchMoreCustomers = async () => {
+      setIsLoadingMore(true);
+      const { success, data, error } = await get(
+        `/user/matches?p=${page}&l=${itemsPerPage}`
+      );
+      if (success) {
+        setIsLoadingMore(false);
+        if (data.length == 0) {
+          setMatchesAlert("No more matches found.");
         }
-      };
-      fetchMoreCustomers();
-    } else {
-      setViewMorePopup(true);
-    }
+        console.log("more customers data", data);
+        setCustomers([...customers, ...data]);
+      } else {
+        setMatchesAlert("Error loading matches");
+        setIsLoadingMore(false);
+      }
+    };
+    fetchMoreCustomers();
+    // } else {
+    //   setViewMorePopup(true);
+    // }
   };
 
   function getAgeGroup(age) {
@@ -162,26 +170,34 @@ function FindPal() {
     return null;
   }
 
+  const checkCustomerStatus = (customer, options) => {
+    return options.some(
+      (field) => customer?.customerStatus[otherFiltersKeyMap[field]]
+    );
+  };
+
   const filterCustomers = () => {
     return customers.filter((customer) => {
-      const ageGroup = getAgeGroup(customer.age);
+      const ageGroup = getAgeGroup(customer?.basicInfo?.age);
       return (
-        (!filter?.state.length || filter.state.includes(customer.state)) &&
+        (!filter?.state.length ||
+          filter.state.includes(customer?.basicInfo?.state)) &&
         (!filter?.age.length || filter.age.includes(ageGroup)) &&
-        (!filter?.gender.length || filter.gender.includes(customer.gender)) &&
+        (!filter?.gender.length ||
+          filter.gender.includes(customer?.basicInfo?.gender)) &&
         (!filter?.orientation.length ||
-          filter.orientation.includes(customer.orientation)) &&
-        (!filter?.race.length || filter.race.includes(customer.race)) &&
+          filter.orientation.includes(customer?.basicInfo?.orientation)) &&
+        (!filter?.others.length ||
+          checkCustomerStatus(customer, filter?.others)) &&
+        // (!filter?.race.length ||
+        //   filter.race.includes(customer?.basicInfo?.race)) &&
         (!filter?.education.length ||
-          filter.education.includes(customer.education))
+          filter.education.includes(customer?.basicInfo?.education))
       );
     });
   };
 
-  const filteredCustomers = useMemo(
-    () => filterCustomers(),
-    [customers, filter]
-  );
+  let filteredCustomers = useMemo(() => filterCustomers(), [customers, filter]);
 
   const handleClearFilters = () => {
     let newObj = {};
@@ -193,6 +209,7 @@ function FindPal() {
       }
       setFilter(newObj);
     });
+    setInputVal("");
   };
 
   useEffect(() => {
@@ -204,6 +221,11 @@ function FindPal() {
     }
   }, [location]);
 
+  filteredCustomers = filteredCustomers?.filter(
+    (customer) =>
+      includesCaseInsensitive(customer?.basicInfo?.firstName, inputVal) ||
+      includesCaseInsensitive(customer?.basicInfo?.lastName, inputVal)
+  );
   return (
     <div className="bg-c-basic flex flex-col gap-y-12 w-full px-3 py-6">
       <div
@@ -211,7 +233,12 @@ function FindPal() {
         className="flex flex-col-reverse lg:flex-row gap-y-6 justify-between bg-fr-blue-200 p-3 mt-2 md:mt-12 w-full md:w-10/12 m-auto rounded relative"
       >
         {getStartedPopup && (
-          <CompleteProfilePopup onCloseClick={setGetStartedPopup} />
+          <ConfirmPopup
+            onCloseClick={setGetStartedPopup}
+            onConfirm={() => navigate("/user-profile")}
+            confirmBtnTxt={"Complete profile"}
+            infoText={"Complete your profile to find your matches"}
+          />
         )}
         <div className="text-white my-auto ml-0 md:ml-6 flex flex-col gap-y-8">
           <h2 className="hidden md:block text-2xl md:text-7xl font-bold">
@@ -243,7 +270,7 @@ function FindPal() {
       <div
         ref={searchSectRef}
         id="findpal"
-        className="flex flex-col  gap-y-12 bg-white p-3 md:p-6 relative"
+        className="flex flex-col gap-y-8 bg-white p-3 md:p-6 relative"
       >
         <div className="flex flex-col items-start gap-y-3 md:justify-between md:flex-row">
           <p className="text-2xl md:text-4xl font-bold">Find your best pal.</p>
@@ -254,35 +281,59 @@ function FindPal() {
             Clear filters
           </button>
         </div>
-        <LoadingSpinner isLoading={loading} />
-
-        <div id="filters" className="grid  md:grid-cols-3 gap-6">
-          {Object.keys(filterOptionsMap).map((key) => (
-            <MultiSelectField
-              key={key}
-              labelText={key}
-              placeholderText={filterOptionsMap[key][0]}
-              dropdownOptions={filterOptionsMap[key]}
-              selectedOptions={filter[filterStateNameMap[key]]}
-              onChange={handleFilterChange}
-            />
-          ))}
+        <LoadingSpinner position="absolute" isLoading={loading} />
+        <div className="flex flex-col gap-y-4">
+          <div id="filters" className="grid  md:grid-cols-3 gap-6">
+            {Object.keys(filterOptionsMap).map((key) => (
+              <MultiSelectField
+                key={key}
+                labelText={key}
+                placeholderText={filterOptionsMap[key][0]}
+                dropdownOptions={filterOptionsMap[key]}
+                selectedOptions={filter[filterStateNameMap[key]]}
+                onChange={handleFilterChange}
+              />
+            ))}
+          </div>
+          <div className="flex flex-col md:flex-row gap-y-4 justify-between md:items-end">
+            <label className="md:w-9/12 w-full text-sm md:text-base">
+              Search
+              <input
+                type="text"
+                name="firstName"
+                placeholder="Search customer name here..."
+                value={inputVal}
+                onChange={(e) => setInputVal(e.target.value)}
+                className="w-full bg-transparent block mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
+              />
+            </label>
+            <p className="font-semibold md:text-2xl">
+              Total : {filteredCustomers.length}
+            </p>
+          </div>
         </div>
 
-        <div id="customers" className="flex flex-col gap-y-6 relative">
-          {filteredCustomers.map((customer, index) => (
-            <CustomerCard key={index} customer={customer} />
-          ))}
-          {viewMorePopup && (
-            <CompleteProfilePopup
-              atEnd={true}
-              onCloseClick={setViewMorePopup}
-            />
-          )}
-        </div>
+        {filteredCustomers.length == 0 && !loading ? (
+          <p className="text-center text-sm md:text-base">
+            No profiles to display
+          </p>
+        ) : (
+          <div
+            id="customers"
+            className="flex flex-col gap-y-6 relative w-full md:w-9/12"
+          >
+            {filteredCustomers.map((customer, index) => (
+              <CustomerCard
+                key={index}
+                customer={customer}
+                onViewDetails={() => navigate(`/inmate/${customer._id}`)}
+              />
+            ))}
+          </div>
+        )}
         {isLoadingMore ? (
           <p className="text-center">Loading...</p>
-        ) : matchesAlert || filter.isApplied ? (
+        ) : matchesAlert != "" ? (
           <div className="text-center ">
             {matchesAlert || "No more matches found."}
           </div>
@@ -295,97 +346,6 @@ function FindPal() {
             View More ...
           </button>
         )}
-      </div>
-    </div>
-  );
-}
-
-function CustomerCard({ customer, name }) {
-  const navigate = useNavigate();
-  return (
-    <div
-      id="customer-card"
-      className={`bg-gray-100 border ${
-        customer?.isFavorite && "border-green-500"
-      }  rounded-md border border-gray-300 p-4 w-full md:w-9/12 flex flex-col gap-y-6 gap-x-4 md:flex-row`}
-    >
-      <img
-        src={customer?.imageUrl || "/assets/default.jpg"}
-        alt=""
-        className="h-80 w-full md:w-44 md:h-44 rounded"
-      />
-      <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
-        <div className=" ">
-          <div className="flex gap-x-6 items-baseline">
-            <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
-              {customer?.firstName} {customer?.lastName}
-            </p>
-            <img
-              src={`assets/icons/${customer?.isFavorite && "filledHeart.svg"}`}
-              alt=""
-              className="h-6"
-            />
-          </div>
-
-          <div className="flex gap-4 flex-wrap">
-            <p className="hidden md:block text-nowrap">
-              {customer?.age || "N/A"} yrs
-            </p>
-            <p className="hidden md:block text-nowrap">
-              {customer?.gender || "N/A"}
-            </p>
-            <p className="hidden md:block text-nowrap">
-              {customer?.orientation || "N/A"}
-            </p>
-            <p className="hidden md:block text-nowrap">
-              {customer?.race || "N/A"}
-            </p>
-            <span className="flex gap-x-1 items-baseline">
-              <img
-                src="/assets/icons/star.svg"
-                alt=""
-                className="h-4  text-nowrap"
-              />{" "}
-              {customer?.rating || 0}
-            </span>
-            <p className="underline  text-nowrap">
-              {customer?.numRatings || 0} Reviews
-            </p>
-          </div>
-        </div>
-        <p>
-          <span className="font-medium mr-1">Location:</span>
-          {customer?.state || "N/A"}, {customer?.city || "N/A"}
-        </p>
-        <p>
-          <span className="font-medium mr-1">Education:</span>
-          {customer?.education || "N/A"}
-        </p>
-        <p>
-          <span className="font-medium mr-1"> Mailing Address:</span>
-          {customer?.mailingAddress || "N/A"}
-        </p>
-      </div>
-      <div className="w-full md:w-fit ml-auto flex flex-col my-auto">
-        <button
-          type="button"
-          className="mt-4 bg-fr-blue-200 text-white px-6 py-3 rounded hover:opacity-90"
-          onClick={() => navigate(`/inmate/${customer?._id}`)}
-        >
-          View Details
-        </button>
-        <button
-          type="button"
-          className="mt-4 border text-black px-5 py-3 border-fr-blue-200 rounded hover:opacity-90"
-          onClick={() =>
-            (window.location.href = mailTOLink(
-              customer?.email,
-              customer.firstName
-            ))
-          }
-        >
-          Contact Inmate
-        </button>
       </div>
     </div>
   );

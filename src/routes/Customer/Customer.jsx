@@ -3,13 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useGet } from "../../api/useGet";
 import { usePut } from "../../api/usePut";
 import { usePost } from "../../api/usePost";
-import { useSelector } from "react-redux";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import {
   basicInfoFieldLabelMap,
-  spokenLanguagesList,
 } from "../../utils/sharedState";
-import { mailTOLink } from "../User/FindPal/FindPal";
+import ContactInfo from "../../components/ContactInfo";
 
 function Customer() {
   const { id } = useParams();
@@ -31,8 +29,8 @@ function Customer() {
       setLoading(true);
       const { success, data, error } = await get(`/customer?id=${id}`);
       if (success) {
-        console.log("customer data", data);
-        setCustomer(data);
+        console.log("customer data", data[0]);
+        setCustomer(data[0]);
         setLoading(false);
       } else {
         setLoading(false);
@@ -64,7 +62,10 @@ function Customer() {
         ? "Favorite"
         : "Add to Favorites";
 
-    target.innerHTML = `<img src="/assets/icons/bookmark.svg" alt="" class="h-6 mr-2" /> ${newText}`;
+    target.innerHTML =
+      newText == "Favorite"
+        ? `<img src="/assets/icons/bookmark.svg" alt="" class="h-6 mr-2" /> ${newText}`
+        : newText;
     const { success, data, error } = await put(`/user/favorite?id=${id}`, {
       fav: buttonText === "Favorite" ? false : true,
     });
@@ -74,18 +75,18 @@ function Customer() {
       console.log("error updating rating", error);
     }
   };
-  const handleMsgSend = async (e) => {
-    e.target.disabled = true;
-    e.target.innerText = "Sending...";
-    if (msgText != "") {
-      const { success, data, error } = await post(`/user/chat?id=${id}`, {
-        messageText: msgText,
-      });
-      if (success) {
-        e.target.innerText = "Sent";
-      }
-    }
-  };
+  // const handleMsgSend = async (e) => {
+  //   e.target.disabled = true;
+  //   e.target.innerText = "Sending...";
+  //   if (msgText != "") {
+  //     const { success, data, error } = await post(`/user/chat?id=${id}`, {
+  //       messageText: msgText,
+  //     });
+  //     if (success) {
+  //       e.target.innerText = "Sent";
+  //     }
+  //   }
+  // };
 
   const basicInfoDisplayFields = [
     "inmateNumber",
@@ -107,7 +108,7 @@ function Customer() {
     "relationShipStatus",
     "veteranStatus",
   ];
-  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
+  const isUser = JSON.parse(localStorage.getItem("userAuth"));
 
   const handleApprovalUpdate = async (e, status, cid) => {
     e.target.innerText = "Approved";
@@ -134,37 +135,45 @@ function Customer() {
       <div className="flex flex-col items-center gap-y-12 w-full md:w-8/12 mx-auto">
         <div
           id="profile-details"
-          className={`bg-white  w-full border ${
-            (profileApproval || updateApproval) && "border-red-500"
-          }  rounded-lg flex flex-col gap-y-4 p-6`}
+          className={`bg-white  w-full border rounded-lg flex flex-col gap-y-4 p-6`}
+          // className={`bg-white  w-full border ${
+          //   (profileApproval || updateApproval) && "border-red-500"
+          // }  rounded-lg flex flex-col gap-y-4 p-6`}
         >
-          {(profileApproval || updateApproval) && (
+          {/* {(profileApproval || updateApproval) && (
             <p className="text-red-500 text-center md:text-xl text-sm ">
               {profileApproval ? "Profile" : "Profile Updates"} pending for
               approval
             </p>
-          )}
+          )} */}
           <LoadingSpinner isLoading={loading} />
           <div className="flex flex-col gap-y-8">
             <div className="flex flex-col md:flex-row md:items-start gap-x-12 gap-y-6 relative">
               <img
-                src={customer?.imageUrl || "/assets/default.jpg"}
+                src={customer?.photos?.imageUrl || "/assets/default.jpg"}
                 alt=""
                 className="h-80 w-full md:h-44 md:w-44 rounded"
               />
               <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">
                 <div>
                   <p className="font-semibold text-3xl mb-2 md:mb-1 text-center md:text-left">
-                    {customer?.firstName} {customer?.lastName}
+                    {customer?.basicInfo?.firstName}{" "}
+                    {customer?.basicInfo?.lastName}
                   </p>
 
                   <div className="flex gap-3 justify-center md:justify-start flex-wrap ">
-                    <p className="text-nowrap">{customer?.age || "N/A"} yrs</p>
-                    <p className="text-nowrap">{customer?.gender || "N/A"}</p>
                     <p className="text-nowrap">
-                      {customer?.orientation || "N/A"}
+                      {customer?.basicInfo?.age || "N/A"} yrs
                     </p>
-                    <p className="text-nowrap">{customer?.race || "N/A"}</p>
+                    <p className="text-nowrap">
+                      {customer?.basicInfo?.gender || "N/A"}
+                    </p>
+                    <p className="text-nowrap">
+                      {customer?.basicInfo?.orientation || "N/A"}
+                    </p>
+                    <p className="text-nowrap">
+                      {customer?.basicInfo?.race || "N/A"}
+                    </p>
                     <span className="flex gap-x-1 items-baseline">
                       <img
                         src="/assets/icons/star.svg"
@@ -179,7 +188,7 @@ function Customer() {
                   </div>
                 </div>
                 <p>
-                  {customer?.bio || (
+                  {customer?.basicInfo?.bio || (
                     <p className="italic mt-6 text-gray-500 text-center md:text-left">
                       No bio added
                     </p>
@@ -187,40 +196,42 @@ function Customer() {
                 </p>
               </div>
               <div className="flex flex-col items-center ">
-                {isAdmin ? (
+                {isUser && (
+                  //   <button
+                  //     type="button"
+                  //     className="flex items-center justify-center  mx-auto border text-white text w-full py-2.5 px-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
+                  //     onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
+                  //   >
+                  //     Approve
+                  //   </button>
+                  // ) : (
                   <button
                     type="button"
-                    className="flex items-center justify-center  mx-auto border text-white text w-full py-2.5 px-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
-                    onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
-                  >
-                    Approve
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-3 border  text-white bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
+                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
                     onClick={handleFavouriteUpdate}
                   >
-                    <img
-                      src="/assets/icons/bookmark.svg"
-                      alt=""
-                      className="h-6 mr-2"
-                    />
+                    {customer?.isFavorite && (
+                      <img
+                        src="/assets/icons/bookmark.svg"
+                        alt=""
+                        className="h-6 mr-2"
+                      />
+                    )}
                     {customer?.isFavorite ? "Favorite" : "Add to Favorites"}
                   </button>
                 )}
-                <button
+                {/* <button
                   type="button"
                   className="mt-4 border text-black text-nowrap w-full py-2.5 px-3  border-fr-blue-200 rounded-xl hover:opacity-90"
                   onClick={() =>
                     (window.location.href = mailTOLink(
-                      customer?.email,
+                      customer?.basicInfo?.email,
                       customer.firstName
                     ))
                   }
                 >
                   Contact Inmate
-                </button>
+                </button> */}
               </div>
             </div>
 
@@ -233,24 +244,24 @@ function Customer() {
                 {customer &&
                   basicInfoDisplayFields.map((field) => {
                     return (
-                      customer[field] &&
+                      customer?.basicInfo[field] &&
                       (field == "spokenLanguages" ? (
-                        <p className="flex flex-wrap items-end">
+                        <p key={field} className="flex flex-wrap items-end">
                           <span className="font-semibold mr-1 text-lg">
                             {basicInfoFieldLabelMap[field]}:
                           </span>
-                          {customer[field].map((lang) => (
+                          {customer?.basicInfo[field].map((lang) => (
                             <span className="mr-1">{lang}</span>
                           ))}
                         </p>
                       ) : (
-                        <p className="">
+                        <p key={field} className="">
                           <span className="font-semibold mr-1 text-lg">
                             {basicInfoFieldLabelMap[field]}:
                           </span>
                           {field == "dateOfBirth"
-                            ? customer[field].split("T")[0]
-                            : customer[field]}
+                            ? customer?.basicInfo[field].split("T")[0]
+                            : customer?.basicInfo[field]}
                         </p>
                       ))
                     );
@@ -264,7 +275,7 @@ function Customer() {
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                  {Object.keys(customer?.personality || []).map(
+                  {Object.keys(customer?.personalityInfo || []).map(
                     (key) =>
                       key != "_id" && (
                         <div key={key}>
@@ -272,7 +283,7 @@ function Customer() {
                             {key.toUpperCase()}
                           </p>
                           <ul className="">
-                            {customer?.personality[key].map((value) => (
+                            {customer?.personalityInfo[key].map((value) => (
                               <li className="text-nowrap" key={value}>
                                 {value}
                               </li>
@@ -283,7 +294,7 @@ function Customer() {
                   )}
                 </div>
               </div>
-              {!isAdmin && (
+              {isUser && (
                 <div className="">
                   <h1 className="text-3xl md:text-2xl font-semibold underline mb-4 ">
                     Give your rating
@@ -301,9 +312,11 @@ function Customer() {
         </div>
 
         <ContactInfo
-          name={customer?.firstName}
-          email={customer?.email}
-          mailingAddress={customer?.mailingAddress}
+          firstName={customer?.basicInfo?.firstName}
+          lastName={customer?.basicInfo?.lastName}
+          inmateNumber={customer?.basicInfo?.inmateNumber}
+          emailProvider={customer?.basicInfo?.institutionalEmailProvider}
+          mailingAddress={customer?.basicInfo?.mailingAddress}
         />
       </div>
 
@@ -334,38 +347,7 @@ function Customer() {
   );
 }
 
-export const ContactInfo = ({ name, email, mailingAddress }) => {
-  return (
-    <div className="mr-auto flex flex-col gap-y-6 w-full ">
-      <h1 className="bg-fr-blue-200 text-white py-3 px-4 rounded text-xl px-6">
-        How to contact {name}
-      </h1>
-      <div className="border rounded-lg">
-        <div className="bg-white flex justify-between flex-col md:flex-row gap-y-12  py-3 md:px-12 px-6  w-full ">
-          <div className="flex flex-col gap-y-4 basis-1/4">
-            <p className="text-lg font-semibold"> Email forwarding option</p>
-            <div>
-              <p className="mb-2">{email}</p>
-              <p>
-                <a
-                  href={mailTOLink(email, name)}
-                  className="text-blue-600 underline mr-1 cursor-pointer "
-                >
-                  Click here
-                </a>
-                to email
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-y-4 basis-1/3">
-            <p className="text-lg font-semibold">Post mail option</p>
-            <p>{mailingAddress}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+
 
 const RatingScale = ({ initialRating = 0, onRatingChange }) => {
   const [rating, setRating] = useState(initialRating);

@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 
-export const LoadingSpinner = ({ isDone = false, isLoading }) => {
+export const LoadingSpinner = ({
+  isDone = false,
+  isLoading,
+  bgShade,
+  position = "fixed",
+}) => {
   const [hide, setHide] = useState(false);
   useEffect(() => {
     let timeoutId = "";
@@ -13,15 +18,19 @@ export const LoadingSpinner = ({ isDone = false, isLoading }) => {
   }, [isDone]);
 
   useEffect(() => {
-      setHide(false);
+    setHide(false);
   }, [isLoading]);
   return (
     <div
-      className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 ${
+      className={`${position} top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 ${
         hide || (!isLoading && !isDone) ? "hidden" : "block"
       }`}
     >
-      <div className="md:h-20 h-16 md:w-20 w-16  bg-gray-300 rounded-lg p-6 flex justify-center items-center relative">
+      <div
+        className={`md:h-20 h-16 md:w-20 w-16 ${
+          bgShade ? `bg-gray-400` : "bg-gray-300"
+        } rounded-lg p-6 flex justify-center items-center relative`}
+      >
         <div
           role="status"
           className="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2"

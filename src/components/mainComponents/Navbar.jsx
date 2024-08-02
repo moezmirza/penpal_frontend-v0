@@ -9,10 +9,11 @@ import { AuthContext } from "../../providers/AuthProvider";
 const userNavbarLinkMap = {
   Home: "https://penpal.musingsinc.co/",
   Dashboard: "/#findpal",
-  "List Inmates": "/list-inmate",
-  "Manage Inmates": "/manage-inmates",
-  Profile: "/user-profile",
-  // Subscription: "/",
+  "Submit a Profile": "/list-inmate",
+  "Manage Profiles": "/manage-inmates",
+  "Update/Renew Profiles": "/update-inmates",
+  "Search Profiles": "/search-profiles",
+  "My Account": "/user-profile",
 };
 const unAuthNavbarLinkMap = {
   Home: "https://penpal.musingsinc.co/",
@@ -23,6 +24,7 @@ const adminNavbarLinkMap = {
   Home: "https://penpal.musingsinc.co/",
   "Approve Profiles": "/approve-profiles",
   "Approve Updates": "/approve-updates",
+  "Delete Profiles": "/delete-profiles",
 };
 function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -43,13 +45,13 @@ function Navbar() {
   const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
   console.log("type", typeof isAdmin, isAdmin);
   return (
-    <div className="bg-fr-blue-200 flex items-end justify-between w-full p-3 md:py-5 md:px-8 sticky top-0 z-50">
+    <div className="bg-fr-blue-200 flex items-end justify-between w-full p-3 md:py-5 md:px-4 sticky top-0 z-50">
       <div className="text-xl md:text-2xl text-white font-medium ">
         {user?.firstName || "Welcome Pal"}
         <span className="text-4xl">.</span>
       </div>
 
-      <div className="hidden md:block">
+      <div className="hidden xl:block">
         <PCNavbar
           isUser={isUser}
           isAdmin={isAdmin}
@@ -58,7 +60,7 @@ function Navbar() {
         />
       </div>
 
-      <div className="md:hidden">
+      <div className="xl:hidden">
         <MobileNavbar
           isUser={isUser}
           isAdmin={isAdmin}
@@ -73,17 +75,47 @@ function Navbar() {
 }
 
 function PCNavbar({ onSignout, onLinkClick, isAdmin, isUser }) {
+  const [profileDropdown, setProfileDropdown] = useState(false);
   if (isUser) {
     return (
-      <ul className="text-lg flex gap-x-2 text-white list-style-none">
+      <ul className="flex text-white list-style-none text-sm md:text-base">
         {Object.keys(userNavbarLinkMap).map((linkName) => (
           <li key={linkName} onClick={onLinkClick}>
-            <Link
-              to={userNavbarLinkMap[linkName]}
-              className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 dark:hover:text-white"
-            >
-              {linkName}
-            </Link>
+            {linkName == "My Account" ? (
+              <div>
+                <div
+                  onClick={() => setProfileDropdown(!profileDropdown)}
+                  className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 cursor-pointer"
+                >
+                  {linkName}
+                </div>
+                {profileDropdown && (
+                  <div className="absolute bg-white rounded-lg flex flex-col">
+                    <Link
+                      onClick={() => setProfileDropdown(false)}
+                      to={"/user-profile?sect=profile"}
+                      className="border-b-2 px-2 py-1 md:px-4 md:py-2 text-black  "
+                    >
+                      Profile
+                    </Link>
+                    <Link
+                      onClick={() => setProfileDropdown(false)}
+                      to={"/user-profile?sect=questionnaire"}
+                      className="border-b-2 px-2 py-1 md:px-4 md:py-2 text-black  "
+                    >
+                      Questionnaire
+                    </Link>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                to={userNavbarLinkMap[linkName]}
+                className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                {linkName}
+              </Link>
+            )}
           </li>
         ))}
         <li
@@ -149,7 +181,7 @@ function MobileNavbar({
   showDropdown,
 }) {
   return (
-    <div className="flex gap-x-6 items-center md:hidden">
+    <div className="flex gap-x-6 items-center ">
       <div className="relative ">
         <div>
           <input
@@ -191,6 +223,7 @@ function MobileNavbar({
 }
 
 function NavbarOptions({ onSignout, onLinkClick, isAdmin, isUser }) {
+  const [profileDropdown, setProfileDropdown] = useState(false);
   if (isAdmin) {
     return (
       <>
@@ -216,16 +249,54 @@ function NavbarOptions({ onSignout, onLinkClick, isAdmin, isUser }) {
   if (isUser) {
     return (
       <>
-        {Object.keys(userNavbarLinkMap).map((linkName) => (
-          <li key={linkName} onClick={onLinkClick}>
-            <Link
-              to={userNavbarLinkMap[linkName]}
-              className="block  px-4 py-1.5 md:py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-            >
-              {linkName}
-            </Link>
-          </li>
-        ))}
+        {Object.keys(userNavbarLinkMap).map((linkName) =>
+          linkName == "My Account" ? (
+            <li key={linkName}>
+              <div>
+                <div
+                  onClick={() => setProfileDropdown(!profileDropdown)}
+                  className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 cursor-pointer"
+                >
+                  {linkName}
+                </div>
+                {profileDropdown && (
+                  <div className="absolute bg-white rounded-lg flex flex-col">
+                    <Link
+                      onClick={() => {
+                        setProfileDropdown(false);
+                        onLinkClick();
+                      }}
+                      to={"/user-profile?sect=profile"}
+                      className="border-b-2 px-2 py-1 md:px-4 md:py-2 text-black  "
+                    >
+                      Profile
+                    </Link>
+                    <Link
+                      onClick={() => {
+                        setProfileDropdown(false);
+
+                        onLinkClick();
+                      }}
+                      to={"/user-profile?sect=questionnaire"}
+                      className="border-b-2 px-2 py-1 md:px-4 md:py-2 text-black  "
+                    >
+                      Questionnaire
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </li>
+          ) : (
+            <li key={linkName} onClick={onLinkClick}>
+              <Link
+                to={userNavbarLinkMap[linkName]}
+                className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                {linkName}
+              </Link>
+            </li>
+          )
+        )}
         <li
           className="block px-4 py-1.5 md:py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
           onClick={onSignout}

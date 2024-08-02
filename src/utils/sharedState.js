@@ -64,7 +64,14 @@ export const ageGrpList = [
   "100-109",
 ];
 
-export const genderList = ["Male", "Female", "Other"];
+export const genderList = [
+  "Male",
+  "Female",
+  "Transgender Male to Female",
+  "Transgender Females to Male",
+  "Gender Non Conforming/Non binary",
+  "Other",
+];
 
 export const orientationList = [
   "LGBTQ+",
@@ -191,7 +198,7 @@ export const institutionalEmailProviderList = [
   "Getting Out",
   "GTL",
   "Corrlincs",
-  "Other (provide space to list other name)",
+  "Other provider",
 ];
 
 export const hobbies = [
@@ -369,7 +376,18 @@ export const fieldStateNameMap = {
   MovieGenres: "movieGenres",
 };
 
+export const stateFieldNameMap = {
+  hobbies: "Hobbies",
+  sports: "Sports",
+  likes: "Likes",
+  personality: "Personality",
+  bookGenres: "BookGenres",
+  musicGenres: "MusicGenres",
+  movieGenres: "MovieGenres",
+};
+
 export const basicInfoFieldLabelMap = {
+  imageUrl: "Photo",
   firstName: "First Name",
   lastName: "Last Name",
   email: "Email",
@@ -388,16 +406,24 @@ export const basicInfoFieldLabelMap = {
   eyeColor: "Eye Color",
   religiousPref: "Religious Preference",
   spokenLanguages: "Spoken Languages",
+  highSchool: "High School",
+  highSchoolState: "High School State",
+  highSchoolCity: "High School City",
+  homeTownCity: "Home Town City",
+  homeTownState: "Home Town State",
   education: "Education",
-  nameOfCollege: "Name Of College",
+  collegeName: "College Name",
+  collegeState: "College State",
+  collegeCity: "College City",
   race: "Race",
   bodyType: "Body Type",
   astrologicalSign: "Astrological Sign",
-  relationShipStatus: "Relation Ship Status",
+  relationShipStatus: "RelationShip Status",
   veteranStatus: "Veteran Status",
   institutionalEmailProvider: "Institutional Email Provider",
   referredBy: "Referred By",
   bio: "Bio",
+  wordLimit: "Bio word Limit",
 };
 
 export const basicInfoPlaceholderMap = {
@@ -419,7 +445,15 @@ export const basicInfoPlaceholderMap = {
   eyeColor: "Blue",
   religiousPref: "Christianity",
   spokenLanguages: "English",
+  highSchool: "Springfield High School",
+  highSchoolState: "Illinois",
+  highSchoolCity: "Springfield",
   education: "Bachelor's Degree",
+  collegeName: "University of California, Berkeley",
+  collegeState: "California",
+  collegeCity: "Berkeley",
+  homeTownCity: "Austin",
+  homeTownState: "Texas",
   nameOfCollege: "Harvard University",
   race: "Caucasian",
   bodyType: "Athletic",
@@ -495,4 +529,54 @@ export const basicInfoFieldDropdownOptions = {
   relationShipStatus: relationShipStatusList,
   veteranStatus: veteranStatusList,
   institutionalEmailProvider: institutionalEmailProviderList,
+};
+
+export const addonNameToStateMap = {
+  "Profile Creation": "creation",
+  "Profile Update": "update",
+  "Profile Renewal": "renewal",
+  "Bio Word Limit": "wordLimit",
+  "Feature Placement": "featuredPlacement",
+  "Premium Placement": "premiumPlacement",
+  Photo: "photo",
+};
+
+export const addonStateToNameMap = {
+  creation: "Profile Creation",
+  update: "Profile Update",
+  renewal: "Profile Renewal",
+  wordLimit: "Bio Word Limit",
+  featuredPlacement: "Feature Placement",
+  premiumPlacement: "Premium Placement",
+  photo: "Photo",
+};
+
+export const addonStatetoCost = {
+  creation: 99.95,
+  renewal: 79.95,
+  featuredPlacement: 14.95,
+  premiumPlacement: 24.95,
+};
+
+export const othersFilterList = [
+  "Recently updated",
+  "Newly listed",
+  "Premium",
+  "Featured",
+];
+
+export const otherFiltersKeyMap = {
+  "Recently updated": "recentlyUpdated",
+  "Newly listed": "newlyListed",
+  Premium: "premiumPlacement",
+  Featured: "featuredPlacement",
+};
+
+export const emailProvidersLinkMap = {
+  "Securus Technologies": "https://www.securustech.net/",
+  Jpay: "https://www.jpay.com/",
+  "Getting Out": "https://www.gettingout.com/",
+  GTL: "https://www.gtl.net/",
+  Corrlinks: "https://www.corrlinks.com/",
+  "Other provider": "",
 };

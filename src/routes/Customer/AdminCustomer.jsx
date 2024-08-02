@@ -5,8 +5,7 @@ import { usePut } from "../../api/usePut";
 import { usePost } from "../../api/usePost";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { basicInfoFieldLabelMap } from "../../utils/sharedState";
-import { ContactInfo } from "./Customer";
-import { mailTOLink } from "../User/FindPal/FindPal";
+import ContactInfo from "../../components/ContactInfo";
 
 function AdminCustomer() {
   const { id } = useParams();
@@ -91,11 +90,11 @@ function AdminCustomer() {
             <div className="flex flex-col md:flex-row md:items-start gap-x-12 relative">
               <div>
                 <img
-                  src={customer?.imageUrl || "/assets/default.jpg"}
+                  src={customer?.photos?.imageUrl || "/assets/default.jpg"}
                   alt=""
                   className="h-80 w-full md:h-44 md:w-44 rounded"
                 />
-                {updatedFields?.includes("weight") && (
+                {updatedFields?.includes("imageUrl") && (
                   <span className="font-normal text-xs text-green-500">
                     new
                   </span>
@@ -105,7 +104,8 @@ function AdminCustomer() {
               <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">
                 <div>
                   <p className="font-semibold text-3xl mb-2 md:mb-1 text-center md:text-left">
-                    {customer?.firstName} {customer?.lastName}{" "}
+                    {customer?.basicInfo?.firstName}{" "}
+                    {customer?.basicInfo?.lastName}{" "}
                     {(updatedFields?.includes("firstName") ||
                       updatedFields?.includes("lastName")) && (
                       <span className="font-normal text-xs text-green-500 ml-2">
@@ -116,7 +116,7 @@ function AdminCustomer() {
 
                   <div className="flex gap-3 justify-center md:justify-start flex-wrap ">
                     <p className="text-nowrap">
-                      {customer?.age || "N/A"} yrs{" "}
+                      {customer?.basicInfo?.age || "N/A"} yrs{" "}
                       {updatedFields?.includes("age") && (
                         <span className="font-normal text-xs text-green-500 ml-2">
                           new
@@ -124,7 +124,7 @@ function AdminCustomer() {
                       )}
                     </p>
                     <p className="text-nowrap">
-                      {customer?.gender || "N/A"}
+                      {customer?.basicInfo?.gender || "N/A"}
                       {updatedFields?.includes("gender") && (
                         <span className="font-normal text-xs text-green-500 ml-2">
                           new
@@ -132,7 +132,7 @@ function AdminCustomer() {
                       )}
                     </p>
                     <p className="text-nowrap">
-                      {customer?.orientation || "N/A"}
+                      {customer?.basicInfo?.orientation || "N/A"}
                       {updatedFields?.includes("orientation") && (
                         <span className="font-normal text-xs text-green-500 ml-2">
                           new
@@ -140,7 +140,7 @@ function AdminCustomer() {
                       )}
                     </p>
                     <p className="text-nowrap">
-                      {customer?.race || "N/A"}
+                      {customer?.basicInfo?.race || "N/A"}
                       {updatedFields?.includes("race") && (
                         <span className="font-normal text-xs text-green-500 ml-2">
                           new
@@ -153,10 +153,10 @@ function AdminCustomer() {
                         alt=""
                         className="h-4"
                       />{" "}
-                      {customer?.rating || 0}
+                      {customer?.basicInfo?.rating || 0}
                     </span>
                     <p className="underline text-nowrap">
-                      {customer?.numRatings || 0} Reviews
+                      {customer?.basicInfo?.numRatings || 0} Reviews
                     </p>
                   </div>
                 </div>
@@ -167,14 +167,14 @@ function AdminCustomer() {
                       new
                     </span>
                   )}
-                  {customer?.bio || (
+                  {customer?.basicInfo?.bio || (
                     <p className="italic text-gray-500 text-center w-full md:text-left">
                       No bio added
                     </p>
                   )}
                 </p>
               </div>
-              <div className="flex flex-col items-center ">
+              {/* <div className="flex flex-col items-center ">
                 <button
                   type="button"
                   className="flex items-center justify-center  mx-auto border text-white text w-full py-2.5 px-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
@@ -187,14 +187,14 @@ function AdminCustomer() {
                   className="mt-4 border text-black text-nowrap w-full py-2.5 px-3  border-fr-blue-200 rounded-xl hover:opacity-90"
                   onClick={() =>
                     (window.location.href = mailTOLink(
-                      customer?.email,
+                      customer?.basicInfo?.email,
                       customer.firstName
                     ))
                   }
                 >
                   Contact Inmate
                 </button>
-              </div>
+              </div> */}
             </div>
 
             <div>
@@ -206,13 +206,13 @@ function AdminCustomer() {
                 {customer &&
                   basicInfoDisplayFields.map((field) => {
                     return (
-                      customer[field] &&
+                      customer?.basicInfo[field] &&
                       (field == "spokenLanguages" ? (
                         <p className="flex flex-wrap items-end">
                           <span className="font-semibold mr-1 text-lg">
                             {basicInfoFieldLabelMap[field]}:
                           </span>
-                          {customer[field].map((lang) => (
+                          {customer?.basicInfo[field].map((lang) => (
                             <span className="mr-1">{lang}</span>
                           ))}
                         </p>
@@ -222,8 +222,8 @@ function AdminCustomer() {
                             {basicInfoFieldLabelMap[field]}:
                           </span>
                           {field == "dateOfBirth"
-                            ? customer[field].split("T")[0]
-                            : customer[field]}
+                            ? customer?.basicInfo[field].split("T")[0]
+                            : customer?.basicInfo[field]}
                           {updatedFields.includes(field) && (
                             <span className="text-xs text-green-500 ml-2">
                               new
@@ -239,23 +239,28 @@ function AdminCustomer() {
               <div>
                 <h2 className="font-semibold text-3xl md:text-2xl my-4 flex items-end">
                   <p className="underline">Personality Info</p>
-                  {updatedFields?.includes("personality") && (
+                  {/* {updatedFields?.includes("personality") && (
                     <span className="font-normal text-xs text-green-500 ml-2">
                       new
                     </span>
-                  )}
+                  )} */}
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                  {Object.keys(customer?.personality || []).map(
+                  {Object.keys(customer?.personalityInfo || []).map(
                     (key) =>
                       key != "_id" && (
                         <div key={key}>
                           <p className="font-semibold text-lg ">
                             {key.toUpperCase()}{" "}
+                            {updatedFields.includes(key) && (
+                              <span className="text-xs text-green-500 ml-2">
+                                new
+                              </span>
+                            )}
                           </p>
                           <ul className="">
-                            {customer?.personality[key].map((value) => (
+                            {customer?.personalityInfo[key].map((value) => (
                               <li className="text-nowrap" key={value}>
                                 {value}
                               </li>
@@ -270,9 +275,11 @@ function AdminCustomer() {
           </div>
         </div>
         <ContactInfo
-          name={customer?.firstName}
-          email={customer?.email}
-          mailingAddress={customer?.mailingAddress}
+          firstName={customer?.basicInfo?.firstName}
+          lastName={customer?.basicInfo?.lastName}
+          inmateNumber={customer?.basicInfo?.inmateNumber}
+          emailProvider={customer?.basicInfo?.institutionalEmailProvider}
+          mailingAddress={customer?.basicInfo?.mailingAddress}
         />
       </div>
     </div>

@@ -9,7 +9,6 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../services/firebase";
 import { genderList } from "../../../utils/sharedState";
 import { v4 } from "uuid";
-import { Tuple } from "@reduxjs/toolkit";
 
 export const formattedImageName = (name) => {
   return `imageNameS${name}imageNameE`;
@@ -161,10 +160,7 @@ function BasicInfo({ onTabSwitch }) {
         </div>
       </div>
 
-      <form
-        className="flex flex-col gap-y-6 text-sm p-2 md:text-base md:p-4 w-full "
-        onSubmit={handleSubmit}
-      >
+      <form className="flex flex-col gap-y-6 text-sm p-2 md:text-base md:p-4 w-full ">
         <div className="m-auto font-semibold text-xl md:text-2xl">
           Edit Info
         </div>

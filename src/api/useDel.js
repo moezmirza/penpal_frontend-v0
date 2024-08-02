@@ -3,24 +3,21 @@ import { baseUrl } from "../utils/authCodeMap";
 import { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 
-function usePut() {
+function useDel() {
   const { updateAuthInfo } = useContext(AuthContext);
 
-  const put = async (url, body) => {
+  const del = async (url) => {
     try {
       const tokenInfo = JSON.parse(localStorage.getItem("tokenInfo"));
-      console.log("tokeninfro", tokenInfo);
       const authToken = tokenInfo?.token;
-      console.log("auhtTOkne", authToken);
       if (Date.now() - tokenInfo?.createdAt > 1000 * 60 * 30) {
         const refreshAccessToken = await auth?.currentUser?.getIdToken(true);
         const authInfo = {
           token: refreshAccessToken,
         };
+        console.log("authInfo", authInfo);
         updateAuthInfo(authInfo);
       }
-      console.log(url, body, authToken);
-      const completeUrl = baseUrl + url;
 
       let headers = {
         "Content-Type": "application/json",
@@ -28,23 +25,29 @@ function usePut() {
       if (authToken) {
         headers.Authorization = `Bearer ${authToken}`;
       }
-      console.log("body", body, "headers", headers);
-      const response = await axios.put(completeUrl, body, {
+
+      const completeUrl = baseUrl + url;
+      const response = await axios.delete(completeUrl, {
         headers,
       });
-      console.log("endPoint", url, "response", response.data.data);
-
+      console.log(
+        "reqType",
+        "del",
+        "endPoint",
+        url,
+        "response",
+        response.data.data
+      );
       return { success: true, data: response.data.data };
     } catch (error) {
       console.error("endPoint", url, "error:", error);
-
       return {
         success: false,
         error: error.response ? error.response.data : error.message,
       };
     }
   };
-  return put;
+  return del;
 }
 
-export { usePut };
+export { useDel };

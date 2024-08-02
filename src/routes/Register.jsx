@@ -22,6 +22,15 @@ const Register = () => {
   const isUserLoggedIn = JSON.parse(localStorage.getItem("userAuth"));
   const isAdminLoggedIn = JSON.parse(localStorage.getItem("adminAuth"));
 
+  const path = window.location.search;
+  const urlParams = new URLSearchParams(path);
+  const action = urlParams.get("action");
+
+  const infoText =
+    action == "submitProfile"
+      ? " To Submit a New Prison Pen Pal Profile or to Modify or Renew an existing Prison Pen Pal Profile you must first create an account by registering below."
+      : "Fill in the details to create an account";
+
   const handleChange = (e) => {
     console.log(e, e.target.value);
     let updateValue = e.target.value;
@@ -88,7 +97,7 @@ const Register = () => {
           <span className="md:text-3xl text-2xl">📥</span>
         </h2>
         <p className="text-gray-500 text-sm md:text-base text-center">
-          Fill in the details to create your Account
+          {infoText}
         </p>
         {error && (
           <p className="text-red-500 m-1 text-sm md:text-base">{error} </p>
