@@ -32,7 +32,7 @@ function AuthProvider({ children }) {
       }
     });
     return () => refreshService();
-  }, []);
+  }, [auth]);
 
   const context = {
     updateAuthInfo,

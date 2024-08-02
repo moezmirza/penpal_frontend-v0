@@ -313,18 +313,24 @@ function FindPal() {
           </div>
         </div>
 
-        <div
-          id="customers"
-          className="flex flex-col gap-y-6 relative w-full md:w-9/12"
-        >
-          {filteredCustomers.map((customer, index) => (
-            <CustomerCard
-              key={index}
-              customer={customer}
-              onViewDetails={() => navigate(`/inmate/${customer._id}`)}
-            />
-          ))}
-        </div>
+        {filteredCustomers.length == 0 && !loading ? (
+          <p className="text-center text-sm md:text-base">
+            No profiles to display
+          </p>
+        ) : (
+          <div
+            id="customers"
+            className="flex flex-col gap-y-6 relative w-full md:w-9/12"
+          >
+            {filteredCustomers.map((customer, index) => (
+              <CustomerCard
+                key={index}
+                customer={customer}
+                onViewDetails={() => navigate(`/inmate/${customer._id}`)}
+              />
+            ))}
+          </div>
+        )}
         {isLoadingMore ? (
           <p className="text-center">Loading...</p>
         ) : matchesAlert != "" ? (
