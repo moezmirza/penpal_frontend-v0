@@ -56,7 +56,7 @@ function DeleteProfiles() {
       customers.filter((customer) => customer._id != clientId?.current)
     );
     setShowPopup(false);
-    del(`/admin/customer?id=${clientId?.current}`).then((response) => {
+    del(`/customer?id=${clientId?.current}`).then((response) => {
       const { success, data, error } = response;
       if (success) {
         console.log("customer deletion successful:", data);
@@ -75,7 +75,7 @@ function DeleteProfiles() {
     const fetchCustomers = async () => {
       setLoading(true);
       const { success, data, error } = await get(
-        `/customer?p=0&l=${itemsPerPage}`
+        `/admin/customer?p=0&l=${itemsPerPage}`
       );
       if (success) {
         setLoading(false);
