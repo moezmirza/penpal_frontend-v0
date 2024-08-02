@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { usePut } from "../../../api/usePut";
 import { RequiredFieldLabel } from "../../../components/mainComponents/RequiredFieldLabel";
 import { useDispatch, useSelector } from "react-redux";
-import mapAuthCodeToMessage, { baseUrl } from "../../../utils/authCodeMap";
+import mapAuthCodeToMessage from "../../../utils/authCodeMap";
 import { LoadingSpinner } from "../../../components/LoadingSpinner";
 import { setCurrentUser } from "../../../state/slices/userSlice";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";

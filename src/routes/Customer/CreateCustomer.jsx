@@ -398,12 +398,12 @@ function CreateCustomer() {
         setDone(true);
 
         console.log("duesInfo", duesInfo);
-        setDuesInfo((prev) => ({
-          ...prev,
+        const currDuesInfo = {
           totalPaidPhotos: total > 3 ? total - 3 : 0,
-        }));
-        setDuesInfo((prev) => ({ ...prev, wordLimit: wordLimit }));
-        setDuesInfo((prev) => ({ ...prev, creation: true }));
+          wordLimit: wordLimit,
+          creation: true,
+        };
+        setDuesInfo(currDuesInfo);  
         payementBoxRef.current.scrollIntoView({
           behavior: "smooth",
         });

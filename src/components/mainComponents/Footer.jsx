@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { websiteURL } from "../../utils/config";
 
 function Footer() {
   return (
@@ -10,38 +11,36 @@ function Footer() {
         text-lg mx-auto"
         >
           <li>
-            <a href="https://penpal.musingsinc.co/">Home</a>
+            <a href={`${websiteURL}`}>Home</a>
           </li>
           <li>
-            <a href="https://penpal.musingsinc.co/about-us/">About Us</a>
+            <a href={`${websiteURL}about-us/`}>About Us</a>
           </li>
           <li>
-            <a href="https://penpal.musingsinc.co/how-it-works/">
-              How it works
-            </a>
+            <a href={`${websiteURL}how-it-works/`}>How it works</a>
           </li>
           <li>
-            <a href="https://penpal.musingsinc.co/pricing/">Pricing</a>
+            <a href={`${websiteURL}pricing/`}>Pricing</a>
           </li>
           <li>
-            <a href="https://penpal.musingsinc.co/faq/">FAQ</a>
+            <a href={`${websiteURL}faq/`}>FAQ</a>
           </li>
           <li>
-            <a href="https://penpal.musingsinc.co/contact-us/">Contact Us</a>
+            <a href={`${websiteURL}contact-us/`}>Contact Us</a>
           </li>
           <li>
-            <a href="https://penpal.musingsinc.co/privacy-policy/">
-              Privacy Policy
-            </a>
+            <a href={`${websiteURL}privacy-policy/`}>Privacy Policy</a>
           </li>
           <li>
-            <a href="https://penpal.musingsinc.co/terms-of-service/">
-              Terms of Service
-            </a>
+            <a href={`${websiteURL}terms-of-service/`}>Terms of Service</a>
           </li>
         </ul>
         <div className="flex my-auto items-center justify-between gap-x-4">
-          <img src="/assets/logo.jpeg" alt="" className="md:h-16 h-12 rounded-md" />
+          <img
+            src="/assets/logo.jpeg"
+            alt=""
+            className="md:h-16 h-12 rounded-md"
+          />
           <div className="flex gap-x-4">
             <div className=" border rounded-full p-1.5">
               <img
@@ -77,34 +76,28 @@ function Footer() {
         text-lg mx-auto"
         >
           <li>
-            <a href="https://penpal.musingsinc.co/">Home</a>
+            <a href={`${websiteURL}`}>Home</a>
           </li>
           <li>
-            <a href="https://penpal.musingsinc.co/about-us/">About Us</a>
+            <a href={`${websiteURL}about-us/`}>About Us</a>
           </li>
           <li>
-            <a href="https://penpal.musingsinc.co/how-it-works/">
-              How it works
-            </a>
+            <a href={`${websiteURL}how-it-works/`}>How it works</a>
           </li>
           <li>
-            <a href="https://penpal.musingsinc.co/pricing/">Pricing</a>
+            <a href={`${websiteURL}pricing/`}>Pricing</a>
           </li>
           <li>
-            <a href="https://penpal.musingsinc.co/faq/">FAQ</a>
+            <a href={`${websiteURL}faq/`}>FAQ</a>
           </li>
           <li>
-            <a href="https://penpal.musingsinc.co/contact-us/">Contact Us</a>
+            <a href={`${websiteURL}contact-us/`}>Contact Us</a>
           </li>
           <li>
-            <a href="https://penpal.musingsinc.co/privacy-policy/">
-              Privacy Policy
-            </a>
+            <a href={`${websiteURL}privacy-policy/`}>Privacy Policy</a>
           </li>
           <li>
-            <a href="https://penpal.musingsinc.co/terms-of-service/">
-              Terms of Service
-            </a>
+            <a href={`${websiteURL}terms-of-service/`}>Terms of Service</a>
           </li>
         </ul>
         <div className="flex my-auto items-center justify-between gap-x-4">

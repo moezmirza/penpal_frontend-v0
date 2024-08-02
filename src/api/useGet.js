@@ -1,32 +1,19 @@
 import axios from "axios";
-import { baseUrl } from "../utils/authCodeMap";
 import { auth } from "../services/firebase";
 import { AuthContext } from "../providers/AuthProvider";
 import { useContext } from "react";
+import { baseApi } from "../utils/config";
 
 // Custom hook
 function useGet() {
-  const { updateAuthInfo } = useContext(AuthContext);
+  const { authInfo } = useContext(AuthContext);
 
   const get = async (url) => {
     console.log("here inside of get");
 
     try {
-      const tokenInfo = JSON.parse(localStorage.getItem("tokenInfo"));
-      console.log("tokeninfro", tokenInfo);
-      const authToken = tokenInfo?.token;
-      console.log("auhtTOkne", authToken);
-      if (!authToken || Date.now() - tokenInfo?.createdAt > 1000 * 60 * 30) {
-        const refreshAccessToken = await auth?.currentUser?.getIdToken(true);
-        const authInfo = {
-          token: refreshAccessToken,
-        };
-        updateAuthInfo(authInfo);
-        //30 mins
-      }
-
-      console.log("url and token", url, authToken);
-      const completeUrl = baseUrl + url;
+      const authToken = authInfo.token;
+      const completeUrl = baseApi + url;
       let headers = {
         "Content-Type": "application/json",
       };
@@ -37,10 +24,17 @@ function useGet() {
       const response = await axios.get(completeUrl, {
         headers,
       });
-      console.log("endPoint", url, "response", response.data.data);
+      console.log(
+        "reqType",
+        "get",
+        "endPoint",
+        url,
+        "response",
+        response.data.data
+      );
       return { success: true, data: response.data.data };
     } catch (error) {
-      console.error("endPoint", url, "error:", error);
+      console.error("reqType", "get", "endPoint", url, "error:", error);
       return {
         success: false,
         error: error.response ? error.response.data : error.message,

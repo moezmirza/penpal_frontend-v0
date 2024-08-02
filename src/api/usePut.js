@@ -1,26 +1,16 @@
 import axios from "axios";
-import { baseUrl } from "../utils/authCodeMap";
 import { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
+import { baseApi } from "../utils/config";
 
 function usePut() {
-  const { updateAuthInfo } = useContext(AuthContext);
+  const { updateAuthInfo, authInfo } = useContext(AuthContext);
 
   const put = async (url, body) => {
     try {
-      const tokenInfo = JSON.parse(localStorage.getItem("tokenInfo"));
-      console.log("tokeninfro", tokenInfo);
-      const authToken = tokenInfo?.token;
-      console.log("auhtTOkne", authToken);
-      if (Date.now() - tokenInfo?.createdAt > 1000 * 60 * 30) {
-        const refreshAccessToken = await auth?.currentUser?.getIdToken(true);
-        const authInfo = {
-          token: refreshAccessToken,
-        };
-        updateAuthInfo(authInfo);
-      }
+      const authToken = authInfo.token;
       console.log(url, body, authToken);
-      const completeUrl = baseUrl + url;
+      const completeUrl = baseApi + url;
 
       let headers = {
         "Content-Type": "application/json",
@@ -32,11 +22,18 @@ function usePut() {
       const response = await axios.put(completeUrl, body, {
         headers,
       });
-      console.log("endPoint", url, "response", response.data.data);
+      console.log(
+        "reqType",
+        "put",
+        "endPoint",
+        url,
+        "response",
+        response.data.data
+      );
 
       return { success: true, data: response.data.data };
     } catch (error) {
-      console.error("endPoint", url, "error:", error);
+      console.error("reqType", "put", "endPoint", url, "error:", error);
 
       return {
         success: false,

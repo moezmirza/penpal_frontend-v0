@@ -7,7 +7,7 @@ import { setCurrentUser } from "../../state/slices/userSlice";
 import { AuthContext } from "../../providers/AuthProvider";
 
 const userNavbarLinkMap = {
-  Home: "https://penpal.musingsinc.co/",
+  Home: "https://awayoutpenpals.com/",
   Dashboard: "/#findpal",
   "Submit a Profile": "/list-inmate",
   "Manage Profiles": "/manage-inmates",
@@ -16,12 +16,12 @@ const userNavbarLinkMap = {
   "My Account": "/user-profile",
 };
 const unAuthNavbarLinkMap = {
-  Home: "https://penpal.musingsinc.co/",
+  Home: "https://awayoutpenpals.com/",
   Register: "/register",
   Login: "/login",
 };
 const adminNavbarLinkMap = {
-  Home: "https://penpal.musingsinc.co/",
+  Home: "https://awayoutpenpals.com/",
   "Approve Profiles": "/approve-profiles",
   "Approve Updates": "/approve-updates",
   "Delete Profiles": "/delete-profiles",

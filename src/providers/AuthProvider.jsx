@@ -6,14 +6,11 @@ import { auth } from "../services/firebase";
 export const AuthContext = createContext(null);
 
 function AuthProvider({ children }) {
+  const [authInfo, setAuthInfo] = useState({ token: null });
+  const [loading, setLoading] = useState(true);
   const updateAuthInfo = (authInfo) => {
-    localStorage.setItem(
-      "tokenInfo",
-      JSON.stringify({
-        token: authInfo.token,
-        createdAt: authInfo.token ? Date.now() : "",
-      })
-    );
+    
+    setAuthInfo({ token: authInfo.token });
 
     console.log("update authIno", authInfo);
     authInfo.userAuth != undefined &&
@@ -24,6 +21,7 @@ function AuthProvider({ children }) {
 
   useEffect(() => {
     const refreshService = onAuthStateChanged(auth, (user) => {
+      setLoading(false);
       if (user) {
         const authInfo = {
           token: user.accessToken,
@@ -35,10 +33,13 @@ function AuthProvider({ children }) {
   }, [auth]);
 
   const context = {
+    authInfo,
     updateAuthInfo,
   };
   return (
-    <AuthContext.Provider value={context}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={context}>
+      {!loading && children}
+    </AuthContext.Provider>
   );
 }
 

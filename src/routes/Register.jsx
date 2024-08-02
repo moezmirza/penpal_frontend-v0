@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePost } from "../api/usePost";
 import { Link, useNavigate } from "react-router-dom";
-import mapAuthCodeToMessage, { baseUrl } from "../utils/authCodeMap";
+import mapAuthCodeToMessage from "../utils/authCodeMap";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 
 const Register = () => {
