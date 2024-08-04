@@ -18,7 +18,7 @@ import { LoadingSpinner } from "../../components/LoadingSpinner";
 // recreating the `Stripe` object on every render.w'
 // This is your test secret API key.
 const stripePromise = loadStripe(
-  process.env.REACT_APP_STRIPE_PUBLIC_KEY
+  import.meta.env.VITE_STRIPE_PUBLIC_KEY
 );
 
 const CheckoutForm = () => {
