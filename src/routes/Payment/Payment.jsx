@@ -15,10 +15,10 @@ import { usePost } from "../../api/usePost";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
-// recreating the `Stripe` object on every render.w
+// recreating the `Stripe` object on every render.w'
 // This is your test secret API key.
 const stripePromise = loadStripe(
-  "pk_test_51PgWq2Euyj8xye751S0KM3U2HKAM0aKKCO1sgNePM9n0N22CMLvzOgGjReo4ikEcqIhqL9j6f0VRtdlELPP7Ht1q00PMKpRLgM"
+  import.meta.env.VITE_STRIPE_PUBLIC_KEY
 );
 
 const CheckoutForm = () => {
