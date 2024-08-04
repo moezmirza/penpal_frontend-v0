@@ -15,7 +15,7 @@ import { usePost } from "../../api/usePost";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
-// recreating the `Stripe` object on every render.w
+// recreating the `Stripe` object on every render.w'
 // This is your test secret API key.
 const stripePromise = loadStripe(
   process.env.REACT_APP_STRIPE_PUBLIC_KEY
