@@ -19,7 +19,6 @@ import UpdateCustomers from "./routes/Customer/UpdateCustomers";
 import SearchProfiles from "./routes/Customer/SearchProfiles";
 import DeleteProfiles from "./routes/Admin/DeleteProfiles";
 function App() {
-  console.log("App", import.meta.env.VITE_TEST);
   const UserRoutes = () => {
     const userAuth = JSON.parse(localStorage.getItem("userAuth"));
     console.log("userAuth", userAuth);
