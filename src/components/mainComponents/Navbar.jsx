@@ -152,14 +152,6 @@ function PCNavbar({ onSignout, onLinkClick, isAdmin, isUser }) {
   return (
     <div className="text-white flex gap-x-12 md:mr-12 text-lg">
       {Object.keys(unAuthNavbarLinkMap).map((tag) =>
-        tag == "Home" ? (
-          <a
-            href={"https://penpal.musingsinc.co/"}
-            className="cursor-pointer hover:underline"
-          >
-            Home
-          </a>
-        ) : (
           <Link
             to={unAuthNavbarLinkMap[tag]}
             className="cursor-pointer hover:underline"
@@ -167,7 +159,7 @@ function PCNavbar({ onSignout, onLinkClick, isAdmin, isUser }) {
             {tag}
           </Link>
         )
-      )}
+      }
     </div>
   );
 }
