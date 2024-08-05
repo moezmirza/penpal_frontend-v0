@@ -22,7 +22,7 @@ function CustomerCard({
       }  py-2 px-4 w-full flex flex-col gap-y-6 gap-x-4 md:flex-row md:items-center`}
     >
       <img
-        src={customer?.imageUrl || "/assets/default.jpg"}
+        src={customer?.photos?.imageUrl || "/assets/default.jpg"}
         alt=""
         className="h-80 w-full md:w-44 md:h-44 rounded"
       />
