@@ -111,9 +111,6 @@ function FindPal() {
   };
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-  useEffect(() => {
     const fetchCustomers = async () => {
       setLoading(true);
       const { success, data, error } = await get(
@@ -219,6 +216,9 @@ function FindPal() {
         block: "start",
       });
     }
+    else{
+        window.scrollTo(0, 0);
+    }
   }, [location]);
 
   filteredCustomers = filteredCustomers?.filter(
@@ -227,10 +227,10 @@ function FindPal() {
       includesCaseInsensitive(customer?.basicInfo?.lastName, inputVal)
   );
   return (
-    <div className="bg-c-basic flex flex-col gap-y-12 w-full px-3 py-6">
+    <div className="bg-c-basic flex flex-col gap-y-12 w-full px-3 py-6 md:py-0">
       <div
         id="hero-section"
-        className="flex flex-col-reverse lg:flex-row gap-y-6 justify-between bg-fr-blue-200 p-3 mt-2 md:mt-12 w-full md:w-10/12 m-auto rounded relative"
+        className="flex flex-col-reverse lg:flex-row gap-y-6 justify-between bg-fr-blue-200 p-3 md:p-6 mt-2 md:my-20 w-full md:w-11/12 m-auto rounded relative"
       >
         {getStartedPopup && (
           <ConfirmPopup
