@@ -1084,7 +1084,7 @@ function AddOns({ onClick }) {
             />
             <div className="flex justify-between w-full">
               <p>{addon}</p>
-              <p>{addonCostMap[addon]}</p>
+              <p>{addonCostMap[addon]}/month</p>
             </div>
           </label>
         ))}
