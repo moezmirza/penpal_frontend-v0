@@ -184,7 +184,7 @@ function SearchProfiles() {
         <p className="text-center">Loading...</p>
       ) : loadMoreMsg ? (
         <div className="text-center ">{loadMoreMsg}</div>
-      ) : (
+      ) : ( !loading &&
         <button
           type="button"
           className="mx-auto mt-4 border text-white px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"

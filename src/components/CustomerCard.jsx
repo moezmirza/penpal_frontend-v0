@@ -17,9 +17,8 @@ function CustomerCard({
   return (
     <div
       id="customer-card"
-      className={`bg-gray-100 rounded-md border   ${
-        customer?.isFavorite ? "border-green-500" : "border-gray-300"
-      }  py-2 px-4 w-full flex flex-col gap-y-6 gap-x-4 md:flex-row md:items-center`}
+      className={`bg-gray-100 rounded-md border   ${customer?.isFavorite ? "border-green-500" : "border-gray-300"
+        }  py-2 px-4 w-full flex flex-col gap-y-6 gap-x-4 md:flex-row md:items-center`}
     >
       <img
         src={customer?.photos?.imageUrl || "/assets/default.jpg"}
@@ -32,11 +31,29 @@ function CustomerCard({
             <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
               {customer?.basicInfo?.firstName} {customer?.basicInfo?.lastName}
             </p>
-            <img
-              src={`assets/icons/${customer?.isFavorite && "filledHeart.svg"}`}
-              alt=""
-              className="h-6"
-            />
+            {customer?.isFavorite &&
+              <img
+                src="assets/icons/filledHeart.svg"
+                alt=""
+                className="h-6"
+              />
+            }
+            {customer?.customerStatus?.featuredPlacement &&
+              <img
+                src="assets/icons/p1.png"
+                alt=""
+                className="h-6 cursor-pointer"
+                title="featured"
+              />
+            }
+            {customer?.customerStatus?.premiumPlacement &&
+              <img
+                src="assets/icons/p2.png"
+                alt=""
+                className="h-6 cursor-pointer"
+                title="premium"
+              />
+            }
           </div>
 
           <div className="flex gap-x-4 gap-y-1 flex-wrap ">

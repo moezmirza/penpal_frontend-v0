@@ -15,7 +15,7 @@ function UpdateCustomers() {
   const itemsPerPage = 40;
 
   const get = useGet();
-  const navigate= useNavigate()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -125,6 +125,7 @@ function UpdateCustomers() {
       ) : loadMoreMsg ? (
         <div className="text-center ">{loadMoreMsg}</div>
       ) : (
+        !loading &&
         <button
           type="button"
           className="mx-auto mt-4 border text-white px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"
@@ -132,6 +133,7 @@ function UpdateCustomers() {
         >
           View More ...
         </button>
+
       )}
     </div>
   );
