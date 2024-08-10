@@ -136,9 +136,9 @@ function Customer() {
         <div
           id="profile-details"
           className={`bg-white  w-full border rounded-lg flex flex-col gap-y-4 p-6`}
-          // className={`bg-white  w-full border ${
-          //   (profileApproval || updateApproval) && "border-red-500"
-          // }  rounded-lg flex flex-col gap-y-4 p-6`}
+        // className={`bg-white  w-full border ${
+        //   (profileApproval || updateApproval) && "border-red-500"
+        // }  rounded-lg flex flex-col gap-y-4 p-6`}
         >
           {/* {(profileApproval || updateApproval) && (
             <p className="text-red-500 text-center md:text-xl text-sm ">
@@ -254,7 +254,7 @@ function Customer() {
                             <span className="mr-1">{lang}</span>
                           ))}
                         </p>
-                      ) : (
+                      ) : (field != "mailingAddress" &&
                         <p key={field} className="">
                           <span className="font-semibold mr-1">
                             {basicInfoFieldLabelMap[field]}:

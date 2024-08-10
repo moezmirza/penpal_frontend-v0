@@ -35,7 +35,7 @@ function FindUserCustomers({ endpoint }) {
       {customers.length == 0 && !loading ? (
         <p className="text-center">{"No profiles to display"}</p>
       ) : (
-        <div className="flex flex-col gap-y-6 w-full md:w-9/12">
+        <div className="flex flex-col gap-y-6 w-full xl:w-10/12 md:px-8 ">
           {customers.map((customer, index) => (
             <CustomerCard
               customer={customer}

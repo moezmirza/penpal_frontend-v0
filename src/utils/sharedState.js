@@ -461,7 +461,8 @@ export const basicInfoPlaceholderMap = {
   veteranStatus: "Veteran",
   institutionalEmailProvider: "john.doe@institution.edu",
   referredBy: "user creating the customer",
-  bio: "hello, I like to watch football",
+  bio:"Please type your desired profile statement here (only 350 words are included FREE, its $9.95 for each additional 100 words over 350)"
+
 };
 
 export const basicInfoReqFieldMap = {

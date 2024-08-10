@@ -72,7 +72,7 @@ function ApproveProfiles() {
   );
   console.log("filteredCustomers", filteredCustomers);
   return (
-    <div className="flex flex-col items-center gap-y-12 p-4 md:p-6 relative mt-6 md:w-10/12 w-full  mx-auto">
+    <div className="flex flex-col items-center gap-y-12 relative mt-6  mx-auto">
       <LoadingSpinner isLoading={loading} />
       {showPopup && (
         <ConfrimPopup
@@ -100,7 +100,8 @@ function ApproveProfiles() {
       {customers?.length == 0 && !loading ? (
         <p className="text-center">There are no more profiles to approve </p>
       ) : (
-        <div className="flex flex-col gap-y-6 w-full">
+        <div className="flex flex-col gap-y-6 w-full xl:w-10/12 px-4 md:px-8  ">
+
           {filteredCustomers?.map((customer) => (
             <CustomerCard
               customer={customer}

@@ -8,7 +8,7 @@ function ManageCustomers() {
   const endpoint = showTab ? "/created-customers" : "/favorite";
   
   return (
-    <div className="flex flex-col gap-y-12 md:gap-y-16 mt-12 mb-32 p-4 md:p-0 relative ">
+    <div className="flex flex-col gap-y-12 md:gap-y-16 mt-4 md:mt-12 mb-32 p-4 md:p-0 relative ">
       <div className="flex flex-col gap-y-6  items-center justify-between">
         <h1 className="text-2xl md:text-4xl font-bold underline">Manage Profiles</h1>
         <div className="w-fit ">

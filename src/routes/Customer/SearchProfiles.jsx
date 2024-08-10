@@ -134,14 +134,14 @@ function SearchProfiles() {
   );
 
   return (
-    <div className="flex flex-col gap-y-6  mt-12 mb-32  items-center justify-between  p-4 md:p-0 relative w-full">
+    <div className="flex flex-col gap-y-6 mt-4 md:mt-12 mb-32  items-center justify-between  p-4 md:p-0 relative w-full">
       <h1 className="text-2xl md:text-4xl font-bold underline">
         Search Profiles
       </h1>
       <div className="flex flex-col gap-6 md:w-10/12 w-full ">
-        <div className="flex flex-col md:flex-row justify-between gap-6 w-full">
-          <div className="w-full">
-            <h1 className="text-lg">Dropdown Filter</h1>
+        <div className="flex flex-col md:flex-row justify-between gap-6 w-full md:text-lg">
+          <div className="w-full ">
+            <h1 className="">Dropdown Filter</h1>
             <MultiSelectField
               placeholderText={"Veteran"}
               dropdownOptions={filterFields}
@@ -151,10 +151,10 @@ function SearchProfiles() {
           </div>
 
           <div className="w-full">
-            <h1 className="text-lg ">Search Filter</h1>
+            <h1 className="">Search Filter</h1>
 
             <input
-              className="bg-transparent block w-full mt-1 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
+              className="bg-transparent block w-full mt-1 rounded-md p-1 md:p-2 border border-gray-400 outline-none focus:border-gray-700 "
               placeholder={"Search by customer name..."}
               value={inputVal}
               ref={inputRef}
@@ -170,7 +170,7 @@ function SearchProfiles() {
       {filteredCustomers.length == 0 && !loading ? (
         <p className="text-center mt-6">{"No profiles to display"}</p>
       ) : (
-        <div className="flex flex-col gap-y-6 w-full md:w-10/12">
+        <div className="flex flex-col gap-y-6 w-full xl:w-10/12 md:px-8">
           {filteredCustomers.map((customer, index) => (
             <CustomerCard
               customer={customer}

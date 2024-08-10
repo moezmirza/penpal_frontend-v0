@@ -320,7 +320,7 @@ function FindPal() {
         ) : (
           <div
             id="customers"
-            className="flex flex-col gap-y-6 relative w-full md:w-9/12"
+            className="flex flex-col gap-y-6 relative w-full xl:w-10/12 "
           >
             {filteredCustomers.map((customer, index) => (
               <CustomerCard

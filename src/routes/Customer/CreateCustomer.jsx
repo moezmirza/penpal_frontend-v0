@@ -401,7 +401,7 @@ function CreateCustomer() {
           wordLimit: wordLimit,
           creation: true,
         };
-        setDuesInfo(currDuesInfo);  
+        setDuesInfo(currDuesInfo);
         payementBoxRef.current.scrollIntoView({
           behavior: "smooth",
         });
@@ -614,13 +614,13 @@ function CreateCustomer() {
       }
     }
 
-    console.log("new personalityInfo", personalityInfo);
-    for (const key in personalityInfo) {
-      if (isEmpty(personalityInfo[key])) {
-        setError("Fillout all the required fields");
-        return;
-      }
-    }
+    // console.log("new personalityInfo", personalityInfo);
+    // for (const key in personalityInfo) {
+    //   if (isEmpty(personalityInfo[key])) {
+    //     setError("Fillout all the required fields");
+    //     return;
+    //   }
+    // }
 
     if (id) {
       setShowUpdateConfirmPop(true);
@@ -865,7 +865,7 @@ function CustomerDetails({
                 </button>
                 <button
                   onClick={handleRemoveImage}
-                  className="border-b-2  px-2 py-1 md:px-4 md:py-2  "
+
                 >
                   Remove
                 </button>
@@ -901,24 +901,19 @@ function CustomerDetails({
               />
             ) : field == "bio" ? (
               <label key={field}>
-                <div className="flex gap-x-2 items-center">
-                  <RequiredFieldLabel
-                    labelText={basicInfoFieldLabelMap[field]}
-                  />
-                </div>
+                <RequiredFieldLabel
+                  labelText={basicInfoFieldLabelMap[field]}
+                />
                 <textarea
                   name="bio"
                   value={basicInfo[field]}
                   onChange={handleBasicInfoTextFieldChange}
-                  placeholder={
-                    "Please type your desired profile statement here (only 350 words are included FREE, its $9.95 for each additional 100 words over 350)"
-                  }
+                  placeholder={basicInfoPlaceholderMap[field]}
                   rows={5}
-                  className={`bg-transparent block w-full my-1.5 rounded-md p-1.5 border  ${
-                    wordLimit != 0
-                      ? "focus:border-red-500 border-red-500"
-                      : " focus:border-gray-700 border-gray-400"
-                  } outline-none`}
+                  className={`bg-transparent block w-full my-1.5 rounded-md p-1.5 border  ${wordLimit != 0
+                    ? "focus:border-red-500 border-red-500"
+                    : " focus:border-gray-700 border-gray-400"
+                    } outline-none`}
                 ></textarea>
                 {wordLimit != 0 && (
                   <p className="text-red-500 text-xs md:text-sm">
@@ -930,27 +925,37 @@ function CustomerDetails({
                   Word Count: {bioWordsLenght}
                 </p>
               </label>
-            ) : (
-              field != "imageUrl" && (
-                <InputField
-                  key={field}
+            ) : field == "mailingAddress" ?
+              <label>
+                <RequiredFieldLabel
                   labelText={basicInfoFieldLabelMap[field]}
-                  type={field === "dateOfBirth" ? "date" : "text"}
-                  placeholder={basicInfoPlaceholderMap[field]}
-                  name={field}
+                  required={true}
+                />
+                <textarea
+                  name="mailingAddress"
                   value={basicInfo[field]}
                   onChange={handleBasicInfoTextFieldChange}
-                  required={basicInfoReqFieldMap[field]}
-                />
+                  placeholder={basicInfoPlaceholderMap[field]}
+                  maxRows={2}
+                  className={` resize-none bg-transparent block w-full my-1.5 rounded-md p-1.5 border focus:border-gray-700 border-gray-400 outline-none`}
+                ></textarea>
+              </label>
+              : (
+                field != "imageUrl" && (
+                  <InputField
+                    key={field}
+                    labelText={basicInfoFieldLabelMap[field]}
+                    type={field === "dateOfBirth" ? "date" : "text"}
+                    placeholder={basicInfoPlaceholderMap[field]}
+                    name={field}
+                    value={basicInfo[field]}
+                    onChange={handleBasicInfoTextFieldChange}
+                    required={basicInfoReqFieldMap[field]}
+                  />
+                )
               )
-            )
           )}
-            {photos.total + currPhotos.total < 3 && (
-              <p className="text-red-500 italic md:text-sm text-xs">
-                {3 - (photos.total + currPhotos.total)} remaining free
-                photo/artworks
-              </p>
-              )}
+          
           <div className="flex flex-col md:flex-row justify-center md:justify-between   gap-6 w-full">
             <span className="text-sm md:text-base">Pick your Artworks</span>
             <button
@@ -968,6 +973,12 @@ function CustomerDetails({
               onChange={handleArtworkChange}
             />
           </div>
+          {photos.total + currPhotos.total < 3 && (
+            <p className="text-red-500 italic md:text-sm text-xs">
+              {3 - (photos.total + currPhotos.total)} remaining free
+              photo/artworks
+            </p>
+          )}
 
           <div className="flex flex-col gap-4">
             {photos?.artworks.map((item, index) => (
@@ -1001,8 +1012,8 @@ function CustomerDetails({
       >
         {id && (
           <p className="text-red-500 text-center md:text-sm text-xs italic">
-          *Each field update will cost $9.95
-        </p>
+            *Each field update will cost $9.95
+          </p>
         )}
         <div className="m-auto font-semibold text-xl md:text-3xl underline">
           Personality Info
@@ -1016,7 +1027,6 @@ function CustomerDetails({
             dropdownOptions={fieldOptionMap[key]}
             selectedOptions={personalityInfo[fieldStateNameMap[key]]}
             onChange={handlePersonalityInfoChange}
-            required={true}
           />
         ))}
         <div className="flex gap-x-6 w-full justify-between">
@@ -1032,9 +1042,8 @@ function CustomerDetails({
           </div>
 
           <button
-            className={`ml-auto  bg-fr-blue-200 w-1/3 md:w-1/5  text-sm md:text-base text-white p-1.5 rounded ${
-              loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
-            }`}
+            className={`ml-auto  bg-fr-blue-200 w-1/3 md:w-1/5  text-sm md:text-base text-white p-1.5 rounded ${loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
+              }`}
             onClick={handleSubmitBtn}
             // disabled={loading}
             ref={updateBtnRef}
@@ -1044,8 +1053,8 @@ function CustomerDetails({
                 ? "Updating..."
                 : "Update"
               : loading
-              ? "Creating..."
-              : "Create"}{" "}
+                ? "Creating..."
+                : "Create"}{" "}
           </button>
         </div>
       </div>
@@ -1133,11 +1142,10 @@ function DuesSection({
       <PaymentReceipt obj={duesInfo} />
       <div className="flex flex-col gap-y-2 text-white">
         <button
-          className={`py-2 w-full bg-green-600 rounded-lg ${
-            (!isDone && !addons) || total == 0
-              ? "opacity-50 cursor-not-allowed"
-              : "curose-pointer"
-          }`}
+          className={`py-2 w-full bg-green-600 rounded-lg ${(!isDone && !addons) || total == 0
+            ? "opacity-50 cursor-not-allowed"
+            : "curose-pointer"
+            }`}
           disabled={(!isDone && !addons) || total == 0}
           onClick={onPaynow}
         >

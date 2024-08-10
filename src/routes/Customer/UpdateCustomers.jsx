@@ -76,7 +76,7 @@ function UpdateCustomers() {
   );
 
   return (
-    <div className="flex flex-col gap-y-6  items-center justify-between mt-12 mb-32  p-4 md:p-0 relative w-full">
+    <div className="flex flex-col gap-y-6  items-center justify-between mt-4 md:mt-12 mb-32  p-4 md:p-0 relative w-full">
       <h1 className="text-2xl md:text-4xl font-bold underline">
         Update/Renew Profiles
       </h1>
@@ -98,7 +98,7 @@ function UpdateCustomers() {
           No profiles to display
         </p>
       ) : (
-        <div className="flex flex-col gap-y-6 w-full md:w-9/12">
+      <div className="flex flex-col gap-y-6 w-full xl:w-10/12 md:px-8">
           {filteredCustomers.map((customer, index) => (
             <CustomerCard
               key={index}
