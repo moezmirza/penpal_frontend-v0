@@ -128,7 +128,7 @@ function UpdateCustomers() {
         !loading &&
         <button
           type="button"
-          className="mx-auto mt-4 border text-white px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"
+          className="mx-auto mt-4 border text-white px-4 md:px-5 py-2 md:py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"
           onClick={handleFetchMoreCustomers}
         >
           View More ...

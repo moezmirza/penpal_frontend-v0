@@ -11,9 +11,7 @@ import {
   fieldOptionMap,
   fieldStateNameMap,
   addonNameToStateMap,
-  addonStateToNameMap,
   addonStatetoCost,
-  stateFieldNameMap,
 } from "../../utils/sharedState";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../services/firebase";
@@ -23,7 +21,7 @@ import { useGet } from "../../api/useGet";
 import { useNavigate, useParams } from "react-router-dom";
 import { usePut } from "../../api/usePut";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { v4, validate } from "uuid";
+import { v4 } from "uuid";
 import { formattedImageName } from "../User/Profile/BasicInfo";
 import ConfrimPopup, { PaymentReceipt } from "../../components/ConfrimPopup";
 import { isEmpty, roundTo } from "../../utils/sharedMethods";
@@ -831,7 +829,7 @@ function CustomerDetails({
           fromLeft={"30"}
         />
       )}
-      <div className="bg-gray-300 w-full rounded-lg p-6 flex flex-col items-center gap-y-6">
+      <div className="bg-gray-300 w-full rounded-lg p-2 md:p-6 flex flex-col items-center gap-y-6">
         <div className="w-fit m-auto relative">
           <img
             className="rounded-full md:w-52 md:h-52 w-36 h-36 object-cover object-top"
@@ -875,14 +873,14 @@ function CustomerDetails({
             )} */}
           </div>
         </div>
-        <p className="text-gray-600 italic text-sm md:text-base">
-          *Click pencil to update photo
+        <p className="text-gray-500 italic text-xs md:text-sm text-center">
+          *Click pencil to update your primary photo/artwork or you may upload additional photos/artworks below.
         </p>
       </div>
 
       <div className="flex flex-col gap-y-6 text-sm  p-2 md:p-6 md:text-base">
         {id && (
-          <p className="text-red-500 text-center">
+          <p className="text-red-500 text-center md:text-sm text-xs italic">
             *Each field update will cost $9.95
           </p>
         )}
@@ -913,7 +911,7 @@ function CustomerDetails({
                   value={basicInfo[field]}
                   onChange={handleBasicInfoTextFieldChange}
                   placeholder={
-                    "Please type your desired profile statement in the bio box below (only 350 words are included FREE, its $9.95 for each additional 100 words over 350)"
+                    "Please type your desired profile statement here (only 350 words are included FREE, its $9.95 for each additional 100 words over 350)"
                   }
                   rows={5}
                   className={`bg-transparent block w-full my-1.5 rounded-md p-1.5 border  ${
@@ -947,11 +945,17 @@ function CustomerDetails({
               )
             )
           )}
-          <div className="flex  items-center  gap-6 w-full">
-            <span className="text-lg">Pick your Artworks</span>
+            {photos.total + currPhotos.total < 3 && (
+              <p className="text-red-500 italic md:text-sm text-xs">
+                {3 - (photos.total + currPhotos.total)} remaining free
+                photo/artworks
+              </p>
+              )}
+          <div className="flex flex-col md:flex-row justify-center md:justify-between   gap-6 w-full">
+            <span className="text-sm md:text-base">Pick your Artworks</span>
             <button
               onClick={() => artworkRef.current.click()}
-              className="border border-black border-3 py-1 px-2 rounded w-fit"
+              className="border border-black border-3  md:px-2 px-1 rounded w-fit"
             >
               Choose here
             </button>
@@ -963,12 +967,6 @@ function CustomerDetails({
               type="file"
               onChange={handleArtworkChange}
             />
-            {photos.total + currPhotos.total < 3 && (
-              <p className="text-red-600 italic md:text-sm text-xs">
-                {3 - (photos.total + currPhotos.total)} remaining free
-                photo/artworks
-              </p>
-            )}
           </div>
 
           <div className="flex flex-col gap-4">
@@ -1002,9 +1000,9 @@ function CustomerDetails({
         className="bg-white flex flex-col py-6 gap-y-6 md:gap-y-8 pb-10 items-center p-3 md:p-6 lg mb-6 relative"
       >
         {id && (
-          <p className="text-red-500 text-center">
-            *Each field update will cost $9.95
-          </p>
+          <p className="text-red-500 text-center md:text-sm text-xs italic">
+          *Each field update will cost $9.95
+        </p>
         )}
         <div className="m-auto font-semibold text-xl md:text-3xl underline">
           Personality Info
@@ -1034,7 +1032,7 @@ function CustomerDetails({
           </div>
 
           <button
-            className={`ml-auto  bg-fr-blue-200 w-1/3 md:w-1/5  text-white p-1.5 rounded ${
+            className={`ml-auto  bg-fr-blue-200 w-1/3 md:w-1/5  text-sm md:text-base text-white p-1.5 rounded ${
               loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
             }`}
             onClick={handleSubmitBtn}
@@ -1067,8 +1065,8 @@ function AddOns({ onClick }) {
     onClick((prev) => ({ ...prev, [stateField]: !prev[stateField] }));
   };
   return (
-    <div className=" bg-white rounded-lg h-fit  px-6 md:px-12 py-6  border">
-      <h1 className="text-2xl  font-bold text-center">Add-ons</h1>
+    <div className=" bg-white rounded-lg h-fit  px-6 md:px-12 py-6  border text-sm md:text-base">
+      <h1 className="text-xl md:text-2xl  underline font-bold text-center">Add-ons</h1>
 
       <div className="flex flex-col mt-6 gap-y-6 ">
         {addonsList.map((addon) => (
@@ -1129,9 +1127,9 @@ function DuesSection({
   return (
     <div
       ref={payementBoxRef}
-      className=" bg-white rounded-lg h-fit px-6 md:px-12 py-6 flex flex-col gap-y-6 border"
+      className=" bg-white rounded-lg h-fit px-6 md:px-12 py-6 flex flex-col gap-y-6 border text-sm md:text-base"
     >
-      <h1 className="text-2xl  font-bold text-center">Pending Dues</h1>
+      <h1 className=" text-xl md:text-2xl underline font-bold text-center">Pending Dues</h1>
       <PaymentReceipt obj={duesInfo} />
       <div className="flex flex-col gap-y-2 text-white">
         <button

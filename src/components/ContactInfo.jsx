@@ -9,7 +9,7 @@ function ContactInfo({
 }) {
   return (
     <div className="mr-auto flex flex-col gap-y-6 w-full ">
-      <h1 className="bg-fr-blue-200 text-white py-3 px-4 rounded text-xl px-6">
+      <h1 className="bg-fr-blue-200 text-white py-3 px-4 rounded text-lg md:text-xl px-6">
         How to contact {firstName}
       </h1>
       <div className="border rounded-lg">

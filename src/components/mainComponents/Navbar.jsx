@@ -45,11 +45,10 @@ function Navbar() {
   const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
   console.log("type", typeof isAdmin, isAdmin);
   return (
-    <div className="bg-fr-blue-200 flex items-end justify-between w-full p-3 md:py-5 md:px-4 sticky top-0 z-50">
-      <div className="text-xl md:text-2xl text-white font-medium ">
-        {isUser ? user?.firstName : isAdmin ? "Admin" : "Welcome Pal"}
-        <span className="text-4xl">.</span>
-      </div>
+    <div className="bg-fr-blue-200 flex items-center  xl:items-end justify-between w-full py-5 xl:py-5 px-4 sticky top-0 z-50">
+      <p className="text-xl md:text-2xl text-white font-medium text-center h-fit">
+        {isUser ? user?.firstName : isAdmin ? "Admin" : "Welcome Pal"}.
+      </p>
 
       <div className="hidden xl:block">
         <PCNavbar
@@ -186,7 +185,7 @@ function MobileNavbar({
             <img
               src={"/assets/icons/settings.svg"}
               alt=""
-              className="h-5 md:h-8 cursor-pointer transition-transform duration-300"
+              className="h-6 md:h-7 xl:h-8 cursor-pointer transition-transform duration-300"
             />
           </label>
         </div>

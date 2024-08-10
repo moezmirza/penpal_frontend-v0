@@ -52,8 +52,7 @@ export const stateList = [
 ];
 
 export const ageGrpList = [
-  "10-19",
-  "20-29",
+  "18-30",
   "30-39",
   "40-49",
   "50-59",
@@ -418,7 +417,7 @@ export const basicInfoFieldLabelMap = {
   race: "Race",
   bodyType: "Body Type",
   astrologicalSign: "Astrological Sign",
-  relationShipStatus: "RelationShip Status",
+  relationShipStatus: "Relationship Status",
   veteranStatus: "Veteran Status",
   institutionalEmailProvider: "Institutional Email Provider",
   referredBy: "Referred By",

@@ -154,9 +154,9 @@ function Customer() {
                 alt=""
                 className="h-80 w-full md:h-44 md:w-44 rounded"
               />
-              <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">
+              <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0 ">
                 <div>
-                  <p className="font-semibold text-3xl mb-2 md:mb-1 text-center md:text-left">
+                  <p className="font-semibold text-2xl md:text-3xl mb-2 md:mb-1 text-center md:text-left">
                     {customer?.basicInfo?.firstName}{" "}
                     {customer?.basicInfo?.lastName}
                   </p>
@@ -236,18 +236,18 @@ function Customer() {
             </div>
 
             <div>
-              <h2 className="font-semibold text-3xl md:text-2xl my-4 underline">
+              <h2 className="font-semibold text-xl md:text-2xl my-4 underline">
                 Basic Info
               </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2  gap-4 text-base md:text-lg">
                 {customer &&
                   basicInfoDisplayFields.map((field) => {
                     return (
                       customer?.basicInfo[field] &&
                       (field == "spokenLanguages" ? (
                         <p key={field} className="flex flex-wrap items-end">
-                          <span className="font-semibold mr-1 text-lg">
+                          <span className="font-semibold mr-1 ">
                             {basicInfoFieldLabelMap[field]}:
                           </span>
                           {customer?.basicInfo[field].map((lang) => (
@@ -256,7 +256,7 @@ function Customer() {
                         </p>
                       ) : (
                         <p key={field} className="">
-                          <span className="font-semibold mr-1 text-lg">
+                          <span className="font-semibold mr-1">
                             {basicInfoFieldLabelMap[field]}:
                           </span>
                           {field == "dateOfBirth"
@@ -268,21 +268,21 @@ function Customer() {
                   })}
               </div>
             </div>
-            <div className="flex flex-col gap-y-10">
+            <div className="flex flex-col gap-y-10 ">
               <div>
-                <h2 className="font-semibold text-3xl md:text-2xl my-4 underline">
+                <h2 className="font-semibold text-xl md:text-2xl my-4 underline ">
                   Personality Info
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-base md:text-lg">
                   {Object.keys(customer?.personalityInfo || []).map(
                     (key) =>
                       key != "_id" && (
                         <div key={key}>
-                          <p className="font-semibold text-lg ">
+                          <p className="font-semibold  ">
                             {key.toUpperCase()}
                           </p>
-                          <ul className="">
+                          <ul className="flex gap-x-3 md:flex-col">
                             {customer?.personalityInfo[key].map((value) => (
                               <li className="text-nowrap" key={value}>
                                 {value}
@@ -296,7 +296,7 @@ function Customer() {
               </div>
               {isUser && (
                 <div className="">
-                  <h1 className="text-3xl md:text-2xl font-semibold underline mb-4 ">
+                  <h1 className="text-xl md:text-2xl font-semibold underline mb-4 ">
                     Give your rating
                   </h1>
                   <div className="flex items-center gap-x-4">

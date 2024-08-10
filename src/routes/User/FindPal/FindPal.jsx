@@ -307,9 +307,9 @@ function FindPal() {
                 className="w-full bg-transparent block mt-1 rounded-md p-1.5 border border-gray-400 outline-none focus:border-gray-700 "
               />
             </label>
-            <p className="font-semibold md:text-2xl">
+            {/* <p className="font-semibold md:text-2xl">
               Total : {filteredCustomers.length}
-            </p>
+            </p> */}
           </div>
         </div>
 
@@ -340,7 +340,7 @@ function FindPal() {
         ) : ( !loading && 
           <button
             type="button"
-            className="mx-auto mt-4 border text-white px-5 py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"
+            className="mx-auto mt-4 border text-white  px-4 md:px-5 py-2 md:py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"
             onClick={handleFetchMoreCustomers}
           >
             View More ...

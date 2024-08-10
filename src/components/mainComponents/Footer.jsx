@@ -5,10 +5,10 @@ import { websiteURL } from "../../utils/config";
 function Footer() {
   return (
     <>
-      <div className="md:hidden bg-fr-blue-200 flex justify-between flex-col gap-y-6 p-4 px-8 w-full">
+      <div className="md:hidden bg-fr-blue-200 flex justify-between flex-col gap-y-10 p-6  w-full">
         <ul
-          className="flex flex-col md:items-center md:flex-row gap-6 text-white
-        text-lg mx-auto"
+          className="grid grid-cols-2 md:grid-cols-1 gap-6 text-white
+        text-base md:text-lg mx-auto"
         >
           <li>
             <a href={`${websiteURL}`}>Home</a>
