@@ -80,7 +80,7 @@ function UpdateCustomers() {
       <h1 className="text-2xl md:text-4xl font-bold underline">
         Update/Renew Profiles
       </h1>
-      <div className="flex flex-col md:flex-row gap-6 md:w-7/12 w-11/12 items-center">
+      <div className="flex flex-col md:flex-row gap-6 xl:w-7/12 w-11/12 items-center">
         <input
           className="bg-transparent block w-full mt-1 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
           placeholder={"Search customer..."}

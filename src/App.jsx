@@ -16,7 +16,7 @@ import AdminCustomer from "./routes/Customer/AdminCustomer";
 import CheckoutForm from "./routes/Payment/Payment";
 import Result from "./routes/Payment/Result";
 import UpdateCustomers from "./routes/Customer/UpdateCustomers";
-import SearchProfiles from "./routes/Customer/SearchProfiles";
+import ExploreProfiles from "./routes/Customer/ExploreProfiles";
 import DeleteProfiles from "./routes/Admin/DeleteProfiles";
 function App() {
   const UserRoutes = () => {
@@ -43,7 +43,7 @@ function App() {
         <Route path="/update-inmate/:id" element={<UpdateCustomer />} />
         <Route path="/manage-inmates" element={<ManageCustomers />} />
         <Route path="/update-inmates" element={<UpdateCustomers />} />
-        <Route path="/search-profiles" element={<SearchProfiles />} />
+        <Route path="/explore-profiles" element={<ExploreProfiles />} />
         <Route path="/payment" element={<CheckoutForm />} />
         <Route path="/payment/result" element={<Result />} />
         <Route path="*" element={<Navigate to="/" />} />
