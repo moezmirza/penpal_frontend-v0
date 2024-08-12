@@ -23,8 +23,9 @@ import { usePut } from "../../api/usePut";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { v4 } from "uuid";
 import { formattedImageName } from "../User/Profile/BasicInfo";
-import ConfrimPopup, { PaymentReceipt } from "../../components/ConfrimPopup";
+import ConfrimPopup from "../../components/ConfrimPopup";
 import { isEmpty, roundTo } from "../../utils/sharedMethods";
+import PaymentReceipt from "../../components/PaymentReciept";
 
 function CreateCustomer() {
   const [error, setError] = useState("");
@@ -179,8 +180,8 @@ function CreateCustomer() {
     },
     creation: false,
     renewal: false,
-    featuredPlacement: false,
-    premiumPlacement: false,
+    featuredPlacement: 0,
+    premiumPlacement: 0,
     wordLimit: 0,
     totalPaidPhotos: 0,
   };
@@ -685,7 +686,7 @@ function CreateCustomer() {
             changeOccured={changeOccured}
             onPaynow={handlePaynow}
           />
-          <AddOns onClick={setDuesInfo} />
+          <AddOns onClick={setDuesInfo} duesInfo={duesInfo} />
         </div>
       </div>
     </div>
@@ -783,8 +784,6 @@ function CustomerDetails({
     "currPhotos",
     currPhotos.total
   );
-  let totalPhotos = currPhotos.total + photos.total;
-  const totalPaidPhotos = totalPhotos <= 3 ? 0 : totalPhotos - 3;
 
   const recieptForCreation = {
     creation: true,
@@ -955,7 +954,7 @@ function CustomerDetails({
                 )
               )
           )}
-          
+
           <div className="flex flex-col md:flex-row justify-center md:justify-between   gap-6 w-full">
             <span className="text-sm md:text-base">Pick your Artworks</span>
             <button
@@ -1062,16 +1061,16 @@ function CustomerDetails({
   );
 }
 
-function AddOns({ onClick }) {
+function AddOns({ onClick, duesInfo }) {
   const addonsList = ["Feature Placement", "Premium Placement"];
   const addonCostMap = {
     "Feature Placement": "$14.95",
     "Premium Placement": "$24.95",
   };
 
-  const handleChange = (addon) => {
+  const handleChange = (add, addon) => {
     const stateField = addonNameToStateMap[addon];
-    onClick((prev) => ({ ...prev, [stateField]: !prev[stateField] }));
+    onClick((prev) => ({ ...prev, [stateField]: add ? prev[stateField] + 1 : prev[stateField] - 1 < 0 ? 0 : prev[stateField] - 1 }));
   };
   return (
     <div className=" bg-white rounded-lg h-fit  px-6 md:px-12 py-6  border text-sm md:text-base">
@@ -1081,18 +1080,15 @@ function AddOns({ onClick }) {
         {addonsList.map((addon) => (
           <label
             key={addon}
-            className="w-full  flex items-center gap-x-3 cursor-pointer"
+            className="w-full  flex items-center justify-between cursor-pointer"
           >
-            <input
-              type="checkbox"
-              onChange={() => handleChange(addon)}
-              value=""
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
-            />
-            <div className="flex justify-between w-full">
-              <p>{addon}</p>
-              <p>{addonCostMap[addon]}/month</p>
+            <div className="flex gap-x-3 items-center">
+              <img src="/assets/icons/minus.svg" alt="" className="h-6  bg-gray-200 rounded-full p-1.5 " onClick={() => handleChange(false, addon)} />
+              {duesInfo[addonNameToStateMap[addon]]}
+              <img src="/assets/icons/plusDark.svg" alt="" className="h-6  bg-gray-200 rounded-full p-1.5 " onClick={() => handleChange(true, addon)} />
             </div>
+            <p className={`${addon == "Feature Placement" ? "mr-3" : ""}`}>{addon}</p>
+            <p className={`${addon == "Feature Placement" ? "mr-1" : ""}`}  >{addonCostMap[addon]}/month</p>
           </label>
         ))}
       </div>
