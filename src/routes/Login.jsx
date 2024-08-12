@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import {
   getIdTokenResult,
   sendEmailVerification,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
@@ -151,6 +152,14 @@ const Login = () => {
       }, 60000);
     }
   };
+  const handlePasswordReset = () => {
+    if (formData.email) {
+      sendPasswordResetEmail(auth, formData.email)
+      setError("Password reset email sent!")
+    } else {
+      setError("Fill out the email!")
+    }
+  }
   return (
     <div className="flex  justify-center bg-b-general  md:items-center py-16 px-3 h-full">
       <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-[35%] w-full h-fit  rounded-lg relative text-sm md:text-base">
@@ -215,6 +224,12 @@ const Login = () => {
               required
               placeholder="Enter your password"
             />
+            <button className="w-full text-end text-xs md:text-sm text-fr-blue-100 mt-1.5 hover:underline cursor-pointer"
+              onClick={handlePasswordReset}
+              type="button"
+            >
+              Forgot Password
+            </button>
           </label>
 
           <button

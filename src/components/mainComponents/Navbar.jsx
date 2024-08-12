@@ -114,11 +114,11 @@ function PCNavbar({ onSignout, onLinkClick, isAdmin, isUser, exploreProfileDropd
                   {linkName}
                 </div>
                 {profileDropdown && (
-                  <div className="absolute bg-gray-200 rounded-lg flex flex-col">
+                  <div className="absolute bg-white border border-gray-400 rounded-lg flex flex-col">
                     {Object.keys(profileDropdownLinkMap).map((linkName) => <Link
                       onClick={() => setProfileDropdown(false)}
                       to={`/user-profile?sect=${profileDropdownLinkMap[linkName]}`}
-                      className="border-b-2 border-gray-300 px-2 py-1 md:px-4 md:py-2 text-black hover:bg-white "
+                      className="border-b-2 border-gray-300 px-2 py-1 md:px-4 md:py-2 text-black hover:bg-gray-200 "
 
                     >
                       {linkName}
@@ -138,13 +138,13 @@ function PCNavbar({ onSignout, onLinkClick, isAdmin, isUser, exploreProfileDropd
                   {linkName}
                 </div>
                 {exploreProfileDropdown && (
-                  <div className="absolute bg-gray-200 rounded-lg flex flex-col">
+                  <div className="absolute bg-white border border-gray-500 rounded-lg flex flex-col">
                     {Object.keys(exploreProfileDropdownLinkMap).map((linkName) =>
                       <Link
                         onClick={() => setExploreProfileDropdown(false)}
                         to={`/explore-profiles?search=${exploreProfileDropdownLinkMap[linkName]}`}
                         
-                        className="border-b-2 border-gray-300 px-2 py-1 md:px-4 md:py-2 text-black hover:bg-white "
+                        className="border-b-2 border-gray-300 px-2 py-1 md:px-4 md:py-2 text-black hover:bg-gray-200 "
                       >
                         {linkName}
                       </Link>
@@ -304,11 +304,11 @@ function NavbarOptions({ onSignout, onLinkClick, isAdmin, isUser, profileDropdow
                   {linkName}
                 </div>
                 {profileDropdown && (
-                  <div className="absolute bg-gray-200 rounded-lg flex flex-col">
+                  <div className="absolute bg-white border border-gray-400 rounded-lg flex flex-col">
                     {Object.keys(profileDropdownLinkMap).map((linkName) => <Link
                       onClick={() => setProfileDropdown(false)}
                       to={`/user-profile?sect=${profileDropdownLinkMap[linkName]}`}
-                      className="border-b-2 border-gray-300 px-2 py-1 md:px-4 md:py-2 text-black hover:bg-white "
+                      className="border-b-2 border-gray-300 px-2 py-1 md:px-4 md:py-2 text-black hover:bg-gray-200 "
                     >
                       {linkName}
                     </Link>)}
@@ -328,12 +328,12 @@ function NavbarOptions({ onSignout, onLinkClick, isAdmin, isUser, profileDropdow
                 {linkName}
               </div>
               {exploreProfileDropdown && (
-                <div className="absolute bg-gray-200 rounded-lg flex flex-col">
+                <div className="absolute bg-white border border-gray-400 rounded-lg flex flex-col">
                   {Object.keys(exploreProfileDropdownLinkMap).map((linkName) =>
                     <Link
                       onClick={() => setExploreProfileDropdown(false)}
                       to={`/explore-profiles?search=${exploreProfileDropdownLinkMap[linkName]}`}
-                      className="border-b-2 border-gray-300 px-2 py-1 md:px-4 md:py-2 text-black hover:bg-white "
+                      className="border-b-2 border-gray-300 px-2 py-1 md:px-4 md:py-2 text-black hover:bg-gray-200 "
 
                     >
                       {linkName}

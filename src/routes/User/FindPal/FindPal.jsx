@@ -58,7 +58,7 @@ function FindPal() {
     Orientation: "orientation",
     Race: "race",
     Education: "education",
-    Others: "others",
+    "Other Options": "others",
   };
 
   const filterOptionsMap = {
@@ -68,7 +68,7 @@ function FindPal() {
     Orientation: orientationList,
     // Race: raceList,
     Education: educationList,
-    Others: othersFilterList,
+    "Other Options": othersFilterList,
   };
   const oneChoiceField = ["age", "gender", "race", "education"];
 
@@ -85,8 +85,11 @@ function FindPal() {
     }
   };
   const handleFilterChange = (key, value, remove) => {
-    console.log("filter changed occcured");
-    const stateKey = key.toLowerCase();
+    console.log("filter changed occcured", key);
+    let stateKey = key.toLowerCase();
+    if (key == "Other Options") {
+      stateKey = "others"
+    }
     console.log("key", stateKey, key);
     let updatedArr = filter[stateKey];
     console.log("updatedArr", updatedArr);
@@ -216,8 +219,8 @@ function FindPal() {
         block: "start",
       });
     }
-    else{
-        window.scrollTo(0, 0);
+    else {
+      window.scrollTo(0, 0);
     }
   }, [location]);
 
@@ -337,7 +340,7 @@ function FindPal() {
           <div className="text-center ">
             {matchesAlert || "No more matches found."}
           </div>
-        ) : ( !loading && 
+        ) : (!loading &&
           <button
             type="button"
             className="mx-auto mt-4 border text-white  px-4 md:px-5 py-2 md:py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"
