@@ -129,7 +129,6 @@ const Login = () => {
   //   };
   //   dispatch(setCurrentUser(currentUser));
   //   updateAuthInfo(authInfo);
-
   //   navigate("/");
   // };
   const changePassInputType = () => {

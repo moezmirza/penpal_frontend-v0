@@ -17,6 +17,7 @@ function useGet() {
       let headers = {
         "Content-Type": "application/json",
       };
+      headers.Authorization = "unauthenticated" // for requests that not require authentication
       if (authToken) {
         headers.Authorization = `Bearer ${authToken}`;
       }

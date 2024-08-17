@@ -35,15 +35,15 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
+      <Route path="/" element={<FindPal />} />
+      <Route path="/inmate/:id" element={<Customer />} />
+      <Route path="/explore-profiles" element={<ExploreProfiles />} />
       <Route element={<UserRoutes />}>
-        <Route path="/" element={<FindPal />} />
         <Route path="/user-profile" element={<UserProfile />} />
-        <Route path="/inmate/:id" element={<Customer />} />
         <Route path="/list-inmate" element={<CreateCustomer />} />
         <Route path="/update-inmate/:id" element={<UpdateCustomer />} />
         <Route path="/manage-inmates" element={<ManageCustomers />} />
         <Route path="/update-inmates" element={<UpdateCustomers />} />
-        <Route path="/explore-profiles" element={<ExploreProfiles />} />
         <Route path="/payment" element={<CheckoutForm />} />
         <Route path="/payment/result" element={<Result />} />
         <Route path="*" element={<Navigate to="/" />} />

@@ -20,17 +20,30 @@ function SearchProfiles() {
   const { search } = useLocation()
   const queryParams = new URLSearchParams(search)
   const filter = queryParams.get("search") ? (queryParams.get("search")).trim() : ""
+  const filterFields = [
+    "premiumPlacement",
+    "featuredPlacement",
+    "recentlyUpdated",
+    "newlyListed",
+    "lgbtq",
+    "veteran",
+    "male",
+    "female",
+    "viewAll",
+  ];
+  const lqbtqFilter = "lgbtq%2B"
+  console.log("filter", JSON.stringify(filter), filter=="lgbtq", filterFields.includes(filter))
+  const option = filterFields.includes(filter) ? filter == "lgbtq" ? lqbtqFilter : filter : "viewAll"
 
   useEffect(() => {
     const fetchCustomers = async () => {
       setLoading(true);
       const { success, data, error } = await get(
-        `/customer?p=0&l=${itemsPerPage}`
+        `/customer?p=0&l=${itemsPerPage}&options=${option}`
       );
       if (success) {
         setLoading(false);
         setCustomers(data);
-        const sFilter = filterFieldStateMap[filter]
         setSearchFilter([sFilter])
         console.log("data", data);
       } else {
@@ -51,7 +64,7 @@ function SearchProfiles() {
     const fetchMoreCustomers = async () => {
       setIsLoadingMore(true);
       const { success, data, error } = await get(
-        `/customer?p=${page}&l=${itemsPerPage}`
+        `/customer?p=0&l=${itemsPerPage}&options=${option}`
       );
       if (success) {
         setIsLoadingMore(false);
@@ -74,74 +87,74 @@ function SearchProfiles() {
     inputRef.current?.focus();
   }, []);
 
-  const filterFields = [
-    "Premium",
-    "Featured",
-    "Recently updated",
-    "Newly listed",
-    "LGBTQ+",
-    "Veteran",
-    "Male",
-    "Female",
-    "View All",
-  ];
-  const filterFieldStateMap = {
-    "premiumPlacement": "Premium",
-    "featuredPlacement": "Featured",
-    recentlyUpdated: "Recently updated",
-    newlyListed: "Newly listed",
-    "lgbtq": "LGBTQ+",
-    veteran: "Veteran",
-    male: "Male",
-    female: "Female",
-  }
+  // const filterFields = [
+  //   "Premium",
+  //   "Featured",
+  //   "Recently updated",
+  //   "Newly listed",
+  //   "LGBTQ+",
+  //   "Veteran",
+  //   "Male",
+  //   "Female",
+  //   "View All",
+  // ];
+  // const filterFieldStateMap = {
+  //   "premiumPlacement": "Premium",
+  //   "featuredPlacement": "Featured",
+  //   recentlyUpdated: "Recently updated",
+  //   newlyListed: "Newly listed",
+  //   "lgbtq": "LGBTQ+",
+  //   veteran: "Veteran",
+  //   male: "Male",
+  //   female: "Female",
+  // }
 
-  const filterFieldsKeyMap = {
-    Premium: "premiumPlacement",
-    Featured: "featuredPlacement",
-    "Recently updated": "recentlyUpdated",
-    "Newly listed": "newlyListed",
-    "LGBTQ+": "orientation",
-    Veteran: "race",
-    Male: "gender",
-    Female: "gender",
-  };
+  // const filterFieldsKeyMap = {
+  //   Premium: "premiumPlacement",
+  //   Featured: "featuredPlacement",
+  //   "Recently updated": "recentlyUpdated",
+  //   "Newly listed": "newlyListed",
+  //   "LGBTQ+": "orientation",
+  //   Veteran: "race",
+  //   Male: "gender",
+  //   Female: "gender",
+  // };
 
-  const stringFilters = ["LGBTQ+", "Veteran", "Male", "Female"];
-  const boolFilters = [
-    "Premium",
-    "Featured",
-    "Recently updated",
-    "Newly listed",
-  ];
+  // const stringFilters = ["LGBTQ+", "Veteran", "Male", "Female"];
+  // const boolFilters = [
+  //   "Premium",
+  //   "Featured",
+  //   "Recently updated",
+  //   "Newly listed",
+  // ];
 
-  const handleFilterChange = (label, value, remove) => {
-    console.log("label", label, "value", value, "remove", remove);
-    if (remove) {
-      setSearchFilter(searchFilter.filter((field) => field != value));
-    } else {
-      setSearchFilter([...searchFilter, value]);
-    }
-  };
+  // const handleFilterChange = (label, value, remove) => {
+  //   console.log("label", label, "value", value, "remove", remove);
+  //   if (remove) {
+  //     setSearchFilter(searchFilter.filter((field) => field != value));
+  //   } else {
+  //     setSearchFilter([...searchFilter, value]);
+  //   }
+  // };
 
-  const filterCustomers = (customer) => {
-    return searchFilter.some((field) => {
-      if (stringFilters.includes(field)) {
-        return customer["basicInfo"][filterFieldsKeyMap[field]] == field;
-      }
-      if (boolFilters.includes(field)) {
-        return customer["customerStatus"][filterFieldsKeyMap[field]];
-      }
-      return true;
-    });
-  };
+  // const filterCustomers = (customer) => {
+  //   return searchFilter.some((field) => {
+  //     if (stringFilters.includes(field)) {
+  //       return customer["basicInfo"][filterFieldsKeyMap[field]] == field;
+  //     }
+  //     if (boolFilters.includes(field)) {
+  //       return customer["customerStatus"][filterFieldsKeyMap[field]];
+  //     }
+  //     return true;
+  //   });
+  // };
 
-  let filteredCustomers =
-    searchFilter.length == 0
-      ? customers
-      : customers?.filter((customer) => filterCustomers(customer));
+  // let filteredCustomers =
+  //   searchFilter.length == 0
+  //     ? customers
+  //     : customers?.filter((customer) => filterCustomers(customer));
 
-  filteredCustomers = filteredCustomers?.filter(
+  const filteredCustomers = customers?.filter(
     (customer) =>
       includesCaseInsensitive(customer?.basicInfo?.firstName, inputVal) ||
       includesCaseInsensitive(customer?.basicInfo?.lastName, inputVal)
@@ -161,7 +174,7 @@ function SearchProfiles() {
           onChange={(e) => setInputVal(e.target.value)}
         />
         <p className="font-semibold md:text-2xl text-nowrap">
-          Total: {filteredCustomers?.length}
+          Total: {filteredCustomers.length}
         </p>
       </div>
       <LoadingSpinner isLoading={loading} />
@@ -179,20 +192,20 @@ function SearchProfiles() {
         </div>
       )}
       {isLoadingMore ? (
-          <p className="text-center">Loading...</p>
-        ) : loadMoreMsg != "" ? (
-          <div className="text-center ">
-            {loadMoreMsg || "No more matches found."}
-          </div>
-        ) : ( !loading && 
-          <button
-            type="button"
-            className="mx-auto mt-4 border text-white  px-4 md:px-5 py-2 md:py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"
-            onClick={handleFetchMoreCustomers}
-          >
-            View More ...
-          </button>
-        )}
+        <p className="text-center">Loading...</p>
+      ) : loadMoreMsg != "" ? (
+        <div className="text-center ">
+          {loadMoreMsg || "No more matches found."}
+        </div>
+      ) : (!loading &&
+        <button
+          type="button"
+          className="mx-auto mt-4 border text-white  px-4 md:px-5 py-2 md:py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"
+          onClick={handleFetchMoreCustomers}
+        >
+          View More ...
+        </button>
+      )}
     </div>
   );
 }
