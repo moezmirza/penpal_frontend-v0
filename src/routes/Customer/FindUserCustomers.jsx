@@ -29,7 +29,7 @@ function FindUserCustomers({ endpoint }) {
     fetchCustomers();
   }, []);
   return (
-    <div className="flex flex-col gap-y-6  items-center justify-between  p-4 md:p-0 relative w-full">
+    <div className="flex flex-col gap-y-6  items-center justify-between  px-4 md:px-0 relative w-full">
       {/* <h1 className="text-4xl font-bold underline">Favorite Inmates</h1>{" "} */}
       <LoadingSpinner isLoading={loading} />
       {customers.length == 0 && !loading ? (

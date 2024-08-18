@@ -5,7 +5,7 @@ import { websiteURL } from "../../utils/config";
 function Footer() {
   return (
     <>
-      <div className="xl:hidden bg-fr-blue-200 flex justify-between flex-col gap-y-10 p-6  w-full">
+      <div className="xl:hidden bg-b-gradient-2 flex justify-between flex-col gap-y-10 p-6  w-full">
         <ul
           className="flex flex-wrap justify-center gap-6 text-white
         text-base md:text-lg mx-auto"
@@ -68,7 +68,7 @@ function Footer() {
       </div>
 
       {/* pc responsive */}
-      <div className="hidden xl:flex bg-fr-blue-200 flex justify-between  p-4 px-8 w-full">
+      <div className="hidden xl:flex bg-b-gradient-2 flex justify-between  p-4 px-8 w-full">
         <img src="/assets/logo.jpeg" alt="" className="h-16 rounded-md" />
 
         <ul

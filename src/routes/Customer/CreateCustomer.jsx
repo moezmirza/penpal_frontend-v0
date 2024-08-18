@@ -555,7 +555,6 @@ function CreateCustomer() {
           fetchedPersonality
         );
         setLoading(false);
-        setDone(true);
         setPhotos(fetchedPhotos);
         setBasicInfo(basicInfoData);
         setPersonalityInfo(fetchedPersonality);
@@ -648,7 +647,7 @@ function CreateCustomer() {
       {/* <h1 className="text-4xl font-bold text-left underline">
         Customer Profile
         </h1> */}
-      <div className="flex w-full flex-col md:flex-row gap-12 relative">
+      <div className="flex w-full flex-col xl:flex-row gap-12 relative">
         <LoadingSpinner isLoading={loading} bgShade="400" isDone={done} />
         <CustomerDetails
           id={id}
@@ -1073,16 +1072,16 @@ function AddOns({ onClick, duesInfo }) {
     onClick((prev) => ({ ...prev, [stateField]: add ? prev[stateField] + 1 : prev[stateField] - 1 < 0 ? 0 : prev[stateField] - 1 }));
   };
   return (
-    <div className=" bg-white rounded-lg h-fit  px-6 md:px-12 py-6  border text-sm md:text-base">
+    <div className=" bg-white rounded-lg h-fit px-3 md:px-12 py-6  border text-sm md:text-base">
       <h1 className="text-xl md:text-2xl  underline font-bold text-center">Add-ons</h1>
 
       <div className="flex flex-col mt-6 gap-y-6 ">
         {addonsList.map((addon) => (
           <label
             key={addon}
-            className="w-full  flex items-center justify-between cursor-pointer"
+            className="w-full flex items-center justify-between cursor-pointer"
           >
-            <div className="flex gap-x-3 items-center">
+            <div className="flex  gap-x-1 md:gap-x-3 items-center">
               <img src="/assets/icons/minus.svg" alt="" className="h-6  bg-gray-200 rounded-full p-1.5 " onClick={() => handleChange(false, addon)} />
               {duesInfo[addonNameToStateMap[addon]]}
               <img src="/assets/icons/plusDark.svg" alt="" className="h-6  bg-gray-200 rounded-full p-1.5 " onClick={() => handleChange(true, addon)} />

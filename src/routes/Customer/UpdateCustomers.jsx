@@ -4,6 +4,7 @@ import { useGet } from "../../api/useGet";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { includesCaseInsensitive } from "../Admin/ApproveUpdates";
 import CustomerCard from "../../components/CustomerCard";
+import PageHeader from "../../components/PageHeader";
 
 function UpdateCustomers() {
   const [customers, setCustomers] = useState([]);
@@ -76,29 +77,19 @@ function UpdateCustomers() {
   );
 
   return (
-    <div className="flex flex-col gap-y-6  items-center justify-between mt-4 md:mt-12 mb-32  p-4 md:p-0 relative w-full">
-      <h1 className="text-2xl md:text-4xl font-bold underline">
-        Update/Renew Profiles
-      </h1>
-      <div className="flex flex-col md:flex-row gap-6 xl:w-7/12 w-11/12 items-center">
-        <input
-          className="bg-transparent block w-full mt-1 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
-          placeholder={"Search customer..."}
-          value={inputVal}
-          ref={inputRef}
-          onChange={(e) => setInputVal(e.target.value)}
-        />
-        <p className="font-semibold md:text-2xl text-nowrap">
-          Total: {filteredCustomers?.length}
-        </p>
-      </div>
+    <div className="flex flex-col gap-y-6  items-center justify-between  relative w-full">
+      <PageHeader title="Update/Renew Profiles"
+        inputVal={inputVal}
+        onInputVal={setInputVal}
+        inputRef={inputRef}
+        customersLength={filteredCustomers.length} />
       <LoadingSpinner isLoading={loading} />
       {filteredCustomers.length == 0 && !loading ? (
         <p className="text-center text-sm md:text-base">
           No profiles to display
         </p>
-      ) : (
-      <div className="flex flex-col gap-y-6 w-full xl:w-10/12 md:px-8">
+       ) : (
+        <div className="flex flex-col gap-y-6 w-full xl:w-10/12 px-4 md:px-8">
           {filteredCustomers.map((customer, index) => (
             <CustomerCard
               key={index}
@@ -128,7 +119,7 @@ function UpdateCustomers() {
         !loading &&
         <button
           type="button"
-          className="mx-auto mt-4 border text-white px-4 md:px-5 py-2 md:py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"
+          className="mx-auto mt-4 border text-white px-4 md:px-5 py-2 md:py-3 bg-fr-blue-100 rounded-xl hover:opacity-90"
           onClick={handleFetchMoreCustomers}
         >
           View More ...

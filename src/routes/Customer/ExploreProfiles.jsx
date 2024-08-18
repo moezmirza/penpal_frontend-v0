@@ -5,6 +5,7 @@ import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { includesCaseInsensitive } from "../Admin/ApproveUpdates";
 import { MultiSelectField } from "../../components/mainComponents/MultiSelectField";
 import CustomerCard from "../../components/CustomerCard";
+import PageHeader from "../../components/PageHeader";
 
 function SearchProfiles() {
   const [customers, setCustomers] = useState([]);
@@ -32,7 +33,7 @@ function SearchProfiles() {
     "viewAll",
   ];
   const lqbtqFilter = "lgbtq%2B"
-  console.log("filter", JSON.stringify(filter), filter=="lgbtq", filterFields.includes(filter))
+  console.log("filter", JSON.stringify(filter), filter == "lgbtq", filterFields.includes(filter))
   const option = filterFields.includes(filter) ? filter == "lgbtq" ? lqbtqFilter : filter : "viewAll"
 
   useEffect(() => {
@@ -161,27 +162,18 @@ function SearchProfiles() {
   );
 
   return (
-    <div className="flex flex-col gap-y-6 mt-4 md:mt-12 mb-32  items-center justify-between  p-4 md:p-0 relative w-full">
-      <h1 className="text-2xl md:text-4xl font-bold underline">
-        Explore Profiles
-      </h1>
-      <div className="flex flex-col md:flex-row gap-6 xl:w-7/12 w-11/12 items-center">
-        <input
-          className="bg-transparent block w-full mt-1 rounded-md p-2 border border-gray-400 outline-none focus:border-gray-700 "
-          placeholder={"Search customer..."}
-          value={inputVal}
-          ref={inputRef}
-          onChange={(e) => setInputVal(e.target.value)}
-        />
-        <p className="font-semibold md:text-2xl text-nowrap">
-          Total: {filteredCustomers.length}
-        </p>
-      </div>
+    <div className="flex flex-col gap-y-6   items-center justify-between  relative w-full">
+      <PageHeader title="Explore Profiles"
+        inputVal={inputVal}
+        onInputVal={setInputVal}
+        inputRef={inputRef}
+        customersLength={filteredCustomers.length} />
+
       <LoadingSpinner isLoading={loading} />
       {filteredCustomers.length == 0 && !loading ? (
         <p className="text-center mt-6">{"No profiles to display"}</p>
       ) : (
-        <div className="flex flex-col gap-y-6 w-full xl:w-10/12 md:px-8">
+        <div className="flex flex-col gap-y-6 w-full xl:w-10/12 px-4 md:px-8">
           {filteredCustomers.map((customer, index) => (
             <CustomerCard
               customer={customer}
@@ -200,7 +192,7 @@ function SearchProfiles() {
       ) : (!loading &&
         <button
           type="button"
-          className="mx-auto mt-4 border text-white  px-4 md:px-5 py-2 md:py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"
+          className="mx-auto mt-4 border text-white  px-4 md:px-5 py-2 md:py-3 bg-fr-blue-100 rounded-xl hover:opacity-90"
           onClick={handleFetchMoreCustomers}
         >
           View More ...

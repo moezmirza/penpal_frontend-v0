@@ -230,50 +230,55 @@ function FindPal() {
       includesCaseInsensitive(customer?.basicInfo?.lastName, inputVal)
   );
   return (
-    <div className="bg-c-basic flex flex-col gap-y-12 w-full px-3 py-6 md:py-0">
-      <div
-        id="hero-section"
-        className="flex flex-col-reverse lg:flex-row gap-y-6 justify-between bg-fr-blue-200 p-3 md:p-6 mt-2 md:my-20 w-full md:w-11/12 m-auto rounded relative"
-      >
-        {getStartedPopup && (
-          <ConfirmPopup
-            onCloseClick={setGetStartedPopup}
-            onConfirm={() => navigate("/user-profile")}
-            confirmBtnTxt={"Complete profile"}
-            infoText={"Complete your profile to find your matches"}
-          />
-        )}
-        <div className="text-white my-auto ml-0 md:ml-6 flex flex-col gap-y-8">
-          <h2 className="hidden md:block text-2xl md:text-7xl font-bold">
-            CONNECT <br /> BEYOND BARS
-          </h2>
-          <h2 className="text-2xl md:text-7xl md:hidden font-bold">
-            CONNECT BEYOND BARS
-          </h2>
-          <div className="text-lg md:text-xl ">
-            Discover friendship, support, and a new perspective with
-            <p className="font-semibold ">A Way Out PenPals</p>
+    <div className="flex flex-col gap-y-12 w-full md:py-0">
+      <div className="bg-b-gradient-3 p-3 md:pt-32 md:p-12">
+        <div
+          id="hero-section"
+          className="flex flex-col-reverse gap-y-6 lg:flex-row md:justify-between bg-fr-blue-200 p-3 md:p-6 border rounded-lg "
+        >
+          {getStartedPopup && (
+            <ConfirmPopup
+              onCloseClick={setGetStartedPopup}
+              onConfirm={() => navigate("/user-profile")}
+              confirmBtnTxt={"Complete profile"}
+              infoText={"Complete your profile to find your matches"}
+            />
+          )}
+          <div className="text-white my-auto ml-0 md:ml-6 flex flex-col gap-y-8">
+            <h2 className="hidden lg:block text-2xl lg:text-7xl font-bold">
+              CONNECT <br /> BEYOND BARS
+            </h2>
+            <h2 className="text-2xl lg:text-7xl lg:hidden font-bold">
+              CONNECT BEYOND BARS
+            </h2>
+            <div className="text-lg lg:text-xl ">
+              Discover friendship, support, and a new perspective with
+              <p className="font-semibold ">A Way Out PenPals</p>
+            </div>
+            <div className="flex items-center gap-x-4 ">
+              <button
+                className=" flex items-center gap-x-4 text-xl hover:underline lg:text-2xl w-fit  text-[#47C3F6]  rounded-md hover:opacity-90"
+                onClick={handleGetStartedClick}
+              >
+                Get Started
+                <img
+                  src="/assets/icons/circularArrow.svg"
+                  className="h-6"
+                  alt=""
+                />
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-x-4 ">
-            <button
-              className=" flex items-center gap-x-4 text-xl hover:underline md:text-2xl w-fit  text-[#47C3F6]  rounded-md hover:opacity-90"
-              onClick={handleGetStartedClick}
-            >
-              Get Started
-              <img
-                src="/assets/icons/circularArrow.svg"
-                className="h-6"
-                alt=""
-              />
-            </button>
-          </div>
+          <img src="/assets/heroImage.png" alt="" className="h-80 lg:h-auto" />
         </div>
-        <img src="/assets/heroImage.png" alt="" className="h-80 lg:h-auto" />
       </div>
+
+        <hr className="border border-gray-300 w-9/12 mx-auto" />
+
       <div
         ref={searchSectRef}
         id="findpal"
-        className="flex flex-col gap-y-8 bg-white p-3 md:p-6 relative"
+        className="flex flex-col gap-y-8 bg-white px-4 md:p-6 relative"
       >
         <div className="flex flex-col items-start gap-y-3 md:justify-between md:flex-row">
           <p className="text-2xl md:text-4xl font-bold">Find your best pal.</p>
@@ -343,7 +348,7 @@ function FindPal() {
         ) : (!loading &&
           <button
             type="button"
-            className="mx-auto mt-4 border text-white  px-4 md:px-5 py-2 md:py-3 bg-fr-blue-200 rounded-xl hover:opacity-90"
+            className="mx-auto mt-4 border text-white  px-4 md:px-5 py-2 md:py-3 bg-fr-blue-100 rounded-xl hover:opacity-90"
             onClick={handleFetchMoreCustomers}
           >
             View More ...

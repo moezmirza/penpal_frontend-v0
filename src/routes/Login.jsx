@@ -100,7 +100,7 @@ const Login = () => {
             console.log("error while getting user creds");
           }
           updateAuthInfo(authInfo);
-          const redirectPath = redirectLocation.pathname ? redirectLocation.pathname : "/"
+          const redirectPath = redirectLocation?.pathname ? redirectLocation.pathname : "/"
           console.log("redirect Path", redirectPath)
           navigate(redirectPath);
 

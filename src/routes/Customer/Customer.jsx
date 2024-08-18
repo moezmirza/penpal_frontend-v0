@@ -9,6 +9,11 @@ import {
 } from "../../utils/sharedState";
 import ContactInfo from "../../components/ContactInfo";
 
+export const capitlize = (string) => {
+  return string[0].toUpperCase() + string.substring(1);
+
+}
+
 function Customer() {
   const { id } = useParams();
   const [customer, setCustomer] = useState(null);
@@ -131,8 +136,8 @@ function Customer() {
   const updateApproval =
     customer?.updateApproved == false && customer?.createdByCurrent;
   return (
-    <div className="bg-c-basic min-h-screen px-3 md:px-0 py-12">
-      <div className="flex flex-col items-center gap-y-12 w-full md:w-8/12 mx-auto">
+    <div className="bg-c-basic min-h-screen px-3 xl:px-0 py-12">
+      <div className="flex flex-col items-center gap-y-12 w-full xl:w-8/12 mx-auto">
         <div
           id="profile-details"
           className={`bg-white  w-full border rounded-lg flex flex-col gap-y-4 p-6 border-2`}
@@ -207,7 +212,7 @@ function Customer() {
                   // ) : (
                   <button
                     type="button"
-                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-fr-blue font-semibold rounded-lg hover:opacity-90 text-nowrap"
+                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-fr-blue-100  rounded-lg hover:opacity-90 text-nowrap"
                     onClick={handleFavouriteUpdate}
                   >
                     {customer?.isFavorite && (
@@ -236,7 +241,7 @@ function Customer() {
             </div>
 
             <div>
-              <h2 className="font-semibold text-lg md:text-2xl my-4 text-white w-full bg-fr-blue md:p-2.5 p-1.5 rounded ">
+              <h2 className=" text-lg md:text-xl my-4 text-white w-full bg-fr-blue-100 md:p-2.5 p-1.5 rounded ">
                 Basic Info
               </h2>
 
@@ -270,7 +275,7 @@ function Customer() {
             </div>
             <div className="flex flex-col gap-y-10 ">
               <div>
-                <h2 className="font-semibold text-lg md:text-2xl my-4 text-white w-full bg-fr-blue md:p-2.5  p-1.5 rounded ">
+                <h2 className=" text-lg md:text-xl my-4 text-white w-full bg-fr-blue-100 md:p-2.5  p-1.5 rounded ">
                   Personality Info
                 </h2>
 
@@ -280,7 +285,7 @@ function Customer() {
                       key != "_id" && (
                         <div key={key}>
                           <p className="font-semibold  ">
-                            {key.toUpperCase()}
+                            {capitlize(key)}
                           </p>
                           <ul className="flex gap-x-3 md:flex-col">
                             {customer?.personalityInfo[key].map((value) => (
@@ -297,7 +302,7 @@ function Customer() {
               {isUser && (
                 <div className="">
 
-                  <h1 className="font-semibold text-lg md:text-2xl my-4 text-white w-full bg-fr-blue md:p-2.5 p-1.5 rounded ">
+                  <h1 className="text-lg md:text-xl my-4 text-white w-full bg-fr-blue-100 md:p-2.5 p-1.5 rounded ">
 
                     Give your rating
                   </h1>

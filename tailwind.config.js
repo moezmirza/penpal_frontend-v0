@@ -25,10 +25,12 @@ export default {
       backgroundImage: {
         "b-general": "url('/assets/background/general.png')",
         "b-gradient-1": "linear-gradient(to bottom, #0B344D, #0F6B9E)",
+        "b-gradient-2": "linear-gradient(to right, #0B344D, #0F6B9E)",
+        "b-gradient-3": "linear-gradient(to bottom, #47C3F6 50%, white 50%)"
       },
       colors: {
         "fr-blue": "#47C3F6",
-        "fr-blue-100": "rgb(96 165 250)",
+        "fr-blue-100": "#0F6B9E",
         "fr-blue-200": "#0B344D",
         "fr-red": "rgb(239 68 68)",
         "t-option": "#0372B2",
