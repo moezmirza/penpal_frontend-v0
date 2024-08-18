@@ -17,7 +17,7 @@ function CustomerCard({
   return (
     <div
       id="customer-card"
-      className={`bg-gray-100 rounded-md border   ${customer?.isFavorite ? "border-green-500" : "border-gray-300"
+      className={`bg-gray-100 rounded-md border  ${customer?.isFavorite ? "border-green-500" : "border-gray-300"
         }  py-2 px-4 w-full flex flex-col gap-y-6 gap-x-4 md:flex-row md:items-center`}
     >
       <img

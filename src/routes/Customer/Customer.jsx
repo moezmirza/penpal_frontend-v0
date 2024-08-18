@@ -135,7 +135,7 @@ function Customer() {
       <div className="flex flex-col items-center gap-y-12 w-full md:w-8/12 mx-auto">
         <div
           id="profile-details"
-          className={`bg-white  w-full border rounded-lg flex flex-col gap-y-4 p-6`}
+          className={`bg-white  w-full border rounded-lg flex flex-col gap-y-4 p-6 border-2`}
         // className={`bg-white  w-full border ${
         //   (profileApproval || updateApproval) && "border-red-500"
         // }  rounded-lg flex flex-col gap-y-4 p-6`}
@@ -207,7 +207,7 @@ function Customer() {
                   // ) : (
                   <button
                     type="button"
-                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
+                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-fr-blue font-semibold rounded-lg hover:opacity-90 text-nowrap"
                     onClick={handleFavouriteUpdate}
                   >
                     {customer?.isFavorite && (
@@ -236,7 +236,7 @@ function Customer() {
             </div>
 
             <div>
-              <h2 className="font-semibold text-xl md:text-2xl my-4 underline">
+              <h2 className="font-semibold text-lg md:text-2xl my-4 text-white w-full bg-fr-blue md:p-2.5 p-1.5 rounded ">
                 Basic Info
               </h2>
 
@@ -270,7 +270,7 @@ function Customer() {
             </div>
             <div className="flex flex-col gap-y-10 ">
               <div>
-                <h2 className="font-semibold text-xl md:text-2xl my-4 underline ">
+                <h2 className="font-semibold text-lg md:text-2xl my-4 text-white w-full bg-fr-blue md:p-2.5  p-1.5 rounded ">
                   Personality Info
                 </h2>
 
@@ -296,10 +296,12 @@ function Customer() {
               </div>
               {isUser && (
                 <div className="">
-                  <h1 className="text-xl md:text-2xl font-semibold underline mb-4 ">
+
+                  <h1 className="font-semibold text-lg md:text-2xl my-4 text-white w-full bg-fr-blue md:p-2.5 p-1.5 rounded ">
+
                     Give your rating
                   </h1>
-                  <div className="flex items-center gap-x-4">
+                  <div className="flex items-center gap-x-4 ml-2">
                     <RatingScale
                       initialRating={customer?.prevRating}
                       onRatingChange={handleRatingUpdate}
@@ -380,9 +382,8 @@ const Star = ({ filled, onClick, onMouseEnter, onMouseLeave }) => {
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className={`w-6 h-6 cursor-pointer ${
-        filled ? "text-yellow-500" : "text-gray-300"
-      } transition-colors duration-150 ease-in-out`}
+      className={`md:w-8 md:h-8 h-6 w-6 cursor-pointer ${filled ? "text-yellow-500" : "text-gray-300"
+        } transition-colors duration-150 ease-in-out`}
       fill="currentColor"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"

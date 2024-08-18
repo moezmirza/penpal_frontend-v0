@@ -1,4 +1,4 @@
-import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
@@ -19,10 +19,11 @@ import UpdateCustomers from "./routes/Customer/UpdateCustomers";
 import ExploreProfiles from "./routes/Customer/ExploreProfiles";
 import DeleteProfiles from "./routes/Admin/DeleteProfiles";
 function App() {
+  const location= useLocation()
   const UserRoutes = () => {
     const userAuth = JSON.parse(localStorage.getItem("userAuth"));
     console.log("userAuth", userAuth);
-    return userAuth ? <Outlet /> : <Navigate to={"/login"} />;
+    return userAuth ? <Outlet /> : <Navigate to={"/login"} state={location} />;  
   };
   const AdminRoutes = () => {
     const adminAuth = JSON.parse(localStorage.getItem("adminAuth"));
@@ -38,6 +39,7 @@ function App() {
       <Route path="/" element={<FindPal />} />
       <Route path="/inmate/:id" element={<Customer />} />
       <Route path="/explore-profiles" element={<ExploreProfiles />} />
+
       <Route element={<UserRoutes />}>
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/list-inmate" element={<CreateCustomer />} />
@@ -47,8 +49,8 @@ function App() {
         <Route path="/payment" element={<CheckoutForm />} />
         <Route path="/payment/result" element={<Result />} />
         <Route path="*" element={<Navigate to="/" />} />
-        {/* <Route path="/subcriptions" element={<Subscription />} /> */}
       </Route>
+
       <Route element={<AdminRoutes />}>
         <Route path="/approve-profiles" element={<ApproveProfiles />} />
         <Route path="/approve-updates" element={<ApproveUpdates />} />
@@ -57,7 +59,7 @@ function App() {
         <Route path="/delete-profiles" element={<DeleteProfiles />} />
         <Route path="*" element={<Navigate to="/approve-profiles" />} />
       </Route>
-    </Routes>
+   </Routes>
   );
 }
 

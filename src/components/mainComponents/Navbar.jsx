@@ -32,8 +32,8 @@ const adminNavbarLinkMap = {
   "Delete Profiles": "/delete-profiles",
 };
 function Navbar() {
-  const [showDropdown, setShowDropdown] = useState(false);
   const user = useSelector((state) => state.user.currentUser);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [profileDropdown, setProfileDropdown] = useState(false);
   const [exploreProfileDropdown, setExploreProfileDropdown] = useState(false)
   const navbarRef = useRef()
@@ -70,7 +70,6 @@ function Navbar() {
   console.log("type", typeof isAdmin, isAdmin);
 
   const handleClickOutside = (e) => {
-    console.log("outside click")
     if (navbarRef.current && !navbarRef.current.contains(e.target) && (showDropdown || exploreProfileDropdown || profileDropdown)) {
       console.log("inside click", navbarRef)
       setShowDropdown(false)
@@ -78,10 +77,11 @@ function Navbar() {
       setProfileDropdown(false)
     }
   }
+  
   useEffect(() => {
     window.addEventListener("click", handleClickOutside)
     return () => window.removeEventListener("click", handleClickOutside)
-  }, [])
+  }, [showDropdown, exploreProfileDropdown, profileDropdown])
 
   return (
     <div ref={navbarRef} className="bg-fr-blue-200 flex items-center  xl:items-end justify-between w-full py-5 xl:py-5 px-4 sticky top-0 z-50">
@@ -127,7 +127,7 @@ function Navbar() {
 function PCNavbar({ onSignout, onLinkClick, isAdmin, isUser, exploreProfileDropdownLinkMap, profileDropdown, exploreProfileDropdown, profileDropdownLinkMap, onProfileDropdown, onExploreProfileDropdown }) {
   if (isUser) {
     return (
-      <ul className="flex text-white list-style-none text-sm md:text-base">
+      <ul className="flex text-white list-style-none text-sm md:text-lg">
         {Object.keys(userNavbarLinkMap).map((linkName) => (
           <li key={linkName} onClick={onLinkClick}>
             {linkName == "My Account" ? (
@@ -202,7 +202,7 @@ function PCNavbar({ onSignout, onLinkClick, isAdmin, isUser, exploreProfileDropd
   }
   if (isAdmin) {
     return (
-      <ul className="md:text-base flex gap-x-2 text-white list-style-none">
+      <ul className="md:text-lg flex gap-x-2 text-white list-style-none">
         {Object.keys(adminNavbarLinkMap).map((linkName) => (
           <li key={linkName} onClick={onLinkClick}>
             <Link
@@ -223,7 +223,7 @@ function PCNavbar({ onSignout, onLinkClick, isAdmin, isUser, exploreProfileDropd
     );
   }
   return (
-    <div className="text-white flex text-sm  md:text-base">
+    <div className="text-white flex text-sm  md:text-lg">
       {Object.keys(unAuthNavbarLinkMap).map((linkName) =>
         linkName == "Explore Profiles" ?
           <div>
@@ -278,7 +278,7 @@ function MobileNavbar({
   onExploreProfileDropdown
 }) {
   return (
-    <div className="flex gap-x-6 items-center ">
+    <div className="flex gap-x-6 items-center text-sm ">
       <div className="relative ">
         <div>
           <input
@@ -302,7 +302,7 @@ function MobileNavbar({
             className="absolute z-20 right-0.5 top-11 bg-white divide-y divide-gray-100 rounded-lg shadow w-36 md:w-44 dark:bg-gray-700"
           >
             <ul
-              className="py-1 md:py-2 text-sm text-gray-700 dark:text-gray-200"
+              className="py-1 md:py-2 text-gray-700 dark:text-gray-200"
               aria-labelledby="dropdownDefaultButton"
             >
               <NavbarOptions
@@ -432,35 +432,35 @@ function NavbarOptions({ onShowDropdown, onSignout, onLinkClick, isAdmin, isUser
   return (
     <div className="text-white flex gap-x-8 md:mr-12 md:text-base">
       {Object.keys(unAuthNavbarLinkMap).map((linkName) => linkName == "Explore Profiles" ?
-          <div>
-            <div
-              onClick={() => {
-                onProfileDropdown(false)
-                onExploreProfileDropdown(!exploreProfileDropdown)
-              }}
-              className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 cursor-pointer"
-            >
-              {linkName}
-            </div>
-            {exploreProfileDropdown && (
-              <div className="absolute bg-white border border-gray-500 rounded-lg flex flex-col">
-                {Object.keys(exploreProfileDropdownLinkMap).map((linkName) =>
-                  <Link
-                    onClick={() => onExploreProfileDropdown(false)}
-                    to={`/explore-profiles?search=${exploreProfileDropdownLinkMap[linkName]}`}
-                    className="border-b-2 border-gray-300 px-2 py-1 md:px-4 md:py-2 text-black hover:bg-gray-200 "
-                  >
-                    {linkName}
-                  </Link>
-                )}
-              </div>
-            )}
-          </div> : <Link
-            to={unAuthNavbarLinkMap[linkName]}
-            className="cursor-pointer hover:underline"
+        <div>
+          <div
+            onClick={() => {
+              onProfileDropdown(false)
+              onExploreProfileDropdown(!exploreProfileDropdown)
+            }}
+            className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 cursor-pointer"
           >
             {linkName}
-          </Link>
+          </div>
+          {exploreProfileDropdown && (
+            <div className="absolute bg-white border border-gray-500 rounded-lg flex flex-col">
+              {Object.keys(exploreProfileDropdownLinkMap).map((linkName) =>
+                <Link
+                  onClick={() => onExploreProfileDropdown(false)}
+                  to={`/explore-profiles?search=${exploreProfileDropdownLinkMap[linkName]}`}
+                  className="border-b-2 border-gray-300 px-2 py-1 md:px-4 md:py-2 text-black hover:bg-gray-200 "
+                >
+                  {linkName}
+                </Link>
+              )}
+            </div>
+          )}
+        </div> : <Link
+          to={unAuthNavbarLinkMap[linkName]}
+          className="cursor-pointer hover:underline"
+        >
+          {linkName}
+        </Link>
       )}
     </div>
 
