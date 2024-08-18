@@ -162,7 +162,7 @@ function SearchProfiles() {
   );
 
   return (
-    <div className="flex flex-col gap-y-6   items-center justify-between  relative w-full">
+    <div className="flex flex-col gap-y-6  mb-32 items-center justify-between  relative w-full">
       <PageHeader title="Explore Profiles"
         inputVal={inputVal}
         onInputVal={setInputVal}
@@ -173,7 +173,7 @@ function SearchProfiles() {
       {filteredCustomers.length == 0 && !loading ? (
         <p className="text-center mt-6">{"No profiles to display"}</p>
       ) : (
-        <div className="flex flex-col gap-y-6 w-full xl:w-10/12 px-4 md:px-8">
+        <div className="flex flex-col gap-y-6 w-full xl:w-10/12 px-4 md:px-8 ">
           {filteredCustomers.map((customer, index) => (
             <CustomerCard
               customer={customer}

@@ -33,7 +33,6 @@ function CreateCustomer() {
   const [showUpdateConfirmPop, setShowUpdateConfirmPop] = useState(false);
   const [showCreateConfirmPop, setShowCreateConfirmPop] = useState(false);
   const [createdCustomerId, setCreatedCustomerId] = useState(null);
-  const currentUser = useSelector((state) => state.user.currentUser);
 
   const post = usePost();
   const get = useGet();
@@ -345,6 +344,8 @@ function CreateCustomer() {
           totalPaidPhotos:
             (pendingDues.totalPaidPhotos || 0) +
             (duesInfo.totalPaidPhotos || 0),
+          premiumPlacement:0,
+          featuredPlacement:0
         };
 
         console.log("pendingDues", newPendingDues);
@@ -679,6 +680,7 @@ function CreateCustomer() {
         <div className="basis-[40%] flex flex-col gap-y-6">
           <DuesSection
             duesInfo={duesInfo}
+            onDuesInfo={setDuesInfo}
             isDone={done}
             id={id}
             payementBoxRef={payementBoxRef}
@@ -803,17 +805,16 @@ function CustomerDetails({
       }
     }
   }
-  return (
+
+   return (
     <div className="basis-[60%] bg-white rounded-lg relative">
       {showUpdateConfirmPop && (
         <ConfrimPopup
           updatedFields={updatedFields}
-          continueBtnTxt={"Continue editing"}
+           continueBtnTxt={"Continue editing"}
           confirmBtnTxt={`Confirm ${id ? "updation" : "creation"}`}
           onConfirm={handleUpdate}
           onCloseClick={setShowUpdateConfirmPop}
-          width="3/5"
-          fromLeft={"30"}
         />
       )}
       {showCreateConfirmPop && (
@@ -1073,7 +1074,7 @@ function AddOns({ onClick, duesInfo }) {
   };
   return (
     <div className=" bg-white rounded-lg h-fit px-3 md:px-12 py-6  border text-sm md:text-base">
-      <h1 className="text-xl md:text-2xl  underline font-bold text-center">Add-ons</h1>
+      <h1 className="text-xl md:text-3xl  underline font-bold text-center">Add-ons</h1>
 
       <div className="flex flex-col mt-6 gap-y-6 ">
         {addonsList.map((addon) => (
@@ -1097,6 +1098,7 @@ function AddOns({ onClick, duesInfo }) {
 
 function DuesSection({
   duesInfo,
+  onDuesInfo,
   isDone,
   id,
   payementBoxRef,
@@ -1128,20 +1130,31 @@ function DuesSection({
   total = roundTo(total, 2);
   console.log("total here", total, total != 0);
   console.log("addons", addons);
+
+  const handleDelDueItem = (name, type) => {
+    let updatedDuesInfo = { ...duesInfo }
+    if (type) {
+      updatedDuesInfo[type][name] = false
+    } else {
+      updatedDuesInfo[name] = 0
+    }
+    onDuesInfo(updatedDuesInfo)
+  }
+
   return (
     <div
       ref={payementBoxRef}
       className=" bg-white rounded-lg h-fit px-6 md:px-12 py-6 flex flex-col gap-y-6 border text-sm md:text-base"
     >
-      <h1 className=" text-xl md:text-2xl underline font-bold text-center">Pending Dues</h1>
-      <PaymentReceipt obj={duesInfo} />
+      <h1 className=" text-xl md:text-3xl underline font-bold text-center">Pending Dues</h1>
+      <PaymentReceipt obj={duesInfo} onDelDueItem={handleDelDueItem} />
       <div className="flex flex-col gap-y-2 text-white">
         <button
-          className={`py-2 w-full bg-green-600 rounded-lg ${(!isDone && !addons) || total == 0
+          className={`py-2 w-full bg-green-600 rounded-lg ${ total == 0
             ? "opacity-50 cursor-not-allowed"
             : "curose-pointer"
             }`}
-          disabled={(!isDone && !addons) || total == 0}
+          disabled={total == 0}
           onClick={onPaynow}
         >
           Pay now

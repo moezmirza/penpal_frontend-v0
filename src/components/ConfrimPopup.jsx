@@ -81,12 +81,13 @@ function ConfrimPopup({
                 d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
               />
             </svg>
-            {Object.keys(updatedFields.current).length != 0 ? (
-              <PaymentReceipt obj={updatedFields.current} />
-
-            ) : (
-              <p className="text-gray-600 my-8">{infoText}</p>
-            )}
+            <div className="">
+              {Object.keys(updatedFields.current).length != 0 ? (
+                <PaymentReceipt obj={updatedFields.current}/>
+              ) : (
+                <p className="text-gray-600 my-8">{infoText}</p>
+              )}
+            </div>
             <div className="flex flex-col gap-y-2 ">
               {continueBtnTxt != "" && (
                 <button

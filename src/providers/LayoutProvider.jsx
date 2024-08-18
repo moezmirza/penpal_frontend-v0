@@ -18,7 +18,7 @@ function LayoutProvider({ children }) {
   return (
     <div className="flex flex-col justify-between h-screen">
         <Navbar />
-      <div className="flex-grow mt-16 md:mt-20 mb-32">{children}</div>
+      <div className="flex-grow mt-16 md:mt-20 ">{children}</div>
       <CallSupport />
 
       {isUser && !isAdmin && (

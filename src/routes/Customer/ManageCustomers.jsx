@@ -9,7 +9,7 @@ function ManageCustomers() {
   const endpoint = showTab ? "/created-customers" : "/favorite";
 
   return (
-    <div className="flex flex-col gap-y-6  relative ">
+    <div className="flex flex-col gap-y-6 mb-32  relative ">
       <PageHeader title="Manage Profiles" showTab={showTab} onShowTab={setShowTab} managePage={true} />
       <FindUserCustomers endpoint={endpoint} key={endpoint} />
 

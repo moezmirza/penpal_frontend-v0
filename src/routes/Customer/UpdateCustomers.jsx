@@ -77,7 +77,7 @@ function UpdateCustomers() {
   );
 
   return (
-    <div className="flex flex-col gap-y-6  items-center justify-between  relative w-full">
+    <div className="flex flex-col gap-y-6  mb-32 items-center justify-between  relative w-full">
       <PageHeader title="Update/Renew Profiles"
         inputVal={inputVal}
         onInputVal={setInputVal}

@@ -230,8 +230,8 @@ function FindPal() {
       includesCaseInsensitive(customer?.basicInfo?.lastName, inputVal)
   );
   return (
-    <div className="flex flex-col gap-y-12 w-full md:py-0">
-      <div className="bg-b-gradient-3 p-3 md:pt-32 md:p-12">
+    <div className="flex flex-col gap-y-12 w-full md:py-0 mb-16">
+      <div className="bg-b-gradient-3 p-3 md:pt-32 md:p-16">
         <div
           id="hero-section"
           className="flex flex-col-reverse gap-y-6 lg:flex-row md:justify-between bg-fr-blue-200 p-3 md:p-6 border rounded-lg "
