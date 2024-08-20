@@ -22,10 +22,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { usePut } from "../../api/usePut";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { v4 } from "uuid";
-import { formattedImageName } from "../User/Profile/BasicInfo";
+import BasicInfo, { formattedImageName } from "../User/Profile/BasicInfo";
 import ConfrimPopup from "../../components/ConfrimPopup";
 import { isEmpty, roundTo } from "../../utils/sharedMethods";
 import PaymentReceipt from "../../components/PaymentReciept";
+import { dummyBasicInfo, dummyPersonalityInfo } from "../../utils/mockState";
 
 function CreateCustomer() {
   const [error, setError] = useState("");
@@ -39,41 +40,6 @@ function CreateCustomer() {
   const put = usePut();
   const { id } = useParams();
 
-  const dummyBasicInfo = {
-    firstName: "John",
-    lastName: "Doe",
-    inmateNumber: "123456",
-    age: "30",
-    gender: "Male",
-    orientation: "Straight",
-    state: ["California"],
-    city: "Los Angeles",
-    mailingAddress: "1234 Main St",
-    zipcode: "90001",
-    dateOfBirth: "1993-01-01",
-    height: "6'0\"",
-    weight: "180 lbs",
-    hairColor: ["Brown"],
-    eyeColor: ["Blue"],
-    race: ["Other"],
-    spokenLanguages: "English",
-    institutionalEmailProvider: ["example.com"],
-    religiousPref: ["Christian"],
-    highSchool: "Lincoln High",
-    highSchoolState: "California",
-    highSchoolCity: "Los Angeles",
-    education: ["Bachelors degree"],
-    collegeName: "University of California",
-    collegeState: "California",
-    collegeCity: "Los Angeles",
-    homeTownCity: "San Francisco",
-    homeTownState: "California",
-    bodyType: [],
-    astrologicalSign: [],
-    relationShipStatus: ["Single"],
-    veteranStatus: ["Army veteran"],
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  };
 
   const basicInfoIntialState = {
     firstName: "",
@@ -109,16 +75,6 @@ function CreateCustomer() {
     relationShipStatus: [],
     veteranStatus: [],
     bio: "",
-  };
-
-  const dummyPInfo = {
-    hobbies: ["Reading"],
-    sports: ["Basketball"],
-    likes: ["Traveling"],
-    personality: ["Outgoing"],
-    bookGenres: ["Fiction"],
-    musicGenres: ["Rock"],
-    movieGenres: ["Action"],
   };
 
   const personalityInfoInitialState = {
@@ -192,14 +148,15 @@ function CreateCustomer() {
 
   const [photos, setPhotos] = useState(photosIntialState);
   const [currPhotos, setCurrPhotos] = useState(photosIntialState);
-  const [basicInfo, setBasicInfo] = useState(basicInfoIntialState);
+  const [basicInfo, setBasicInfo] = useState(dummyBasicInfo);
   const [personalityInfo, setPersonalityInfo] = useState(
-    personalityInfoInitialState
-  );
+    dummyPersonalityInfo);
+
+  const [initialProfileData, setInitialProfileData] = useState({ basicInfo: {}, personalityInfo: {}, photos: {} })
 
   const [duesInfo, setDuesInfo] = useState(dueInitiallState);
-  const [wordLimit, setWordLimit] = useState(false);
-  const [wordNum, setWordNum] = useState(0);
+  const [wordLimit, setWordLimit] = useState(0);
+  const [initialBio, setInitialBio] = useState("")
   const [intialWordCount, setIntialWordCount] = useState(0);
   const [done, setDone] = useState(false);
   const payementBoxRef = useRef();
@@ -211,12 +168,8 @@ function CreateCustomer() {
     basicInfo: {},
     personalityInfo: {},
   };
-  const updatedFields = useRef(updatedFieldsInitialState); // to keep track of updatedFields
-  // const validateEmail = (email) => {
-  //   // Basic regex for email validation
-  //   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  //   return regex.test(email);
-  // };
+  // const updatedFields = useRef(updatedFieldsInitialState); // to keep track of updatedFields
+  const [updatedFields, setUpdatedFields] = useState(dueInitiallState) // to keep track of updatedFields
 
   const uploadImage = async (imageFile, imageName, folder) => {
     try {
@@ -238,7 +191,7 @@ function CreateCustomer() {
     const downloadUrls = await Promise.all(uploadPromises);
     return downloadUrls;
   };
-  const handleImageUpdate = async () => {
+  const handleImageRemoteUpdate = async () => {
     //   // to handle image removal
     // if (currPhotos.imageUrl == "" && photos.imageUrl != "") {
     //   let prevName = photos.imageUrl.split("imageNameS")[1];
@@ -287,24 +240,33 @@ function CreateCustomer() {
 
   const handleUpdate = async (e) => {
     // checking for required fields
-    setLoading(true);
+
     setShowUpdateConfirmPop(false);
     setShowCreateConfirmPop(false);
+    if (id) {
+      //only for update
+      if (checkForChange(updatedFields)) {
+        setError("No changes made");
+        return;
+      }
+    }
+
+    setLoading(true);
+    updateBtnRef.current.disabled = true;
 
     const { imageDownloadURL, artworksDownloadURL, total } =
-      await handleImageUpdate();
-    updateBtnRef.current.disabled = true;
+      await handleImageRemoteUpdate();
 
     if (id) {
       let updatedBasicInfo = Object.keys(
-        updatedFields?.current?.basicInfo
+        updatedFields.basicInfo
       ).reduce((acc, item) => {
         acc[item] = basicInfo[item];
         return acc;
       }, {});
 
       let updatedPersonalityInfo = Object.keys(
-        updatedFields?.current?.personalityInfo
+        updatedFields.personalityInfo
       ).reduce((acc, item) => {
         acc[item] = personalityInfo[item];
         return acc;
@@ -318,10 +280,10 @@ function CreateCustomer() {
         },
         basicInfo: updatedBasicInfo,
         personalityInfo: updatedPersonalityInfo,
-        wordLimit: (wordLimit || 0) + (duesInfo.wordLimit || 0),
-        totalPaidPhotos:
-          (updatedFields.current.totalPaidPhotos || 0) +
-          (duesInfo.totalPaidPhotos || 0),
+        wordLimit: updatedFields?.wordLimit ? (wordLimit || 0) + (duesInfo.wordLimit || 0) : 0,
+        totalPaidPhotos: updatedFields?.totalPaidPhotos ?
+          (updatedFields.totalPaidPhotos || 0) +
+          (duesInfo.totalPaidPhotos || 0) : 0,
       };
       console.log("finalObjetct to be putted", finalObj);
 
@@ -334,18 +296,17 @@ function CreateCustomer() {
         setLoading(false);
         setDone(true);
 
-        const pendingDues = updatedFields.current;
 
         // Ensure default values for addition
         const newPendingDues = {
-          ...pendingDues,
+          ...updatedFields,
           creation: duesInfo.creation,
-          wordLimit: (pendingDues.wordLimit || 0) + (duesInfo.wordLimit || 0),
+          wordLimit: (updatedFields.wordLimit || 0) + (duesInfo.wordLimit || 0),
           totalPaidPhotos:
-            (pendingDues.totalPaidPhotos || 0) +
+            (updatedFields.totalPaidPhotos || 0) +
             (duesInfo.totalPaidPhotos || 0),
-          premiumPlacement:0,
-          featuredPlacement:0
+          premiumPlacement: 0,
+          featuredPlacement: 0
         };
 
         console.log("pendingDues", newPendingDues);
@@ -416,6 +377,7 @@ function CreateCustomer() {
           behavior: "smooth",
         });
       }
+
     }
   };
 
@@ -425,7 +387,14 @@ function CreateCustomer() {
     console.log("field key", fieldKey);
     let updatedArr = basicInfo[fieldKey];
     console.log("updated arr", updatedArr);
-    updatedFields.current.basicInfo[fieldKey] = true;
+    setUpdatedFields((updatedFields) => ({
+      ...updatedFields,
+      basicInfo: {
+        ...updatedFields.basicInfo,
+        [fieldKey]: true
+      }
+    }))
+    // updatedFields.current.basicInfo[fieldKey] = true;
 
     if (remove) {
       updatedArr = updatedArr.filter((item) => item != value);
@@ -451,41 +420,65 @@ function CreateCustomer() {
       const text = e.target.value;
       let wordCount = text.split(" ").length;
       console.log("intialWordCount", intialWordCount);
+      let totalCount = 0
       if (wordCount <= intialWordCount) {
-        setWordLimit(0);
+        setWordLimit(totalCount);
+        setUpdatedFields((updatedFields) => ({
+          ...updatedFields,
+          "wordLimit": totalCount
+        }))
+        return
       }
       if (wordCount > 350) {
         console.log("wordCount", wordCount);
-
         if (wordCount > intialWordCount && intialWordCount >= 350) {
           let netWordCount = wordCount - intialWordCount;
           console.log("netWordCount", netWordCount);
-
           if (netWordCount > 100) {
-            const totalCount = Math.floor(netWordCount / 100);
+            totalCount = Math.floor(netWordCount / 100);
             console.log("totalCount", totalCount);
             setWordLimit(totalCount);
             // setWordNum(totalCount);
           }
         } else if (intialWordCount < 350) {
           let netWordCount = wordCount - 350;
-          let totalCount = Math.floor(netWordCount / 100);
+          totalCount = Math.floor(netWordCount / 100);
           setWordLimit(totalCount);
-          // setWordNum(totalCount);
         }
       } else {
-        setWordLimit(0);
+        totalCount = 0
+        setWordLimit(totalCount);
+      }
+      if (id) {
+        setUpdatedFields((updatedFields) => ({
+          ...updatedFields,
+          "wordLimit": totalCount
+        }))
       }
     }
-    updatedFields.current.basicInfo[e.target.name] = true;
+    setUpdatedFields((updatedFields) => ({
+      ...updatedFields,
+      basicInfo: {
+        ...updatedFields.basicInfo,
+        [e.target.name]: true
+      }
+    }))
+    // updatedFields.current.basicInfo[e.target.name] = true;
     setBasicInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handlePersonalityInfoChange = (label, value, remove) => {
     const stateKey = fieldStateNameMap[label];
     let updatedArr = personalityInfo[stateKey];
+    setUpdatedFields((updatedFields) => ({
+      ...updatedFields,
+      personalityInfo: {
+        ...updatedFields.personalityInfo,
+        [stateKey]: true
+      }
+    }))
 
-    updatedFields.current.personalityInfo[stateKey] = true;
+    // updatedFields.current.personalityInfo[stateKey] = true;
     if (remove) {
       updatedArr = updatedArr.filter((item) => item != value);
     } else {
@@ -507,17 +500,16 @@ function CreateCustomer() {
     else if (typeof dueInitiallState[field] == "number") return 0;
     else return {};
   };
+
   useEffect(() => {
     const fetchCustomer = async () => {
       setLoading(true);
 
       let { success, data, error } = await get(`/customer?id=${id}`);
       if (success) {
-        console.log("fetched Customer", data);
         data = data[0];
         for (const key in data?.basicInfo) {
           if (key != "spokenLanguages" && basicInfoOptionsField.includes(key)) {
-            console.log("conerting to array");
             data[key] = data[key] != "" ? [data[key]] : []; // converting to array
           }
         }
@@ -559,6 +551,7 @@ function CreateCustomer() {
         setPhotos(fetchedPhotos);
         setBasicInfo(basicInfoData);
         setPersonalityInfo(fetchedPersonality);
+        setInitialProfileData({ basicInfo: basicInfoData, personalityInfo: fetchedPersonality, photos: fetchedPhotos })
         setDuesInfo(duesInfoData);
         const bioWordsLenght =
           basicInfoData?.bio == "" ? 0 : (basicInfoData?.bio.split(" ")).length;
@@ -573,20 +566,21 @@ function CreateCustomer() {
       console.log("inside here");
       fetchCustomer();
     } else {
-      resetState();
+      // resetState();
     }
   }, [id]);
 
   const resetState = () => {
     setPhotos(photosIntialState);
     setBasicInfo(basicInfoIntialState);
+    setCurrPhotos(photosIntialState)
     setPersonalityInfo(personalityInfoInitialState);
-    setDuesInfo(dueInitiallState);
     setDone(false);
-    updatedFields.current = updatedFieldsInitialState;
+    setUpdatedFields(updatedFieldsInitialState)
+    // updatedFields.current = updatedFieldsInitialState;
   };
   const checkObjEmpty = (obj) => {
-    return Object.keys(obj).length === 0;
+    return Object.values(obj).every((value) => value == false)
   };
   const checkForChange = (obj) => {
     return (
@@ -602,7 +596,7 @@ function CreateCustomer() {
     if (id) {
       //only for update
 
-      if (checkForChange(updatedFields.current)) {
+      if (checkForChange(updatedFields)) {
         setError("No changes made");
         return;
       }
@@ -626,6 +620,14 @@ function CreateCustomer() {
     if (id) {
       setShowUpdateConfirmPop(true);
     } else {
+      let updatedDuesInfo = { ...duesInfo, "creation": true, wordLimit: wordLimit, totalPaidPhotos: 0 }
+      if (currPhotos.total > 3) {
+        updatedDuesInfo = {
+          ...updatedDuesInfo,
+          totalPaidPhotos: currPhotos.total - 3
+        }
+      }
+      setDuesInfo(updatedDuesInfo)
       setShowCreateConfirmPop(true);
     }
   };
@@ -640,8 +642,6 @@ function CreateCustomer() {
     }
   };
 
-  const changeOccured = Object.keys(updatedFields.current).length != 0;
-  console.log("changed Occured", changeOccured);
 
   return (
     <div className="bg-c-basic flex flex-col items-center gap-y-6 py-8 px-3  md:p-12 relative">
@@ -660,31 +660,35 @@ function CreateCustomer() {
           error={error}
           done={done}
           handleSubmitBtn={handleSubmitBtn}
-          changeOccured={changeOccured}
           wordLimit={wordLimit}
           loading={loading}
           showUpdateConfirmPop={showUpdateConfirmPop}
           handleUpdate={handleUpdate}
           setShowUpdateConfirmPop={setShowUpdateConfirmPop}
           duesInfo={duesInfo}
+          onDuesInfo={setDuesInfo}
           showCreateConfirmPop={showCreateConfirmPop}
           setShowCreateConfirmPop={setShowCreateConfirmPop}
           updatedFields={updatedFields}
           photos={photos}
           setPhotos={setPhotos}
-          setCurrPhotos={setCurrPhotos}
+          onCurrPhotos={setCurrPhotos}
           currPhotos={currPhotos}
           errorRef={errorRef}
           updateBtnRef={updateBtnRef}
+          onUpdatedFields={setUpdatedFields}
+          onWordLimit={setWordLimit}
+          onBasicInfo={setBasicInfo}
+          onPersonalityInfo={setPersonalityInfo}
+          photosIntialState={photosIntialState}
+          initialProfileData={initialProfileData}
         />
         <div className="basis-[40%] flex flex-col gap-y-6">
           <DuesSection
             duesInfo={duesInfo}
             onDuesInfo={setDuesInfo}
-            isDone={done}
             id={id}
             payementBoxRef={payementBoxRef}
-            changeOccured={changeOccured}
             onPaynow={handlePaynow}
           />
           <AddOns onClick={setDuesInfo} duesInfo={duesInfo} />
@@ -704,10 +708,8 @@ function CustomerDetails({
   handleBasicInfoOptionsFieldChange,
   showUpdateConfirmPop,
   error,
-  done,
   loading,
   handleSubmitBtn,
-  changeOccured,
   wordLimit,
   setShowUpdateConfirmPop,
   handleUpdate,
@@ -715,117 +717,173 @@ function CustomerDetails({
   showCreateConfirmPop,
   setShowCreateConfirmPop,
   photos,
-  setPhotos,
-  setCurrPhotos,
+  onCurrPhotos,
   currPhotos,
   errorRef,
+  onDuesInfo,
   updateBtnRef,
+  onUpdatedFields,
+  onWordLimit,
+  onBasicInfo,
+  onPersonalityInfo,
+  photosIntialState,
+  initialProfileData
 }) {
-  const [imageDropdown, setImageDropdown] = useState(false);
   const imageRef = useRef();
   const artworkRef = useRef();
 
   const bioWordsLenght =
     basicInfo.bio == "" ? 0 : basicInfo.bio.split(" ").length;
 
-  const openImage = () => "helo";
+  const updatePhotosState = (updatdCurrPhotos) => {
+    onCurrPhotos(updatdCurrPhotos);
+    if (id) {
+      // updatedFields.current.wordLimit = wordLimit;
+      if (photos.total > 3) {
+        onUpdatedFields((updatedFields) => ({
+          ...updatedFields,
+          "totalPaidPhotos": updatdCurrPhotos.total
+        }))
+        //  updatedFields.current.totalPaidPhotos = currPhotos.total;
+      } else {
+        const totalPhotoCount = photos.total + updatdCurrPhotos.total;
+        if (totalPhotoCount > 3) {
+          onUpdatedFields((updatedFields) => ({
+            ...updatedFields,
+            "totalPaidPhotos": totalPhotoCount - 3
+          }))
+          //  updatedFields.current.totalPaidPhotos = totalPhotoCount - 3;
+        }
+      }
+    }
+  }
 
-  const handleImageChange = async () => {
+  const handleImageUpdate = async () => {
     const files = imageRef.current.files;
     console.log("original", files[0]);
     if (files.length > 0) {
       const src = URL.createObjectURL(files[0]);
       const avartarPreviw = document.getElementById("avatar-preview");
       avartarPreviw.src = src;
-      setCurrPhotos((prev) => ({
-        ...prev,
-        imageUrl: files[0],
-        total: prev.artworks.length + 1,
-      }));
+      const updatdCurrPhotos = { ...currPhotos, imageUrl: files[0], total: currPhotos.artworks.length + 1 }
+      updatePhotosState(updatdCurrPhotos)
     }
   };
 
-  const handleRemoveImage = () => {
-    const files = imageRef.current.files;
-    if (currPhotos.imageUrl != "") {
-      const src = URL.createObjectURL(files[0]);
-      const avartarPreviw = document.getElementById("avatar-preview");
-      avartarPreviw.src = "/assets/default.jpg";
-      setCurrPhotos((prev) => ({
-        ...prev,
-        imageUrl: "",
-        total: prev.total - 1,
-      }));
+  const handleArtworkAddition = (e) => {
+    const updatedCurrPhotos = {
+      ...currPhotos,
+      artworks: [...currPhotos.artworks, e.target.files[0]],
+      total: currPhotos.total + 1,
     }
+    updatePhotosState(updatedCurrPhotos)
   };
 
-  const handleArtworkChange = (e) => {
-    setCurrPhotos((prev) => ({
-      ...prev,
-      artworks: [...prev.artworks, e.target.files[0]],
-      total: prev.total + 1,
-    }));
-  };
   const handleRemoveArtwork = (delIndex) => {
     const filteredArtworks = currPhotos.artworks.filter(
-      (item, index) => index != delIndex
+      (_, index) => index != delIndex
     );
-    setCurrPhotos((prev) => ({
-      ...prev,
-      artworks: filteredArtworks,
-      total: prev.total - 1,
-    }));
-  };
-  const totalRemainingFreePhotos = photos.total + currPhotos.total;
-  console.log(
-    "totalphoto",
-    totalRemainingFreePhotos,
-    "ptotla",
-    photos.total,
-    "currPhotos",
-    currPhotos.total
-  );
-
-  const recieptForCreation = {
-    creation: true,
+    const updatdCurrPhotos = { ...currPhotos, artworks: filteredArtworks, total: currPhotos.total - 1 }
+    updatePhotosState(updatdCurrPhotos)
   };
 
-  if (currPhotos.total > 3) {
-    recieptForCreation.totalPaidPhotos = currPhotos.total - 3;
-  }
-  recieptForCreation.wordLimit = wordLimit;
-  if (id) {
-    updatedFields.current.wordLimit = wordLimit;
-    if (photos.total > 3) {
-      updatedFields.current.totalPaidPhotos = currPhotos.total;
-    } else {
-      const totalPhotoCount = photos.total + currPhotos.total;
-      if (totalPhotoCount > 3) {
-        updatedFields.current.totalPaidPhotos = totalPhotoCount - 3;
+  // const handleRemoveImage = () => {
+  //   const files = imageRef.current.files;
+  //   if (currPhotos.imageUrl != "") {
+  //     const src = URL.createObjectURL(files[0]);
+  //     const avartarPreviw = document.getElementById("avatar-preview");
+  //     avartarPreviw.src = "/assets/default.jpg";
+  //     setCurrPhotos((prev) => ({
+  //       ...prev,
+  //       imageUrl: "",
+  //       total: prev.total - 1,
+  //     }));
+  //   }
+  // };
+
+  const handleDelUpdateRecieptItem = (name, type) => {
+    let updatedPaymentInfo = { ...updatedFields }
+    console.log("intiaildata", initialProfileData)
+    if (type) {
+      if (type == "basicInfo") {
+        console.log("initialProfileData -- basicInfo", initialProfileData?.basicInfo)
+        onBasicInfo({
+          ...basicInfo,
+          [name]: initialProfileData.basicInfo?.[name]
+        })
+        if (name == "bio") {
+          onWordLimit(0)
+          updatedPaymentInfo = {
+            ...updatedPaymentInfo,
+            "wordLimit": 0
+          }
+        }
       }
+      if (type == "personalityInfo") {
+        onPersonalityInfo({
+          ...personalityInfo,
+          [name]: initialProfileData.personalityInfo?.[name]
+        })
+      }
+      updatedPaymentInfo[type] = {
+        ...updatedPaymentInfo[type],
+        [name]: false
+      }
+    } else {
+      if (name == "totalPaidPhotos") {
+        onCurrPhotos(photosIntialState)
+        const avartarPreviw = document.getElementById("avatar-preview");
+        avartarPreviw.src = photos.imageUrl ? photos.imageUrl : "/assets/default.jpg";
+      } else if (name == "wordLimit") {
+        onBasicInfo({
+          ...basicInfo,
+          "bio": initialProfileData.basicInfo["bio"]
+        })
+        onWordLimit(0)
+        updatedPaymentInfo["basicInfo"] = {
+          ...updatedPaymentInfo["basicInfo"],
+          "bio": false
+        }
+      }
+      updatedPaymentInfo = { ...updatedPaymentInfo, [name]: 0 }
     }
+    onUpdatedFields(updatedPaymentInfo)
   }
 
-   return (
+  const handleDelCreateReceiptItem = (name, type) => {
+    let updatedDuesInfo = { ...duesInfo }
+    if (type) {
+      updatedDuesInfo[type] = {
+        ...updatedDuesInfo[type],
+        [name]: false
+      }
+    } else {
+      updatedDuesInfo = { ...updatedDuesInfo, [name]: 0 }
+    }
+    onDuesInfo(updatedDuesInfo)
+  }
+
+
+  return (
     <div className="basis-[60%] bg-white rounded-lg relative">
       {showUpdateConfirmPop && (
         <ConfrimPopup
           updatedFields={updatedFields}
-           continueBtnTxt={"Continue editing"}
+          continueBtnTxt={"Continue editing"}
           confirmBtnTxt={`Confirm ${id ? "updation" : "creation"}`}
           onConfirm={handleUpdate}
           onCloseClick={setShowUpdateConfirmPop}
+          onDelReceiptItem={handleDelUpdateRecieptItem}
         />
       )}
       {showCreateConfirmPop && (
         <ConfrimPopup
-          updatedFields={{ current: recieptForCreation }}
+          updatedFields={duesInfo}
           continueBtnTxt={"Continue editing"}
           confirmBtnTxt={`Confirm ${id ? "updation" : "creation"}`}
           onConfirm={handleUpdate}
           onCloseClick={setShowCreateConfirmPop}
-          width="3/5"
-          fromLeft={"30"}
+        // onDelReceiptItem={handleDelCreateReceiptItem}
         />
       )}
       <div className="bg-gray-300 w-full rounded-lg p-2 md:p-6 flex flex-col items-center gap-y-6">
@@ -841,7 +899,7 @@ function CustomerDetails({
             type="file"
             accept="image/*"
             hidden
-            onChange={handleImageChange}
+            onChange={handleImageUpdate}
           />
           <div className="absolute md:bottom-2 md:right-2 bottom-4 right-1  z-20">
             <button
@@ -969,7 +1027,7 @@ function CustomerDetails({
               hidden
               accept="image/*"
               type="file"
-              onChange={handleArtworkChange}
+              onChange={handleArtworkAddition}
             />
           </div>
           {photos.total + currPhotos.total < 3 && (
@@ -982,14 +1040,14 @@ function CustomerDetails({
           <div className="flex flex-col gap-4">
             {photos?.artworks.map((item, index) => (
               <div className="bg-gray-200 py-1 px-2 flex justify-between rounded w-1/2 ">
-                <a href={openImage(item)} className="hover:underline">
+                <a href="#" className="hover:underline">
                   Artwork-{index + 1}
                 </a>
               </div>
             ))}
             {currPhotos?.artworks.map((item, index) => (
               <div className="bg-gray-200 py-1 px-2 flex justify-between rounded w-1/2 ">
-                <a href={openImage(item)} className="hover:underline">
+                <a href="#" className="hover:underline">
                   New Artwork-{index + 1}
                 </a>
                 <span
@@ -1099,15 +1157,12 @@ function AddOns({ onClick, duesInfo }) {
 function DuesSection({
   duesInfo,
   onDuesInfo,
-  isDone,
   id,
   payementBoxRef,
-  changeOccured,
   onPaynow,
 }) {
   console.log("duesInfo", duesInfo);
 
-  console.log("isDone", isDone, "changeOccured", changeOccured);
   const addonsList = ["featuredPlacement", "premiumPlacement", "renewal"];
   const addons = Object.keys(duesInfo).some(
     (field) => addonsList.includes(field) && duesInfo[field]
@@ -1131,26 +1186,16 @@ function DuesSection({
   console.log("total here", total, total != 0);
   console.log("addons", addons);
 
-  const handleDelDueItem = (name, type) => {
-    let updatedDuesInfo = { ...duesInfo }
-    if (type) {
-      updatedDuesInfo[type][name] = false
-    } else {
-      updatedDuesInfo[name] = 0
-    }
-    onDuesInfo(updatedDuesInfo)
-  }
-
   return (
     <div
       ref={payementBoxRef}
       className=" bg-white rounded-lg h-fit px-6 md:px-12 py-6 flex flex-col gap-y-6 border text-sm md:text-base"
     >
       <h1 className=" text-xl md:text-3xl underline font-bold text-center">Pending Dues</h1>
-      <PaymentReceipt obj={duesInfo} onDelDueItem={handleDelDueItem} />
+      <PaymentReceipt obj={duesInfo} />
       <div className="flex flex-col gap-y-2 text-white">
         <button
-          className={`py-2 w-full bg-green-600 rounded-lg ${ total == 0
+          className={`py-2 w-full bg-green-600 rounded-lg ${total == 0
             ? "opacity-50 cursor-not-allowed"
             : "curose-pointer"
             }`}

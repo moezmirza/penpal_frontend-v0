@@ -1,6 +1,6 @@
 import { roundTo } from "../utils/sharedMethods";
 import { addonStatetoCost, addonStateToNameMap, basicInfoFieldLabelMap, stateFieldNameMap } from "../utils/sharedState";
-function PaymentReceipt({ obj, onDelDueItem }) {
+function PaymentReceipt({ obj, onDelReceiptItem }) {
     console.log("object receipt", obj)
     let total = 0;
     Object.keys(obj).forEach((field) => {
@@ -35,29 +35,29 @@ function PaymentReceipt({ obj, onDelDueItem }) {
                     Object.keys(obj["personalityInfo"]).map(
                         (field) =>
                             obj["personalityInfo"][field] && (
-                                <RecieptItem field={field} cost={9.95} nameMap={stateFieldNameMap} onDelDueItem={onDelDueItem} type={"personalityInfo"} />
+                                <RecieptItem field={field} cost={9.95} nameMap={stateFieldNameMap} onDelReceiptItem={onDelReceiptItem} type={"personalityInfo"} />
                             )
                     )
                 ) : field == "basicInfo" ? (
                     Object.keys(obj["basicInfo"]).map(
                         (field) =>
                             obj["basicInfo"][field] && (
-                                <RecieptItem field={field} cost={9.95} nameMap={basicInfoFieldLabelMap} onDelDueItem={onDelDueItem} type={"basicInfo"} />
+                                <RecieptItem field={field} cost={9.95} nameMap={basicInfoFieldLabelMap} onDelReceiptItem={onDelReceiptItem} type={"basicInfo"} />
                             )
                     )
                 ) : field == "totalPaidPhotos" && obj["totalPaidPhotos"] != 0 ? (
-                    <RecieptItem field={field} cost={roundTo(9.95 * obj[field], 2)} onDelDueItem={onDelDueItem} nameMap={unGroupFieldsMap} />
+                    <RecieptItem field={field} cost={roundTo(9.95 * obj[field], 2)} onDelReceiptItem={onDelReceiptItem} nameMap={unGroupFieldsMap} />
                 ) : field == "wordLimit" && obj["wordLimit"] != 0 ? (
-                    <RecieptItem field={field} cost={roundTo(9.95 * obj[field], 2)} onDelDueItem={onDelDueItem} nameMap={unGroupFieldsMap} />
+                    <RecieptItem field={field} cost={roundTo(9.95 * obj[field], 2)} onDelReceiptItem={onDelReceiptItem} nameMap={unGroupFieldsMap} />
                 ) :
                     field == "premiumPlacement" && obj["premiumPlacement"] != 0 ? (
-                        <RecieptItem field={field} cost={roundTo(24.95 * obj[field], 2)} onDelDueItem={onDelDueItem} nameMap={addonStateToNameMap} />
+                        <RecieptItem field={field} cost={roundTo(24.95 * obj[field], 2)} onDelReceiptItem={onDelReceiptItem} nameMap={addonStateToNameMap} />
                     ) :
                         field == "featuredPlacement" && obj["featuredPlacement"] != 0 ? (
-                            <RecieptItem field={field} cost={roundTo(14.95 * obj[field], 2)} onDelDueItem={onDelDueItem} nameMap={addonStateToNameMap} />
+                            <RecieptItem field={field} cost={roundTo(14.95 * obj[field], 2)} onDelReceiptItem={onDelReceiptItem} nameMap={addonStateToNameMap} />
                         ) : (
                             obj[field] == true && (
-                                <RecieptItem field={field} cost={addonStatetoCost[field]} onDelDueItem={onDelDueItem} nameMap={addonStateToNameMap} />
+                                <RecieptItem field={field} cost={addonStatetoCost[field]} onDelReceiptItem={onDelReceiptItem} nameMap={addonStateToNameMap} />
                             )
                         );
             })}
@@ -73,12 +73,12 @@ function PaymentReceipt({ obj, onDelDueItem }) {
 };
 
 
-function RecieptItem({ field, nameMap, cost, onDelDueItem, type }) {
+function RecieptItem({ field, nameMap, cost, onDelReceiptItem, type }) {
     return <div className="flex justify-between">
         <p>{nameMap[field]}</p>
         <p className="flex gap-x-8">${cost}
-            {onDelDueItem &&
-                <img src="/assets/icons/xMarkGray.svg" onClick={() => onDelDueItem(field, type)} alt="" className=" h-6 cursor-pointer  rounded hover:bg-gray-200 px-1 p-0.5" />
+            {onDelReceiptItem &&
+                <img src="/assets/icons/xMarkGray.svg" onClick={() => onDelReceiptItem(field, type)} alt="" className=" h-6 cursor-pointer  rounded hover:bg-gray-200 px-1 p-0.5" />
             }
         </p>
     </div>

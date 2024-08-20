@@ -1,12 +1,5 @@
 import React, { useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  addonStatetoCost,
-  addonStateToNameMap,
-  basicInfoFieldLabelMap,
-  stateFieldNameMap,
-} from "../utils/sharedState";
-import { roundTo } from "../utils/sharedMethods";
+import { Link, useNavigate } from "react-router-dom"
 import PaymentReceipt from "./PaymentReciept";
 
 function ConfrimPopup({
@@ -20,6 +13,7 @@ function ConfrimPopup({
   updatedFields = { current: {} },
   confirmBtnColor,
   fromLeft,
+  onDelReceiptItem
 }) {
   const handleCloseClick = () => {
     onCloseClick(false);
@@ -29,9 +23,9 @@ function ConfrimPopup({
   console.log(
     "updated fields",
     updatedFields,
-    updatedFields.current.totalPaidPhotos,
-    updatedFields.current.totalPaidPhotos != 0,
-    Object.keys(updatedFields.current).length
+    updatedFields.totalPaidPhotos,
+    updatedFields.totalPaidPhotos != 0,
+    Object.keys(updatedFields).length
   );
 
   return (
@@ -82,8 +76,8 @@ function ConfrimPopup({
               />
             </svg>
             <div className="">
-              {Object.keys(updatedFields.current).length != 0 ? (
-                <PaymentReceipt obj={updatedFields.current}/>
+              {Object.keys(updatedFields).length != 0 ? (
+                <PaymentReceipt obj={updatedFields} onDelReceiptItem={onDelReceiptItem} />
               ) : (
                 <p className="text-gray-600 my-8">{infoText}</p>
               )}
