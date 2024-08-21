@@ -114,6 +114,7 @@ function Customer() {
     "veteranStatus",
   ];
   const isUser = JSON.parse(localStorage.getItem("userAuth"));
+  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
 
   const handleApprovalUpdate = async (e, status, cid) => {
     e.target.innerText = "Approved";
@@ -201,31 +202,34 @@ function Customer() {
                 </p>
               </div>
               <div className="flex flex-col items-center gap-y-3">
-                <button
-                  type="button"
-                  className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border text-white bg-yellow-600 rounded-lg hover:opacity-90 text-nowrap"
-                  onClick={() => navigate(`/update-inmate/${id}`)}
-                >
-                  Update Profile
-                </button>
+                {!isAdmin && <>
+                  <button
+                    type="button"
+                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border text-white bg-yellow-600 rounded-lg hover:opacity-90 text-nowrap"
+                    onClick={() => navigate(`/update-inmate/${id}`)}
+                  >
+                    Update Profile
+                  </button>
 
-                <button
-                  type="button"
-                  className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-green-600  rounded-lg hover:opacity-90 text-nowrap"
-                  onClick={() =>
-                    navigate(`/payment`, {
-                      state: {
-                        cid: id,
-                        paymentDetails: {
-                          renewal: true,
-                          totalAmount: 79.95,
+                  <button
+                    type="button"
+                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-green-600  rounded-lg hover:opacity-90 text-nowrap"
+                    onClick={() =>
+                      navigate(`/payment`, {
+                        state: {
+                          cid: id,
+                          paymentDetails: {
+                            renewal: true,
+                            totalAmount: 79.95,
+                          },
                         },
-                      },
-                    })
-                  }
-                >
-                  Renew Profile
-                </button>
+                      })
+                    }
+                  >
+                    Renew Profile
+                  </button>
+                </>
+                }
                 {isUser && <>
                   <button
                     type="button"

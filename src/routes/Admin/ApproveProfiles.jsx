@@ -21,7 +21,7 @@ function ApproveProfiles() {
     const fetchCustomers = async () => {
       setLoading(true);
       const { success, data, error } = await get(
-        `/admin/customer?approved=${false}`
+        `/admin/customer?approved=${false}&paymentPending=${false}`
       );
       if (success) {
         setLoading(false);
