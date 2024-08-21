@@ -151,25 +151,23 @@ function CreateCustomer() {
   const [basicInfo, setBasicInfo] = useState(dummyBasicInfo);
   const [personalityInfo, setPersonalityInfo] = useState(
     dummyPersonalityInfo);
-
   const [initialProfileData, setInitialProfileData] = useState({ basicInfo: {}, personalityInfo: {}, photos: {} })
-
   const [duesInfo, setDuesInfo] = useState(dueInitiallState);
   const [wordLimit, setWordLimit] = useState(0);
-  const [initialBio, setInitialBio] = useState("")
   const [intialWordCount, setIntialWordCount] = useState(0);
   const [done, setDone] = useState(false);
   const payementBoxRef = useRef();
   const errorRef = useRef();
   const updateBtnRef = useRef();
   const navigate = useNavigate();
+  const isAdminLoggedIn = JSON.parse(localStorage.getItem("adminAuth"));
 
   const updatedFieldsInitialState = {
     basicInfo: {},
     personalityInfo: {},
   };
   // const updatedFields = useRef(updatedFieldsInitialState); // to keep track of updatedFields
-  const [updatedFields, setUpdatedFields] = useState(dueInitiallState) // to keep track of updatedFields
+  const [updatedFields, setUpdatedFields] = useState(updatedFieldsInitialState) // to keep track of updatedFields
 
   const uploadImage = async (imageFile, imageName, folder) => {
     try {
@@ -287,16 +285,15 @@ function CreateCustomer() {
       };
       console.log("finalObjetct to be putted", finalObj);
 
+      const updateEndpoint = isAdminLoggedIn ? "/admin/customer" : "/customer"
       const { success, data, error } = await put(
-        `/customer?id=${id}`,
+        `${updateEndpoint}?id=${id}`,
         finalObj
       );
 
       if (success) {
         setLoading(false);
         setDone(true);
-
-
         // Ensure default values for addition
         const newPendingDues = {
           ...updatedFields,
@@ -648,7 +645,7 @@ function CreateCustomer() {
       {/* <h1 className="text-4xl font-bold text-left underline">
         Customer Profile
         </h1> */}
-      <div className="flex w-full flex-col xl:flex-row gap-12 relative">
+      <div className="flex w-full flex-col xl:flex-row justify-center gap-12 relative">
         <LoadingSpinner isLoading={loading} bgShade="400" isDone={done} />
         <CustomerDetails
           id={id}
@@ -682,17 +679,21 @@ function CreateCustomer() {
           onPersonalityInfo={setPersonalityInfo}
           photosIntialState={photosIntialState}
           initialProfileData={initialProfileData}
+          isAdminLoggedIn={isAdminLoggedIn}
         />
-        <div className="basis-[40%] flex flex-col gap-y-6">
-          <DuesSection
-            duesInfo={duesInfo}
-            onDuesInfo={setDuesInfo}
-            id={id}
-            payementBoxRef={payementBoxRef}
-            onPaynow={handlePaynow}
-          />
-          <AddOns onClick={setDuesInfo} duesInfo={duesInfo} />
-        </div>
+        {!isAdminLoggedIn &&
+          <div className="basis-[40%] flex flex-col gap-y-6">
+            <DuesSection
+              duesInfo={duesInfo}
+              onDuesInfo={setDuesInfo}
+              id={id}
+              payementBoxRef={payementBoxRef}
+              onPaynow={handlePaynow}
+            />
+            <AddOns onClick={setDuesInfo} duesInfo={duesInfo} />
+
+          </div>
+        }
       </div>
     </div>
   );
@@ -727,7 +728,8 @@ function CustomerDetails({
   onBasicInfo,
   onPersonalityInfo,
   photosIntialState,
-  initialProfileData
+  initialProfileData,
+  isAdminLoggedIn
 }) {
   const imageRef = useRef();
   const artworkRef = useRef();
@@ -874,6 +876,8 @@ function CustomerDetails({
           onConfirm={handleUpdate}
           onCloseClick={setShowUpdateConfirmPop}
           onDelReceiptItem={handleDelUpdateRecieptItem}
+          isAdminLoggedIn={isAdminLoggedIn}
+          infoText={isAdminLoggedIn ? "It will update prisoner's profile, changes made will be irreversible" : ""}
         />
       )}
       {showCreateConfirmPop && (
@@ -936,7 +940,7 @@ function CustomerDetails({
       </div>
 
       <div className="flex flex-col gap-y-6 text-sm  p-2 md:p-6 md:text-base">
-        {id && (
+        {id && !isAdminLoggedIn && (
           <p className="text-red-500 text-center md:text-sm text-xs italic">
             *Each field update will cost $9.95
           </p>
@@ -967,12 +971,12 @@ function CustomerDetails({
                   onChange={handleBasicInfoTextFieldChange}
                   placeholder={basicInfoPlaceholderMap[field]}
                   rows={5}
-                  className={`bg-transparent block w-full my-1.5 rounded-md p-1.5 border  ${wordLimit != 0
+                  className={`bg-transparent block w-full my-1.5 rounded-md p-1.5 border  ${wordLimit != 0 && !isAdminLoggedIn
                     ? "focus:border-red-500 border-red-500"
                     : " focus:border-gray-700 border-gray-400"
                     } outline-none`}
                 ></textarea>
-                {wordLimit != 0 && (
+                {wordLimit != 0 && !isAdminLoggedIn && (
                   <p className="text-red-500 text-xs md:text-sm">
                     free limit of 350 words exceeded, you'll have to pay $9.95
                     for each extra 100 words.
@@ -1030,7 +1034,7 @@ function CustomerDetails({
               onChange={handleArtworkAddition}
             />
           </div>
-          {photos.total + currPhotos.total < 3 && (
+          {photos.total + currPhotos.total < 3 && !isAdminLoggedIn && (
             <p className="text-red-500 italic md:text-sm text-xs">
               {3 - (photos.total + currPhotos.total)} remaining free
               photo/artworks
@@ -1067,7 +1071,7 @@ function CustomerDetails({
         id="card"
         className="bg-white flex flex-col py-6 gap-y-6 md:gap-y-8 pb-10 items-center p-3 md:p-6 lg mb-6 relative"
       >
-        {id && (
+        {id && !isAdminLoggedIn && (
           <p className="text-red-500 text-center md:text-sm text-xs italic">
             *Each field update will cost $9.95
           </p>

@@ -60,7 +60,7 @@ function ApproveUpdates() {
       if (success) {
         console.log("Approval update successful:", data);
       } else {
-        console.error("Error approving customer:", error);
+        console.error("Error approving update", error);
       }
       clientId.current = null;
     });
@@ -74,9 +74,9 @@ function ApproveUpdates() {
     put(`/admin/reject-update?id=${clientId?.current}`).then((response) => {
       const { success, data, error } = response;
       if (success) {
-        console.log("Approval update successful:", data);
+        console.log(" Reject update successful:", data);
       } else {
-        console.error("Error approving customer:", error);
+        console.error("Error rejecting update", error);
       }
       clientId.current = null;
     });

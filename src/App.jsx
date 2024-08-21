@@ -18,12 +18,13 @@ import Result from "./routes/Payment/Result";
 import UpdateCustomers from "./routes/Customer/UpdateCustomers";
 import ExploreProfiles from "./routes/Customer/ExploreProfiles";
 import DeleteProfiles from "./routes/Admin/DeleteProfiles";
+import UpdateProfiles from "./routes/Admin/UpdateProfiles";
 function App() {
-  const location= useLocation()
+  const location = useLocation()
   const UserRoutes = () => {
     const userAuth = JSON.parse(localStorage.getItem("userAuth"));
     console.log("userAuth", userAuth);
-    return userAuth ? <Outlet /> : <Navigate to={"/login"} state={location} />;  
+    return userAuth ? <Outlet /> : <Navigate to={"/login"} state={location} />;
   };
   const AdminRoutes = () => {
     const adminAuth = JSON.parse(localStorage.getItem("adminAuth"));
@@ -57,9 +58,11 @@ function App() {
         <Route path="/admin/inmate-updates/:id" element={<AdminCustomer />} />
         <Route path="/admin/inmate/:id" element={<Customer />} />
         <Route path="/delete-profiles" element={<DeleteProfiles />} />
+        <Route path="/update-profiles" element={<UpdateProfiles />} />
+        <Route path="/admin/update-inmate/:id" element={<UpdateCustomer />} />
         <Route path="*" element={<Navigate to="/approve-profiles" />} />
       </Route>
-   </Routes>
+    </Routes>
   );
 }
 

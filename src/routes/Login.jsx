@@ -117,7 +117,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isAdminLoggedIn) {
-      navigate("/user-profiles");
+      navigate("/approve-profiles");
     } else if (isUserLoggedIn) {
       navigate("/");
     } else if (redirectLocation?.pathname) {

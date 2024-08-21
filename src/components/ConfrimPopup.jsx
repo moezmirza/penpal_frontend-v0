@@ -10,10 +10,11 @@ function ConfrimPopup({
   continueBtnTxt = "",
   confirmBtnTxt,
   width = "1/2",
-  updatedFields = { current: {} },
+  updatedFields = {},
   confirmBtnColor,
   fromLeft,
-  onDelReceiptItem
+  onDelReceiptItem,
+  isAdminLoggedIn,
 }) {
   const handleCloseClick = () => {
     onCloseClick(false);
@@ -27,6 +28,7 @@ function ConfrimPopup({
     updatedFields.totalPaidPhotos != 0,
     Object.keys(updatedFields).length
   );
+  
 
   return (
     <div
@@ -76,7 +78,7 @@ function ConfrimPopup({
               />
             </svg>
             <div className="">
-              {Object.keys(updatedFields).length != 0 ? (
+              {Object.keys(updatedFields).length != 0 && !isAdminLoggedIn ? (
                 <PaymentReceipt obj={updatedFields} onDelReceiptItem={onDelReceiptItem} />
               ) : (
                 <p className="text-gray-600 my-8">{infoText}</p>

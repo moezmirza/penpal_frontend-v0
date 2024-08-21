@@ -29,6 +29,7 @@ const adminNavbarLinkMap = {
   Home: "https://awayoutpenpals.com/",
   "Approve Profiles": "/approve-profiles",
   "Approve Updates": "/approve-updates",
+  "Update Profiles": "/update-profiles",
   "Delete Profiles": "/delete-profiles",
 };
 function Navbar() {
@@ -77,7 +78,7 @@ function Navbar() {
       setProfileDropdown(false)
     }
   }
-  
+
   useEffect(() => {
     window.addEventListener("click", handleClickOutside)
     return () => window.removeEventListener("click", handleClickOutside)
