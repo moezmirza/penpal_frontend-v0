@@ -13,7 +13,6 @@ function SearchProfiles() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [loadMoreMsg, setLoadMoreMsg] = useState("");
   const [inputVal, setInputVal] = useState("");
-  const [searchFilter, setSearchFilter] = useState([]);
   const inputRef = useRef();
   const itemsPerPage = 40;
   const get = useGet();
@@ -45,7 +44,6 @@ function SearchProfiles() {
       if (success) {
         setLoading(false);
         setCustomers(data);
-        setSearchFilter([sFilter])
         console.log("data", data);
       } else {
         setLoading(false);

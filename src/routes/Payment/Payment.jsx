@@ -26,7 +26,7 @@ const CheckoutForm = () => {
   const post = usePost();
   const { state } = useLocation();
   const cid = state?.cid;
-  console.log("state", state)
+  console.log("payment state", state)
   const paymentDetails = state?.paymentDetails;
   useEffect(() => {
     const fetchClientSecret = async () => {

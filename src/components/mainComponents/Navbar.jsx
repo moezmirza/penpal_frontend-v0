@@ -238,7 +238,7 @@ function PCNavbar({ onSignout, onLinkClick, isAdmin, isUser, exploreProfileDropd
               {linkName}
             </div>
             {exploreProfileDropdown && (
-              <div className="absolute bg-white border border-gray-500 rounded-lg flex flex-col">
+              <div className="absolute bg-white border border-gray-500 rounded-lg flex flex-col font-normal">
                 {Object.keys(exploreProfileDropdownLinkMap).map((linkName) =>
                   <Link
                     onClick={() => onExploreProfileDropdown(false)}

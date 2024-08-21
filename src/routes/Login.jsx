@@ -101,8 +101,13 @@ const Login = () => {
           }
           updateAuthInfo(authInfo);
           const redirectPath = redirectLocation?.pathname ? redirectLocation.pathname : "/"
-          console.log("redirect Path", redirectPath)
-          navigate(redirectPath);
+
+          console.log("redirecrLocation", redirectLocation, "redirect Path", redirectPath)
+          if (redirectPath == "/payment") {
+            navigate(redirectPath, { state: redirectLocation.state })
+          } else {
+            navigate(redirectPath);
+          }
 
         }
         setLoading(false);

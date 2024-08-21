@@ -21,9 +21,9 @@ import DeleteProfiles from "./routes/Admin/DeleteProfiles";
 import UpdateProfiles from "./routes/Admin/UpdateProfiles";
 function App() {
   const location = useLocation()
+  console.log("location in appjs", location)
   const UserRoutes = () => {
     const userAuth = JSON.parse(localStorage.getItem("userAuth"));
-    console.log("userAuth", userAuth);
     return userAuth ? <Outlet /> : <Navigate to={"/login"} state={location} />;
   };
   const AdminRoutes = () => {

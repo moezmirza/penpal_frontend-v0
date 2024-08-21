@@ -194,22 +194,39 @@ function Customer() {
                 </div>
                 <p>
                   {customer?.basicInfo?.bio || (
-                    <p className="italic mt-6 text-gray-500 text-center md:text-left">
+                    <span className="italic mt-6 text-gray-500 text-center md:text-left">
                       No bio added
-                    </p>
+                    </span>
                   )}
                 </p>
               </div>
-              <div className="flex flex-col items-center ">
-                {isUser && (
-                  //   <button
-                  //     type="button"
-                  //     className="flex items-center justify-center  mx-auto border text-white text w-full py-2.5 px-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
-                  //     onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
-                  //   >
-                  //     Approve
-                  //   </button>
-                  // ) : (
+              <div className="flex flex-col items-center gap-y-3">
+                <button
+                  type="button"
+                  className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border text-white bg-yellow-600 rounded-lg hover:opacity-90 text-nowrap"
+                  onClick={() => navigate(`/update-inmate/${id}`)}
+                >
+                  Update Profile
+                </button>
+
+                <button
+                  type="button"
+                  className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-green-600  rounded-lg hover:opacity-90 text-nowrap"
+                  onClick={() =>
+                    navigate(`/payment`, {
+                      state: {
+                        cid: id,
+                        paymentDetails: {
+                          renewal: true,
+                          totalAmount: 79.95,
+                        },
+                      },
+                    })
+                  }
+                >
+                  Renew Profile
+                </button>
+                {isUser && <>
                   <button
                     type="button"
                     className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-fr-blue-100  rounded-lg hover:opacity-90 text-nowrap"
@@ -224,7 +241,9 @@ function Customer() {
                     )}
                     {customer?.isFavorite ? "Favorite" : "Add to Favorites"}
                   </button>
-                )}
+                </>
+
+                }
                 {/* <button
                   type="button"
                   className="mt-4 border text-black text-nowrap w-full py-2.5 px-3  border-fr-blue-200 rounded-xl hover:opacity-90"
@@ -350,7 +369,7 @@ function Customer() {
           Send Message
         </button>
       </div> */}
-    </div>
+    </div >
   );
 }
 
