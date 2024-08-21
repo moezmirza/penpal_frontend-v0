@@ -7,7 +7,7 @@ import ConfrimPopup from "../../components/ConfrimPopup";
 import { includesCaseInsensitive } from "./ApproveUpdates";
 import CustomerCard from "../../components/CustomerCard";
 
-function DeleteProfiles() {
+function UpdateProfiles() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inputVal, setInputVal] = useState("");
@@ -104,12 +104,12 @@ function DeleteProfiles() {
           onCloseClick={setShowPopup}
           onConfirm={delProfile}
           confirmBtnTxt={"Delete profile"}
-          infoText={"It will delete prisoner's profile, changes will be irreversible"}
+          infoText={"It will permanently delete prison profile"}
           confirmBtnColor="red"
         />
       )}
       <h1 className="md:text-3xl text-2xl font-bold underline">
-        Delete Profiles
+        Update Profiles
       </h1>
       <div className="flex flex-col md:flex-row gap-6 md:w-9/12 w-11/12 items-center">
         <input
@@ -124,17 +124,14 @@ function DeleteProfiles() {
         </p>
       </div>
       {customers?.length == 0 && !loading ? (
-        <p className="text-center">There are no more profiles to delete </p>
+        <p className="text-center">There are no more profiles to update </p>
       ) : (
         <div className="flex flex-col gap-y-6 w-full xl:w-10/12 px-4 md:px-8  ">
           {filteredCustomers?.map((customer, index) => (
             <CustomerCard
               key={index}
               customer={customer}
-              onProfileDeletion={handleDeleteProfile}
-              onViewDetails={() =>
-                navigate(`/admin/inmate/${customer?._id}`)
-              }
+              onUpdate={() => navigate(`/admin/update-inmate/${customer?._id}`)}
             />
           ))}
         </div>
@@ -159,4 +156,4 @@ function DeleteProfiles() {
 
 
 
-export default DeleteProfiles;
+export default UpdateProfiles;

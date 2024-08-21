@@ -17,8 +17,8 @@ function LayoutProvider({ children }) {
   if (excludeHeaderFooter) return <div>{children}</div>;
   return (
     <div className="flex flex-col justify-between h-screen">
-      <Navbar />
-      <div className="flex-grow">{children}</div>
+        <Navbar />
+      <div className="flex-grow mt-16 md:mt-20 ">{children}</div>
       <CallSupport />
 
       {isUser && !isAdmin && (

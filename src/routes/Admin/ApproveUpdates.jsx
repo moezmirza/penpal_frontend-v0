@@ -60,7 +60,7 @@ function ApproveUpdates() {
       if (success) {
         console.log("Approval update successful:", data);
       } else {
-        console.error("Error approving customer:", error);
+        console.error("Error approving update", error);
       }
       clientId.current = null;
     });
@@ -74,9 +74,9 @@ function ApproveUpdates() {
     put(`/admin/reject-update?id=${clientId?.current}`).then((response) => {
       const { success, data, error } = response;
       if (success) {
-        console.log("Approval update successful:", data);
+        console.log(" Reject update successful:", data);
       } else {
-        console.error("Error approving customer:", error);
+        console.error("Error rejecting update", error);
       }
       clientId.current = null;
     });
@@ -92,7 +92,7 @@ function ApproveUpdates() {
       includesCaseInsensitive(customer?.basicInfo?.lastName, inputVal)
   );
   return (
-    <div className="flex flex-col items-center gap-y-12 p-4 md:p-6 relative mt-6 md:w-10/12 w-full mx-auto">
+    <div className="flex flex-col items-center gap-y-12 relative mt-6 w-full mx-auto">
       <LoadingSpinner isLoading={loading} />
       {showApprovePopup && (
         <ConfrimPopup
@@ -129,7 +129,8 @@ function ApproveUpdates() {
       {customers?.length == 0 && !loading ? (
         <p className="text-center">There are no more updates to approve</p>
       ) : (
-        <div className="flex flex-col gap-y-6 w-full">
+        <div className="flex flex-col gap-y-6 w-full xl:w-10/12 px-4 md:px-8  ">
+
           {filteredCustomers?.map((customer) => (
             <CustomerCard
               customer={customer}

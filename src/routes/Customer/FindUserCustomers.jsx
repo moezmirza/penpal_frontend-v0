@@ -29,13 +29,13 @@ function FindUserCustomers({ endpoint }) {
     fetchCustomers();
   }, []);
   return (
-    <div className="flex flex-col gap-y-6  items-center justify-between  p-4 md:p-0 relative w-full">
+    <div className="flex flex-col gap-y-6  items-center justify-between  px-4 md:px-0 relative w-full">
       {/* <h1 className="text-4xl font-bold underline">Favorite Inmates</h1>{" "} */}
       <LoadingSpinner isLoading={loading} />
       {customers.length == 0 && !loading ? (
         <p className="text-center">{"No profiles to display"}</p>
       ) : (
-        <div className="flex flex-col gap-y-6 w-full md:w-9/12">
+        <div className="flex flex-col gap-y-6 w-full xl:w-10/12 md:px-8 ">
           {customers.map((customer, index) => (
             <CustomerCard
               customer={customer}

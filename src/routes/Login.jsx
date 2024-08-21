@@ -2,12 +2,13 @@ import { useContext, useEffect, useRef, useState } from "react";
 import {
   getIdTokenResult,
   sendEmailVerification,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
 import { auth, provider } from "../services/firebase";
 import Separater from "../components/Separater";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../state/slices/userSlice";
 import mapAuthCodeToMessage from "../utils/authCodeMap";
@@ -15,6 +16,7 @@ import { LoadingSpinner } from "../components/LoadingSpinner";
 import { useGet } from "../api/useGet";
 import { AuthContext } from "../providers/AuthProvider";
 import Timeout from "../components/Timeout";
+import ConfrimPopup from "../components/ConfrimPopup";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -26,6 +28,7 @@ const Login = () => {
   const [resendEmailStatus, setResendEmailStatus] = useState(false);
   const [loading, setLoading] = useState(false);
   const [firebaseUser, setFirebaseUser] = useState(null);
+  const [infoPopup, setInfoPopup] = useState(false)
   const get = useGet();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -34,6 +37,9 @@ const Login = () => {
   const isUserLoggedIn = JSON.parse(localStorage.getItem("userAuth"));
   const isAdminLoggedIn = JSON.parse(localStorage.getItem("adminAuth"));
   console.log("userAuth", isUserLoggedIn, "adminAuth", isAdminLoggedIn);
+  const { state: redirectLocation } = useLocation()
+  console.log("login location", redirectLocation)
+
 
   const { updateAuthInfo } = useContext(AuthContext);
 
@@ -90,12 +96,19 @@ const Login = () => {
           console.log(success, "UserData", data);
           if (success) {
             dispatch(setCurrentUser(data));
-            navigate("/");
           } else {
             console.log("error while getting user creds");
           }
           updateAuthInfo(authInfo);
-          navigate("/");
+          const redirectPath = redirectLocation?.pathname ? redirectLocation.pathname : "/"
+
+          console.log("redirecrLocation", redirectLocation, "redirect Path", redirectPath)
+          if (redirectPath == "/payment") {
+            navigate(redirectPath, { state: redirectLocation.state })
+          } else {
+            navigate(redirectPath);
+          }
+
         }
         setLoading(false);
       }
@@ -109,9 +122,11 @@ const Login = () => {
 
   useEffect(() => {
     if (isAdminLoggedIn) {
-      navigate("/user-profiles");
+      navigate("/approve-profiles");
     } else if (isUserLoggedIn) {
       navigate("/");
+    } else if (redirectLocation?.pathname) {
+      setInfoPopup(true)
     }
   }, []);
 
@@ -128,7 +143,6 @@ const Login = () => {
   //   };
   //   dispatch(setCurrentUser(currentUser));
   //   updateAuthInfo(authInfo);
-
   //   navigate("/");
   // };
   const changePassInputType = () => {
@@ -151,10 +165,19 @@ const Login = () => {
       }, 60000);
     }
   };
+  const handlePasswordReset = () => {
+    if (formData.email) {
+      sendPasswordResetEmail(auth, formData.email)
+      setError("Password reset email sent!")
+    } else {
+      setError("Fill out the email!")
+    }
+  }
   return (
     <div className="flex  justify-center bg-b-general  md:items-center py-16 px-3 h-full">
       <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 md:w-[35%] w-full h-fit  rounded-lg relative text-sm md:text-base">
         <LoadingSpinner isLoading={loading} />
+        {infoPopup && <ConfrimPopup onConfirm={() => setInfoPopup(false)} onCloseClick={setInfoPopup} confirmBtnTxt="Continue" infoText={"You must login to utilize this feature"} />}
         <h2 className="text-2xl md:text-4xl font-bold text-gray-900 flex gap-x-3">
           Welcome Back
           <span className="text-2xl md:text-3xl">👋</span>{" "}
@@ -215,6 +238,12 @@ const Login = () => {
               required
               placeholder="Enter your password"
             />
+            <button className="w-full text-end text-xs md:text-sm text-fr-blue-100 mt-1.5 hover:underline cursor-pointer"
+              onClick={handlePasswordReset}
+              type="button"
+            >
+              Forgot Password
+            </button>
           </label>
 
           <button

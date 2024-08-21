@@ -11,9 +11,7 @@ import {
   fieldOptionMap,
   fieldStateNameMap,
   addonNameToStateMap,
-  addonStateToNameMap,
   addonStatetoCost,
-  stateFieldNameMap,
 } from "../../utils/sharedState";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../services/firebase";
@@ -23,10 +21,12 @@ import { useGet } from "../../api/useGet";
 import { useNavigate, useParams } from "react-router-dom";
 import { usePut } from "../../api/usePut";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { v4, validate } from "uuid";
-import { formattedImageName } from "../User/Profile/BasicInfo";
-import ConfrimPopup, { PaymentReceipt } from "../../components/ConfrimPopup";
+import { v4 } from "uuid";
+import BasicInfo, { formattedImageName } from "../User/Profile/BasicInfo";
+import ConfrimPopup from "../../components/ConfrimPopup";
 import { isEmpty, roundTo } from "../../utils/sharedMethods";
+import PaymentReceipt from "../../components/PaymentReciept";
+import { dummyBasicInfo, dummyPersonalityInfo } from "../../utils/mockState";
 
 function CreateCustomer() {
   const [error, setError] = useState("");
@@ -34,48 +34,12 @@ function CreateCustomer() {
   const [showUpdateConfirmPop, setShowUpdateConfirmPop] = useState(false);
   const [showCreateConfirmPop, setShowCreateConfirmPop] = useState(false);
   const [createdCustomerId, setCreatedCustomerId] = useState(null);
-  const currentUser = useSelector((state) => state.user.currentUser);
 
   const post = usePost();
   const get = useGet();
   const put = usePut();
   const { id } = useParams();
 
-  const dummyBasicInfo = {
-    firstName: "John",
-    lastName: "Doe",
-    inmateNumber: "123456",
-    age: "30",
-    gender: "Male",
-    orientation: "Straight",
-    state: ["California"],
-    city: "Los Angeles",
-    mailingAddress: "1234 Main St",
-    zipcode: "90001",
-    dateOfBirth: "1993-01-01",
-    height: "6'0\"",
-    weight: "180 lbs",
-    hairColor: ["Brown"],
-    eyeColor: ["Blue"],
-    race: ["Other"],
-    spokenLanguages: "English",
-    institutionalEmailProvider: ["example.com"],
-    religiousPref: ["Christian"],
-    highSchool: "Lincoln High",
-    highSchoolState: "California",
-    highSchoolCity: "Los Angeles",
-    education: ["Bachelors degree"],
-    collegeName: "University of California",
-    collegeState: "California",
-    collegeCity: "Los Angeles",
-    homeTownCity: "San Francisco",
-    homeTownState: "California",
-    bodyType: [],
-    astrologicalSign: [],
-    relationShipStatus: ["Single"],
-    veteranStatus: ["Army veteran"],
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  };
 
   const basicInfoIntialState = {
     firstName: "",
@@ -111,16 +75,6 @@ function CreateCustomer() {
     relationShipStatus: [],
     veteranStatus: [],
     bio: "",
-  };
-
-  const dummyPInfo = {
-    hobbies: ["Reading"],
-    sports: ["Basketball"],
-    likes: ["Traveling"],
-    personality: ["Outgoing"],
-    bookGenres: ["Fiction"],
-    musicGenres: ["Rock"],
-    movieGenres: ["Action"],
   };
 
   const personalityInfoInitialState = {
@@ -181,8 +135,8 @@ function CreateCustomer() {
     },
     creation: false,
     renewal: false,
-    featuredPlacement: false,
-    premiumPlacement: false,
+    featuredPlacement: 0,
+    premiumPlacement: 0,
     wordLimit: 0,
     totalPaidPhotos: 0,
   };
@@ -194,31 +148,26 @@ function CreateCustomer() {
 
   const [photos, setPhotos] = useState(photosIntialState);
   const [currPhotos, setCurrPhotos] = useState(photosIntialState);
-  const [basicInfo, setBasicInfo] = useState(basicInfoIntialState);
+  const [basicInfo, setBasicInfo] = useState(dummyBasicInfo);
   const [personalityInfo, setPersonalityInfo] = useState(
-    personalityInfoInitialState
-  );
-
+    dummyPersonalityInfo);
+  const [initialProfileData, setInitialProfileData] = useState({ basicInfo: {}, personalityInfo: {}, photos: {} })
   const [duesInfo, setDuesInfo] = useState(dueInitiallState);
-  const [wordLimit, setWordLimit] = useState(false);
-  const [wordNum, setWordNum] = useState(0);
+  const [wordLimit, setWordLimit] = useState(0);
   const [intialWordCount, setIntialWordCount] = useState(0);
   const [done, setDone] = useState(false);
   const payementBoxRef = useRef();
   const errorRef = useRef();
   const updateBtnRef = useRef();
   const navigate = useNavigate();
+  const isAdminLoggedIn = JSON.parse(localStorage.getItem("adminAuth"));
 
   const updatedFieldsInitialState = {
     basicInfo: {},
     personalityInfo: {},
   };
-  const updatedFields = useRef(updatedFieldsInitialState); // to keep track of updatedFields
-  // const validateEmail = (email) => {
-  //   // Basic regex for email validation
-  //   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  //   return regex.test(email);
-  // };
+  // const updatedFields = useRef(updatedFieldsInitialState); // to keep track of updatedFields
+  const [updatedFields, setUpdatedFields] = useState(updatedFieldsInitialState) // to keep track of updatedFields
 
   const uploadImage = async (imageFile, imageName, folder) => {
     try {
@@ -240,7 +189,7 @@ function CreateCustomer() {
     const downloadUrls = await Promise.all(uploadPromises);
     return downloadUrls;
   };
-  const handleImageUpdate = async () => {
+  const handleImageRemoteUpdate = async () => {
     //   // to handle image removal
     // if (currPhotos.imageUrl == "" && photos.imageUrl != "") {
     //   let prevName = photos.imageUrl.split("imageNameS")[1];
@@ -289,24 +238,33 @@ function CreateCustomer() {
 
   const handleUpdate = async (e) => {
     // checking for required fields
-    setLoading(true);
+
     setShowUpdateConfirmPop(false);
     setShowCreateConfirmPop(false);
+    if (id) {
+      //only for update
+      if (checkForChange(updatedFields)) {
+        setError("No changes made");
+        return;
+      }
+    }
+
+    setLoading(true);
+    updateBtnRef.current.disabled = true;
 
     const { imageDownloadURL, artworksDownloadURL, total } =
-      await handleImageUpdate();
-    updateBtnRef.current.disabled = true;
+      await handleImageRemoteUpdate();
 
     if (id) {
       let updatedBasicInfo = Object.keys(
-        updatedFields?.current?.basicInfo
+        updatedFields.basicInfo
       ).reduce((acc, item) => {
         acc[item] = basicInfo[item];
         return acc;
       }, {});
 
       let updatedPersonalityInfo = Object.keys(
-        updatedFields?.current?.personalityInfo
+        updatedFields.personalityInfo
       ).reduce((acc, item) => {
         acc[item] = personalityInfo[item];
         return acc;
@@ -320,32 +278,32 @@ function CreateCustomer() {
         },
         basicInfo: updatedBasicInfo,
         personalityInfo: updatedPersonalityInfo,
-        wordLimit: (wordLimit || 0) + (duesInfo.wordLimit || 0),
-        totalPaidPhotos:
-          (updatedFields.current.totalPaidPhotos || 0) +
-          (duesInfo.totalPaidPhotos || 0),
+        wordLimit: updatedFields?.wordLimit ? (wordLimit || 0) + (duesInfo.wordLimit || 0) : 0,
+        totalPaidPhotos: updatedFields?.totalPaidPhotos ?
+          (updatedFields.totalPaidPhotos || 0) +
+          (duesInfo.totalPaidPhotos || 0) : 0,
       };
       console.log("finalObjetct to be putted", finalObj);
 
+      const updateEndpoint = isAdminLoggedIn ? "/admin/customer" : "/customer"
       const { success, data, error } = await put(
-        `/customer?id=${id}`,
+        `${updateEndpoint}?id=${id}`,
         finalObj
       );
 
       if (success) {
         setLoading(false);
         setDone(true);
-
-        const pendingDues = updatedFields.current;
-
         // Ensure default values for addition
         const newPendingDues = {
-          ...pendingDues,
+          ...updatedFields,
           creation: duesInfo.creation,
-          wordLimit: (pendingDues.wordLimit || 0) + (duesInfo.wordLimit || 0),
+          wordLimit: (updatedFields.wordLimit || 0) + (duesInfo.wordLimit || 0),
           totalPaidPhotos:
-            (pendingDues.totalPaidPhotos || 0) +
+            (updatedFields.totalPaidPhotos || 0) +
             (duesInfo.totalPaidPhotos || 0),
+          premiumPlacement: 0,
+          featuredPlacement: 0
         };
 
         console.log("pendingDues", newPendingDues);
@@ -403,7 +361,7 @@ function CreateCustomer() {
           wordLimit: wordLimit,
           creation: true,
         };
-        setDuesInfo(currDuesInfo);  
+        setDuesInfo(currDuesInfo);
         payementBoxRef.current.scrollIntoView({
           behavior: "smooth",
         });
@@ -416,6 +374,7 @@ function CreateCustomer() {
           behavior: "smooth",
         });
       }
+
     }
   };
 
@@ -425,7 +384,14 @@ function CreateCustomer() {
     console.log("field key", fieldKey);
     let updatedArr = basicInfo[fieldKey];
     console.log("updated arr", updatedArr);
-    updatedFields.current.basicInfo[fieldKey] = true;
+    setUpdatedFields((updatedFields) => ({
+      ...updatedFields,
+      basicInfo: {
+        ...updatedFields.basicInfo,
+        [fieldKey]: true
+      }
+    }))
+    // updatedFields.current.basicInfo[fieldKey] = true;
 
     if (remove) {
       updatedArr = updatedArr.filter((item) => item != value);
@@ -451,41 +417,65 @@ function CreateCustomer() {
       const text = e.target.value;
       let wordCount = text.split(" ").length;
       console.log("intialWordCount", intialWordCount);
+      let totalCount = 0
       if (wordCount <= intialWordCount) {
-        setWordLimit(0);
+        setWordLimit(totalCount);
+        setUpdatedFields((updatedFields) => ({
+          ...updatedFields,
+          "wordLimit": totalCount
+        }))
+        return
       }
       if (wordCount > 350) {
         console.log("wordCount", wordCount);
-
         if (wordCount > intialWordCount && intialWordCount >= 350) {
           let netWordCount = wordCount - intialWordCount;
           console.log("netWordCount", netWordCount);
-
           if (netWordCount > 100) {
-            const totalCount = Math.floor(netWordCount / 100);
+            totalCount = Math.floor(netWordCount / 100);
             console.log("totalCount", totalCount);
             setWordLimit(totalCount);
             // setWordNum(totalCount);
           }
         } else if (intialWordCount < 350) {
           let netWordCount = wordCount - 350;
-          let totalCount = Math.floor(netWordCount / 100);
+          totalCount = Math.floor(netWordCount / 100);
           setWordLimit(totalCount);
-          // setWordNum(totalCount);
         }
       } else {
-        setWordLimit(0);
+        totalCount = 0
+        setWordLimit(totalCount);
+      }
+      if (id) {
+        setUpdatedFields((updatedFields) => ({
+          ...updatedFields,
+          "wordLimit": totalCount
+        }))
       }
     }
-    updatedFields.current.basicInfo[e.target.name] = true;
+    setUpdatedFields((updatedFields) => ({
+      ...updatedFields,
+      basicInfo: {
+        ...updatedFields.basicInfo,
+        [e.target.name]: true
+      }
+    }))
+    // updatedFields.current.basicInfo[e.target.name] = true;
     setBasicInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handlePersonalityInfoChange = (label, value, remove) => {
     const stateKey = fieldStateNameMap[label];
     let updatedArr = personalityInfo[stateKey];
+    setUpdatedFields((updatedFields) => ({
+      ...updatedFields,
+      personalityInfo: {
+        ...updatedFields.personalityInfo,
+        [stateKey]: true
+      }
+    }))
 
-    updatedFields.current.personalityInfo[stateKey] = true;
+    // updatedFields.current.personalityInfo[stateKey] = true;
     if (remove) {
       updatedArr = updatedArr.filter((item) => item != value);
     } else {
@@ -507,17 +497,16 @@ function CreateCustomer() {
     else if (typeof dueInitiallState[field] == "number") return 0;
     else return {};
   };
+
   useEffect(() => {
     const fetchCustomer = async () => {
       setLoading(true);
 
       let { success, data, error } = await get(`/customer?id=${id}`);
       if (success) {
-        console.log("fetched Customer", data);
         data = data[0];
         for (const key in data?.basicInfo) {
           if (key != "spokenLanguages" && basicInfoOptionsField.includes(key)) {
-            console.log("conerting to array");
             data[key] = data[key] != "" ? [data[key]] : []; // converting to array
           }
         }
@@ -556,10 +545,10 @@ function CreateCustomer() {
           fetchedPersonality
         );
         setLoading(false);
-        setDone(true);
         setPhotos(fetchedPhotos);
         setBasicInfo(basicInfoData);
         setPersonalityInfo(fetchedPersonality);
+        setInitialProfileData({ basicInfo: basicInfoData, personalityInfo: fetchedPersonality, photos: fetchedPhotos })
         setDuesInfo(duesInfoData);
         const bioWordsLenght =
           basicInfoData?.bio == "" ? 0 : (basicInfoData?.bio.split(" ")).length;
@@ -574,20 +563,21 @@ function CreateCustomer() {
       console.log("inside here");
       fetchCustomer();
     } else {
-      resetState();
+      // resetState();
     }
   }, [id]);
 
   const resetState = () => {
     setPhotos(photosIntialState);
     setBasicInfo(basicInfoIntialState);
+    setCurrPhotos(photosIntialState)
     setPersonalityInfo(personalityInfoInitialState);
-    setDuesInfo(dueInitiallState);
     setDone(false);
-    updatedFields.current = updatedFieldsInitialState;
+    setUpdatedFields(updatedFieldsInitialState)
+    // updatedFields.current = updatedFieldsInitialState;
   };
   const checkObjEmpty = (obj) => {
-    return Object.keys(obj).length === 0;
+    return Object.values(obj).every((value) => value == false)
   };
   const checkForChange = (obj) => {
     return (
@@ -603,7 +593,7 @@ function CreateCustomer() {
     if (id) {
       //only for update
 
-      if (checkForChange(updatedFields.current)) {
+      if (checkForChange(updatedFields)) {
         setError("No changes made");
         return;
       }
@@ -616,17 +606,25 @@ function CreateCustomer() {
       }
     }
 
-    console.log("new personalityInfo", personalityInfo);
-    for (const key in personalityInfo) {
-      if (isEmpty(personalityInfo[key])) {
-        setError("Fillout all the required fields");
-        return;
-      }
-    }
+    // console.log("new personalityInfo", personalityInfo);
+    // for (const key in personalityInfo) {
+    //   if (isEmpty(personalityInfo[key])) {
+    //     setError("Fillout all the required fields");
+    //     return;
+    //   }
+    // }
 
     if (id) {
       setShowUpdateConfirmPop(true);
     } else {
+      let updatedDuesInfo = { ...duesInfo, "creation": true, wordLimit: wordLimit, totalPaidPhotos: 0 }
+      if (currPhotos.total > 3) {
+        updatedDuesInfo = {
+          ...updatedDuesInfo,
+          totalPaidPhotos: currPhotos.total - 3
+        }
+      }
+      setDuesInfo(updatedDuesInfo)
       setShowCreateConfirmPop(true);
     }
   };
@@ -641,15 +639,13 @@ function CreateCustomer() {
     }
   };
 
-  const changeOccured = Object.keys(updatedFields.current).length != 0;
-  console.log("changed Occured", changeOccured);
 
   return (
     <div className="bg-c-basic flex flex-col items-center gap-y-6 py-8 px-3  md:p-12 relative">
       {/* <h1 className="text-4xl font-bold text-left underline">
         Customer Profile
         </h1> */}
-      <div className="flex w-full flex-col md:flex-row gap-12 relative">
+      <div className="flex w-full flex-col xl:flex-row justify-center gap-12 relative">
         <LoadingSpinner isLoading={loading} bgShade="400" isDone={done} />
         <CustomerDetails
           id={id}
@@ -661,34 +657,43 @@ function CreateCustomer() {
           error={error}
           done={done}
           handleSubmitBtn={handleSubmitBtn}
-          changeOccured={changeOccured}
           wordLimit={wordLimit}
           loading={loading}
           showUpdateConfirmPop={showUpdateConfirmPop}
           handleUpdate={handleUpdate}
           setShowUpdateConfirmPop={setShowUpdateConfirmPop}
           duesInfo={duesInfo}
+          onDuesInfo={setDuesInfo}
           showCreateConfirmPop={showCreateConfirmPop}
           setShowCreateConfirmPop={setShowCreateConfirmPop}
           updatedFields={updatedFields}
           photos={photos}
           setPhotos={setPhotos}
-          setCurrPhotos={setCurrPhotos}
+          onCurrPhotos={setCurrPhotos}
           currPhotos={currPhotos}
           errorRef={errorRef}
           updateBtnRef={updateBtnRef}
+          onUpdatedFields={setUpdatedFields}
+          onWordLimit={setWordLimit}
+          onBasicInfo={setBasicInfo}
+          onPersonalityInfo={setPersonalityInfo}
+          photosIntialState={photosIntialState}
+          initialProfileData={initialProfileData}
+          isAdminLoggedIn={isAdminLoggedIn}
         />
-        <div className="basis-[40%] flex flex-col gap-y-6">
-          <DuesSection
-            duesInfo={duesInfo}
-            isDone={done}
-            id={id}
-            payementBoxRef={payementBoxRef}
-            changeOccured={changeOccured}
-            onPaynow={handlePaynow}
-          />
-          <AddOns onClick={setDuesInfo} />
-        </div>
+        {!isAdminLoggedIn &&
+          <div className="basis-[40%] flex flex-col gap-y-6">
+            <DuesSection
+              duesInfo={duesInfo}
+              onDuesInfo={setDuesInfo}
+              id={id}
+              payementBoxRef={payementBoxRef}
+              onPaynow={handlePaynow}
+            />
+            <AddOns onClick={setDuesInfo} duesInfo={duesInfo} />
+
+          </div>
+        }
       </div>
     </div>
   );
@@ -704,10 +709,8 @@ function CustomerDetails({
   handleBasicInfoOptionsFieldChange,
   showUpdateConfirmPop,
   error,
-  done,
   loading,
   handleSubmitBtn,
-  changeOccured,
   wordLimit,
   setShowUpdateConfirmPop,
   handleUpdate,
@@ -715,98 +718,154 @@ function CustomerDetails({
   showCreateConfirmPop,
   setShowCreateConfirmPop,
   photos,
-  setPhotos,
-  setCurrPhotos,
+  onCurrPhotos,
   currPhotos,
   errorRef,
+  onDuesInfo,
   updateBtnRef,
+  onUpdatedFields,
+  onWordLimit,
+  onBasicInfo,
+  onPersonalityInfo,
+  photosIntialState,
+  initialProfileData,
+  isAdminLoggedIn
 }) {
-  const [imageDropdown, setImageDropdown] = useState(false);
   const imageRef = useRef();
   const artworkRef = useRef();
 
   const bioWordsLenght =
     basicInfo.bio == "" ? 0 : basicInfo.bio.split(" ").length;
 
-  const openImage = () => "helo";
+  const updatePhotosState = (updatdCurrPhotos) => {
+    onCurrPhotos(updatdCurrPhotos);
+    if (id) {
+      // updatedFields.current.wordLimit = wordLimit;
+      if (photos.total > 3) {
+        onUpdatedFields((updatedFields) => ({
+          ...updatedFields,
+          "totalPaidPhotos": updatdCurrPhotos.total
+        }))
+        //  updatedFields.current.totalPaidPhotos = currPhotos.total;
+      } else {
+        const totalPhotoCount = photos.total + updatdCurrPhotos.total;
+        if (totalPhotoCount > 3) {
+          onUpdatedFields((updatedFields) => ({
+            ...updatedFields,
+            "totalPaidPhotos": totalPhotoCount - 3
+          }))
+          //  updatedFields.current.totalPaidPhotos = totalPhotoCount - 3;
+        }
+      }
+    }
+  }
 
-  const handleImageChange = async () => {
+  const handleImageUpdate = async () => {
     const files = imageRef.current.files;
     console.log("original", files[0]);
     if (files.length > 0) {
       const src = URL.createObjectURL(files[0]);
       const avartarPreviw = document.getElementById("avatar-preview");
       avartarPreviw.src = src;
-      setCurrPhotos((prev) => ({
-        ...prev,
-        imageUrl: files[0],
-        total: prev.artworks.length + 1,
-      }));
+      const updatdCurrPhotos = { ...currPhotos, imageUrl: files[0], total: currPhotos.artworks.length + 1 }
+      updatePhotosState(updatdCurrPhotos)
     }
   };
 
-  const handleRemoveImage = () => {
-    const files = imageRef.current.files;
-    if (currPhotos.imageUrl != "") {
-      const src = URL.createObjectURL(files[0]);
-      const avartarPreviw = document.getElementById("avatar-preview");
-      avartarPreviw.src = "/assets/default.jpg";
-      setCurrPhotos((prev) => ({
-        ...prev,
-        imageUrl: "",
-        total: prev.total - 1,
-      }));
+  const handleArtworkAddition = (e) => {
+    const updatedCurrPhotos = {
+      ...currPhotos,
+      artworks: [...currPhotos.artworks, e.target.files[0]],
+      total: currPhotos.total + 1,
     }
+    updatePhotosState(updatedCurrPhotos)
   };
 
-  const handleArtworkChange = (e) => {
-    setCurrPhotos((prev) => ({
-      ...prev,
-      artworks: [...prev.artworks, e.target.files[0]],
-      total: prev.total + 1,
-    }));
-  };
   const handleRemoveArtwork = (delIndex) => {
     const filteredArtworks = currPhotos.artworks.filter(
-      (item, index) => index != delIndex
+      (_, index) => index != delIndex
     );
-    setCurrPhotos((prev) => ({
-      ...prev,
-      artworks: filteredArtworks,
-      total: prev.total - 1,
-    }));
-  };
-  const totalRemainingFreePhotos = photos.total + currPhotos.total;
-  console.log(
-    "totalphoto",
-    totalRemainingFreePhotos,
-    "ptotla",
-    photos.total,
-    "currPhotos",
-    currPhotos.total
-  );
-  let totalPhotos = currPhotos.total + photos.total;
-  const totalPaidPhotos = totalPhotos <= 3 ? 0 : totalPhotos - 3;
-
-  const recieptForCreation = {
-    creation: true,
+    const updatdCurrPhotos = { ...currPhotos, artworks: filteredArtworks, total: currPhotos.total - 1 }
+    updatePhotosState(updatdCurrPhotos)
   };
 
-  if (currPhotos.total > 3) {
-    recieptForCreation.totalPaidPhotos = currPhotos.total - 3;
-  }
-  recieptForCreation.wordLimit = wordLimit;
-  if (id) {
-    updatedFields.current.wordLimit = wordLimit;
-    if (photos.total > 3) {
-      updatedFields.current.totalPaidPhotos = currPhotos.total;
-    } else {
-      const totalPhotoCount = photos.total + currPhotos.total;
-      if (totalPhotoCount > 3) {
-        updatedFields.current.totalPaidPhotos = totalPhotoCount - 3;
+  // const handleRemoveImage = () => {
+  //   const files = imageRef.current.files;
+  //   if (currPhotos.imageUrl != "") {
+  //     const src = URL.createObjectURL(files[0]);
+  //     const avartarPreviw = document.getElementById("avatar-preview");
+  //     avartarPreviw.src = "/assets/default.jpg";
+  //     setCurrPhotos((prev) => ({
+  //       ...prev,
+  //       imageUrl: "",
+  //       total: prev.total - 1,
+  //     }));
+  //   }
+  // };
+
+  const handleDelUpdateRecieptItem = (name, type) => {
+    let updatedPaymentInfo = { ...updatedFields }
+    console.log("intiaildata", initialProfileData)
+    if (type) {
+      if (type == "basicInfo") {
+        console.log("initialProfileData -- basicInfo", initialProfileData?.basicInfo)
+        onBasicInfo({
+          ...basicInfo,
+          [name]: initialProfileData.basicInfo?.[name]
+        })
+        if (name == "bio") {
+          onWordLimit(0)
+          updatedPaymentInfo = {
+            ...updatedPaymentInfo,
+            "wordLimit": 0
+          }
+        }
       }
+      if (type == "personalityInfo") {
+        onPersonalityInfo({
+          ...personalityInfo,
+          [name]: initialProfileData.personalityInfo?.[name]
+        })
+      }
+      updatedPaymentInfo[type] = {
+        ...updatedPaymentInfo[type],
+        [name]: false
+      }
+    } else {
+      if (name == "totalPaidPhotos") {
+        onCurrPhotos(photosIntialState)
+        const avartarPreviw = document.getElementById("avatar-preview");
+        avartarPreviw.src = photos.imageUrl ? photos.imageUrl : "/assets/default.jpg";
+      } else if (name == "wordLimit") {
+        onBasicInfo({
+          ...basicInfo,
+          "bio": initialProfileData.basicInfo["bio"]
+        })
+        onWordLimit(0)
+        updatedPaymentInfo["basicInfo"] = {
+          ...updatedPaymentInfo["basicInfo"],
+          "bio": false
+        }
+      }
+      updatedPaymentInfo = { ...updatedPaymentInfo, [name]: 0 }
     }
+    onUpdatedFields(updatedPaymentInfo)
   }
+
+  const handleDelCreateReceiptItem = (name, type) => {
+    let updatedDuesInfo = { ...duesInfo }
+    if (type) {
+      updatedDuesInfo[type] = {
+        ...updatedDuesInfo[type],
+        [name]: false
+      }
+    } else {
+      updatedDuesInfo = { ...updatedDuesInfo, [name]: 0 }
+    }
+    onDuesInfo(updatedDuesInfo)
+  }
+
+
   return (
     <div className="basis-[60%] bg-white rounded-lg relative">
       {showUpdateConfirmPop && (
@@ -816,22 +875,22 @@ function CustomerDetails({
           confirmBtnTxt={`Confirm ${id ? "updation" : "creation"}`}
           onConfirm={handleUpdate}
           onCloseClick={setShowUpdateConfirmPop}
-          width="3/5"
-          fromLeft={"30"}
+          onDelReceiptItem={handleDelUpdateRecieptItem}
+          isAdminLoggedIn={isAdminLoggedIn}
+          infoText={isAdminLoggedIn ? "It will update prisoner's profile, changes made will be irreversible" : ""}
         />
       )}
       {showCreateConfirmPop && (
         <ConfrimPopup
-          updatedFields={{ current: recieptForCreation }}
+          updatedFields={duesInfo}
           continueBtnTxt={"Continue editing"}
           confirmBtnTxt={`Confirm ${id ? "updation" : "creation"}`}
           onConfirm={handleUpdate}
           onCloseClick={setShowCreateConfirmPop}
-          width="3/5"
-          fromLeft={"30"}
+        // onDelReceiptItem={handleDelCreateReceiptItem}
         />
       )}
-      <div className="bg-gray-300 w-full rounded-lg p-6 flex flex-col items-center gap-y-6">
+      <div className="bg-gray-300 w-full rounded-lg p-2 md:p-6 flex flex-col items-center gap-y-6">
         <div className="w-fit m-auto relative">
           <img
             className="rounded-full md:w-52 md:h-52 w-36 h-36 object-cover object-top"
@@ -844,7 +903,7 @@ function CustomerDetails({
             type="file"
             accept="image/*"
             hidden
-            onChange={handleImageChange}
+            onChange={handleImageUpdate}
           />
           <div className="absolute md:bottom-2 md:right-2 bottom-4 right-1  z-20">
             <button
@@ -867,7 +926,7 @@ function CustomerDetails({
                 </button>
                 <button
                   onClick={handleRemoveImage}
-                  className="border-b-2  px-2 py-1 md:px-4 md:py-2  "
+
                 >
                   Remove
                 </button>
@@ -875,14 +934,14 @@ function CustomerDetails({
             )} */}
           </div>
         </div>
-        <p className="text-gray-600 italic text-sm md:text-base">
-          *Click pencil to update photo
+        <p className="text-gray-500 italic text-xs md:text-sm text-center">
+          *Click pencil to update your primary photo/artwork or you may upload additional photos/artworks below.
         </p>
       </div>
 
       <div className="flex flex-col gap-y-6 text-sm  p-2 md:p-6 md:text-base">
-        {id && (
-          <p className="text-red-500 text-center">
+        {id && !isAdminLoggedIn && (
+          <p className="text-red-500 text-center md:text-sm text-xs italic">
             *Each field update will cost $9.95
           </p>
         )}
@@ -903,26 +962,21 @@ function CustomerDetails({
               />
             ) : field == "bio" ? (
               <label key={field}>
-                <div className="flex gap-x-2 items-center">
-                  <RequiredFieldLabel
-                    labelText={basicInfoFieldLabelMap[field]}
-                  />
-                </div>
+                <RequiredFieldLabel
+                  labelText={basicInfoFieldLabelMap[field]}
+                />
                 <textarea
                   name="bio"
                   value={basicInfo[field]}
                   onChange={handleBasicInfoTextFieldChange}
-                  placeholder={
-                    "Please type your desired profile statement in the bio box below (only 350 words are included FREE, its $9.95 for each additional 100 words over 350)"
-                  }
+                  placeholder={basicInfoPlaceholderMap[field]}
                   rows={5}
-                  className={`bg-transparent block w-full my-1.5 rounded-md p-1.5 border  ${
-                    wordLimit != 0
-                      ? "focus:border-red-500 border-red-500"
-                      : " focus:border-gray-700 border-gray-400"
-                  } outline-none`}
+                  className={`bg-transparent block w-full my-1.5 rounded-md p-1.5 border  ${wordLimit != 0 && !isAdminLoggedIn
+                    ? "focus:border-red-500 border-red-500"
+                    : " focus:border-gray-700 border-gray-400"
+                    } outline-none`}
                 ></textarea>
-                {wordLimit != 0 && (
+                {wordLimit != 0 && !isAdminLoggedIn && (
                   <p className="text-red-500 text-xs md:text-sm">
                     free limit of 350 words exceeded, you'll have to pay $9.95
                     for each extra 100 words.
@@ -932,26 +986,42 @@ function CustomerDetails({
                   Word Count: {bioWordsLenght}
                 </p>
               </label>
-            ) : (
-              field != "imageUrl" && (
-                <InputField
-                  key={field}
+            ) : field == "mailingAddress" ?
+              <label>
+                <RequiredFieldLabel
                   labelText={basicInfoFieldLabelMap[field]}
-                  type={field === "dateOfBirth" ? "date" : "text"}
-                  placeholder={basicInfoPlaceholderMap[field]}
-                  name={field}
+                  required={true}
+                />
+                <textarea
+                  name="mailingAddress"
                   value={basicInfo[field]}
                   onChange={handleBasicInfoTextFieldChange}
-                  required={basicInfoReqFieldMap[field]}
-                />
+                  placeholder={basicInfoPlaceholderMap[field]}
+                  maxRows={2}
+                  className={` resize-none bg-transparent block w-full my-1.5 rounded-md p-1.5 border focus:border-gray-700 border-gray-400 outline-none`}
+                ></textarea>
+              </label>
+              : (
+                field != "imageUrl" && (
+                  <InputField
+                    key={field}
+                    labelText={basicInfoFieldLabelMap[field]}
+                    type={field === "dateOfBirth" ? "date" : "text"}
+                    placeholder={basicInfoPlaceholderMap[field]}
+                    name={field}
+                    value={basicInfo[field]}
+                    onChange={handleBasicInfoTextFieldChange}
+                    required={basicInfoReqFieldMap[field]}
+                  />
+                )
               )
-            )
           )}
-          <div className="flex  items-center  gap-6 w-full">
-            <span className="text-lg">Pick your Artworks</span>
+
+          <div className="flex flex-col md:flex-row justify-center md:justify-between   gap-6 w-full">
+            <span className="text-sm md:text-base">Pick your Artworks</span>
             <button
               onClick={() => artworkRef.current.click()}
-              className="border border-black border-3 py-1 px-2 rounded w-fit"
+              className="border border-black border-3  md:px-2 px-1 rounded w-fit"
             >
               Choose here
             </button>
@@ -961,27 +1031,27 @@ function CustomerDetails({
               hidden
               accept="image/*"
               type="file"
-              onChange={handleArtworkChange}
+              onChange={handleArtworkAddition}
             />
-            {photos.total + currPhotos.total < 3 && (
-              <p className="text-red-600 italic md:text-sm text-xs">
-                {3 - (photos.total + currPhotos.total)} remaining free
-                photo/artworks
-              </p>
-            )}
           </div>
+          {photos.total + currPhotos.total < 3 && !isAdminLoggedIn && (
+            <p className="text-red-500 italic md:text-sm text-xs">
+              {3 - (photos.total + currPhotos.total)} remaining free
+              photo/artworks
+            </p>
+          )}
 
           <div className="flex flex-col gap-4">
             {photos?.artworks.map((item, index) => (
               <div className="bg-gray-200 py-1 px-2 flex justify-between rounded w-1/2 ">
-                <a href={openImage(item)} className="hover:underline">
+                <a href="#" className="hover:underline">
                   Artwork-{index + 1}
                 </a>
               </div>
             ))}
             {currPhotos?.artworks.map((item, index) => (
               <div className="bg-gray-200 py-1 px-2 flex justify-between rounded w-1/2 ">
-                <a href={openImage(item)} className="hover:underline">
+                <a href="#" className="hover:underline">
                   New Artwork-{index + 1}
                 </a>
                 <span
@@ -1001,8 +1071,8 @@ function CustomerDetails({
         id="card"
         className="bg-white flex flex-col py-6 gap-y-6 md:gap-y-8 pb-10 items-center p-3 md:p-6 lg mb-6 relative"
       >
-        {id && (
-          <p className="text-red-500 text-center">
+        {id && !isAdminLoggedIn && (
+          <p className="text-red-500 text-center md:text-sm text-xs italic">
             *Each field update will cost $9.95
           </p>
         )}
@@ -1018,7 +1088,6 @@ function CustomerDetails({
             dropdownOptions={fieldOptionMap[key]}
             selectedOptions={personalityInfo[fieldStateNameMap[key]]}
             onChange={handlePersonalityInfoChange}
-            required={true}
           />
         ))}
         <div className="flex gap-x-6 w-full justify-between">
@@ -1034,9 +1103,8 @@ function CustomerDetails({
           </div>
 
           <button
-            className={`ml-auto  bg-fr-blue-200 w-1/3 md:w-1/5  text-white p-1.5 rounded ${
-              loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
-            }`}
+            className={`ml-auto  bg-fr-blue-200 w-1/3 md:w-1/5  text-sm md:text-base text-white p-1.5 rounded ${loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
+              }`}
             onClick={handleSubmitBtn}
             // disabled={loading}
             ref={updateBtnRef}
@@ -1046,8 +1114,8 @@ function CustomerDetails({
                 ? "Updating..."
                 : "Update"
               : loading
-              ? "Creating..."
-              : "Create"}{" "}
+                ? "Creating..."
+                : "Create"}{" "}
           </button>
         </div>
       </div>
@@ -1055,37 +1123,34 @@ function CustomerDetails({
   );
 }
 
-function AddOns({ onClick }) {
+function AddOns({ onClick, duesInfo }) {
   const addonsList = ["Feature Placement", "Premium Placement"];
   const addonCostMap = {
     "Feature Placement": "$14.95",
     "Premium Placement": "$24.95",
   };
 
-  const handleChange = (addon) => {
+  const handleChange = (add, addon) => {
     const stateField = addonNameToStateMap[addon];
-    onClick((prev) => ({ ...prev, [stateField]: !prev[stateField] }));
+    onClick((prev) => ({ ...prev, [stateField]: add ? prev[stateField] + 1 : prev[stateField] - 1 < 0 ? 0 : prev[stateField] - 1 }));
   };
   return (
-    <div className=" bg-white rounded-lg h-fit  px-6 md:px-12 py-6  border">
-      <h1 className="text-2xl  font-bold text-center">Add-ons</h1>
+    <div className=" bg-white rounded-lg h-fit px-3 md:px-12 py-6  border text-sm md:text-base">
+      <h1 className="text-xl md:text-3xl  underline font-bold text-center">Add-ons</h1>
 
       <div className="flex flex-col mt-6 gap-y-6 ">
         {addonsList.map((addon) => (
           <label
             key={addon}
-            className="w-full  flex items-center gap-x-3 cursor-pointer"
+            className="w-full flex items-center justify-between cursor-pointer"
           >
-            <input
-              type="checkbox"
-              onChange={() => handleChange(addon)}
-              value=""
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
-            />
-            <div className="flex justify-between w-full">
-              <p>{addon}</p>
-              <p>{addonCostMap[addon]}/month</p>
+            <div className="flex  gap-x-1 md:gap-x-3 items-center">
+              <img src="/assets/icons/minus.svg" alt="" className="h-6  bg-gray-200 rounded-full p-1.5 " onClick={() => handleChange(false, addon)} />
+              {duesInfo[addonNameToStateMap[addon]]}
+              <img src="/assets/icons/plusDark.svg" alt="" className="h-6  bg-gray-200 rounded-full p-1.5 " onClick={() => handleChange(true, addon)} />
             </div>
+            <p className={`${addon == "Feature Placement" ? "mr-3" : ""}`}>{addon}</p>
+            <p className={`${addon == "Feature Placement" ? "mr-1" : ""}`}  >{addonCostMap[addon]}/month</p>
           </label>
         ))}
       </div>
@@ -1095,15 +1160,13 @@ function AddOns({ onClick }) {
 
 function DuesSection({
   duesInfo,
-  isDone,
+  onDuesInfo,
   id,
   payementBoxRef,
-  changeOccured,
   onPaynow,
 }) {
   console.log("duesInfo", duesInfo);
 
-  console.log("isDone", isDone, "changeOccured", changeOccured);
   const addonsList = ["featuredPlacement", "premiumPlacement", "renewal"];
   const addons = Object.keys(duesInfo).some(
     (field) => addonsList.includes(field) && duesInfo[field]
@@ -1126,21 +1189,21 @@ function DuesSection({
   total = roundTo(total, 2);
   console.log("total here", total, total != 0);
   console.log("addons", addons);
+
   return (
     <div
       ref={payementBoxRef}
-      className=" bg-white rounded-lg h-fit px-6 md:px-12 py-6 flex flex-col gap-y-6 border"
+      className=" bg-white rounded-lg h-fit px-6 md:px-12 py-6 flex flex-col gap-y-6 border text-sm md:text-base"
     >
-      <h1 className="text-2xl  font-bold text-center">Pending Dues</h1>
+      <h1 className=" text-xl md:text-3xl underline font-bold text-center">Pending Dues</h1>
       <PaymentReceipt obj={duesInfo} />
       <div className="flex flex-col gap-y-2 text-white">
         <button
-          className={`py-2 w-full bg-green-600 rounded-lg ${
-            (!isDone && !addons) || total == 0
-              ? "opacity-50 cursor-not-allowed"
-              : "curose-pointer"
-          }`}
-          disabled={(!isDone && !addons) || total == 0}
+          className={`py-2 w-full bg-green-600 rounded-lg ${total == 0
+            ? "opacity-50 cursor-not-allowed"
+            : "curose-pointer"
+            }`}
+          disabled={total == 0}
           onClick={onPaynow}
         >
           Pay now

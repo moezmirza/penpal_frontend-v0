@@ -9,6 +9,11 @@ import {
 } from "../../utils/sharedState";
 import ContactInfo from "../../components/ContactInfo";
 
+export const capitlize = (string) => {
+  return string[0].toUpperCase() + string.substring(1);
+
+}
+
 function Customer() {
   const { id } = useParams();
   const [customer, setCustomer] = useState(null);
@@ -109,6 +114,7 @@ function Customer() {
     "veteranStatus",
   ];
   const isUser = JSON.parse(localStorage.getItem("userAuth"));
+  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
 
   const handleApprovalUpdate = async (e, status, cid) => {
     e.target.innerText = "Approved";
@@ -131,14 +137,14 @@ function Customer() {
   const updateApproval =
     customer?.updateApproved == false && customer?.createdByCurrent;
   return (
-    <div className="bg-c-basic min-h-screen px-3 md:px-0 py-12">
-      <div className="flex flex-col items-center gap-y-12 w-full md:w-8/12 mx-auto">
+    <div className="bg-c-basic min-h-screen px-3 xl:px-0 py-12">
+      <div className="flex flex-col items-center gap-y-12 w-full xl:w-8/12 mx-auto">
         <div
           id="profile-details"
-          className={`bg-white  w-full border rounded-lg flex flex-col gap-y-4 p-6`}
-          // className={`bg-white  w-full border ${
-          //   (profileApproval || updateApproval) && "border-red-500"
-          // }  rounded-lg flex flex-col gap-y-4 p-6`}
+          className={`bg-white  w-full border rounded-lg flex flex-col gap-y-4 p-6 border-2`}
+        // className={`bg-white  w-full border ${
+        //   (profileApproval || updateApproval) && "border-red-500"
+        // }  rounded-lg flex flex-col gap-y-4 p-6`}
         >
           {/* {(profileApproval || updateApproval) && (
             <p className="text-red-500 text-center md:text-xl text-sm ">
@@ -154,9 +160,9 @@ function Customer() {
                 alt=""
                 className="h-80 w-full md:h-44 md:w-44 rounded"
               />
-              <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">
+              <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0 ">
                 <div>
-                  <p className="font-semibold text-3xl mb-2 md:mb-1 text-center md:text-left">
+                  <p className="font-semibold text-2xl md:text-3xl mb-2 md:mb-1 text-center md:text-left">
                     {customer?.basicInfo?.firstName}{" "}
                     {customer?.basicInfo?.lastName}
                   </p>
@@ -189,25 +195,45 @@ function Customer() {
                 </div>
                 <p>
                   {customer?.basicInfo?.bio || (
-                    <p className="italic mt-6 text-gray-500 text-center md:text-left">
+                    <span className="italic mt-6 text-gray-500 text-center md:text-left">
                       No bio added
-                    </p>
+                    </span>
                   )}
                 </p>
               </div>
-              <div className="flex flex-col items-center ">
-                {isUser && (
-                  //   <button
-                  //     type="button"
-                  //     className="flex items-center justify-center  mx-auto border text-white text w-full py-2.5 px-3 bg-green-600 rounded-xl hover:opacity-90 text-nowrap"
-                  //     onClick={(e) => handleApprovalUpdate(e, true, customer._id)}
-                  //   >
-                  //     Approve
-                  //   </button>
-                  // ) : (
+              <div className="flex flex-col items-center gap-y-3">
+                {!isAdmin && <>
                   <button
                     type="button"
-                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-fr-blue-200 rounded-xl hover:opacity-90 text-nowrap"
+                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border text-white bg-yellow-600 rounded-lg hover:opacity-90 text-nowrap"
+                    onClick={() => navigate(`/update-inmate/${id}`)}
+                  >
+                    Update Profile
+                  </button>
+
+                  <button
+                    type="button"
+                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-green-600  rounded-lg hover:opacity-90 text-nowrap"
+                    onClick={() =>
+                      navigate(`/payment`, {
+                        state: {
+                          cid: id,
+                          paymentDetails: {
+                            renewal: true,
+                            totalAmount: 79.95,
+                          },
+                        },
+                      })
+                    }
+                  >
+                    Renew Profile
+                  </button>
+                </>
+                }
+                {isUser && <>
+                  <button
+                    type="button"
+                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-fr-blue-100  rounded-lg hover:opacity-90 text-nowrap"
                     onClick={handleFavouriteUpdate}
                   >
                     {customer?.isFavorite && (
@@ -219,7 +245,9 @@ function Customer() {
                     )}
                     {customer?.isFavorite ? "Favorite" : "Add to Favorites"}
                   </button>
-                )}
+                </>
+
+                }
                 {/* <button
                   type="button"
                   className="mt-4 border text-black text-nowrap w-full py-2.5 px-3  border-fr-blue-200 rounded-xl hover:opacity-90"
@@ -236,27 +264,27 @@ function Customer() {
             </div>
 
             <div>
-              <h2 className="font-semibold text-3xl md:text-2xl my-4 underline">
+              <h2 className=" text-lg md:text-xl my-4 text-white w-full bg-fr-blue-100 md:p-2.5 p-1.5 rounded ">
                 Basic Info
               </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2  gap-4 text-base md:text-lg">
                 {customer &&
                   basicInfoDisplayFields.map((field) => {
                     return (
                       customer?.basicInfo[field] &&
                       (field == "spokenLanguages" ? (
                         <p key={field} className="flex flex-wrap items-end">
-                          <span className="font-semibold mr-1 text-lg">
+                          <span className="font-semibold mr-1 ">
                             {basicInfoFieldLabelMap[field]}:
                           </span>
                           {customer?.basicInfo[field].map((lang) => (
                             <span className="mr-1">{lang}</span>
                           ))}
                         </p>
-                      ) : (
+                      ) : (field != "mailingAddress" &&
                         <p key={field} className="">
-                          <span className="font-semibold mr-1 text-lg">
+                          <span className="font-semibold mr-1">
                             {basicInfoFieldLabelMap[field]}:
                           </span>
                           {field == "dateOfBirth"
@@ -268,21 +296,21 @@ function Customer() {
                   })}
               </div>
             </div>
-            <div className="flex flex-col gap-y-10">
+            <div className="flex flex-col gap-y-10 ">
               <div>
-                <h2 className="font-semibold text-3xl md:text-2xl my-4 underline">
+                <h2 className=" text-lg md:text-xl my-4 text-white w-full bg-fr-blue-100 md:p-2.5  p-1.5 rounded ">
                   Personality Info
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-base md:text-lg">
                   {Object.keys(customer?.personalityInfo || []).map(
                     (key) =>
                       key != "_id" && (
                         <div key={key}>
-                          <p className="font-semibold text-lg ">
-                            {key.toUpperCase()}
+                          <p className="font-semibold  ">
+                            {capitlize(key)}
                           </p>
-                          <ul className="">
+                          <ul className="flex gap-x-3 md:flex-col">
                             {customer?.personalityInfo[key].map((value) => (
                               <li className="text-nowrap" key={value}>
                                 {value}
@@ -296,10 +324,12 @@ function Customer() {
               </div>
               {isUser && (
                 <div className="">
-                  <h1 className="text-3xl md:text-2xl font-semibold underline mb-4 ">
+
+                  <h1 className="text-lg md:text-xl my-4 text-white w-full bg-fr-blue-100 md:p-2.5 p-1.5 rounded ">
+
                     Give your rating
                   </h1>
-                  <div className="flex items-center gap-x-4">
+                  <div className="flex items-center gap-x-4 ml-2">
                     <RatingScale
                       initialRating={customer?.prevRating}
                       onRatingChange={handleRatingUpdate}
@@ -343,7 +373,7 @@ function Customer() {
           Send Message
         </button>
       </div> */}
-    </div>
+    </div >
   );
 }
 
@@ -380,9 +410,8 @@ const Star = ({ filled, onClick, onMouseEnter, onMouseLeave }) => {
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className={`w-6 h-6 cursor-pointer ${
-        filled ? "text-yellow-500" : "text-gray-300"
-      } transition-colors duration-150 ease-in-out`}
+      className={`md:w-8 md:h-8 h-6 w-6 cursor-pointer ${filled ? "text-yellow-500" : "text-gray-300"
+        } transition-colors duration-150 ease-in-out`}
       fill="currentColor"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"

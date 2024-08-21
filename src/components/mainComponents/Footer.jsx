@@ -5,10 +5,10 @@ import { websiteURL } from "../../utils/config";
 function Footer() {
   return (
     <>
-      <div className="md:hidden bg-fr-blue-200 flex justify-between flex-col gap-y-6 p-4 px-8 w-full">
+      <div className="xl:hidden bg-b-gradient-2 flex justify-between flex-col gap-y-10 p-6  w-full">
         <ul
-          className="flex flex-col md:items-center md:flex-row gap-6 text-white
-        text-lg mx-auto"
+          className="flex flex-wrap justify-center gap-6 text-white
+        text-base md:text-lg mx-auto"
         >
           <li>
             <a href={`${websiteURL}`}>Home</a>
@@ -68,11 +68,11 @@ function Footer() {
       </div>
 
       {/* pc responsive */}
-      <div className="hidden md:flex bg-fr-blue-200 flex justify-between  p-4 px-8 w-full">
+      <div className="hidden xl:flex bg-b-gradient-2 flex justify-between  p-4 px-8 w-full">
         <img src="/assets/logo.jpeg" alt="" className="h-16 rounded-md" />
 
         <ul
-          className="flex flex-col md:items-center md:flex-row gap-6 text-white
+          className="flex md:items-center md:flex-row gap-6 text-white
         text-lg mx-auto"
         >
           <li>

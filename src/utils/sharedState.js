@@ -52,8 +52,7 @@ export const stateList = [
 ];
 
 export const ageGrpList = [
-  "10-19",
-  "20-29",
+  "18-30",
   "30-39",
   "40-49",
   "50-59",
@@ -418,7 +417,7 @@ export const basicInfoFieldLabelMap = {
   race: "Race",
   bodyType: "Body Type",
   astrologicalSign: "Astrological Sign",
-  relationShipStatus: "RelationShip Status",
+  relationShipStatus: "Relationship Status",
   veteranStatus: "Veteran Status",
   institutionalEmailProvider: "Institutional Email Provider",
   referredBy: "Referred By",
@@ -462,7 +461,8 @@ export const basicInfoPlaceholderMap = {
   veteranStatus: "Veteran",
   institutionalEmailProvider: "john.doe@institution.edu",
   referredBy: "user creating the customer",
-  bio: "hello, I like to watch football",
+  bio:"Please type your desired profile statement here (only 350 words are included FREE, its $9.95 for each additional 100 words over 350)"
+
 };
 
 export const basicInfoReqFieldMap = {
