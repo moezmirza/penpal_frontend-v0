@@ -12,7 +12,7 @@ import UpdateCustomer from "./routes/Customer/CreateCustomer";
 import ManageCustomers from "./routes/Customer/ManageCustomers";
 import ApproveProfiles from "./routes/Admin/ApproveProfiles";
 import ApproveUpdates from "./routes/Admin/ApproveUpdates";
-import AdminCustomer from "./routes/Customer/AdminCustomer";
+import CustomerUpdateDetails from "./routes/Admin/CustomerUpdateDetails";
 import CheckoutForm from "./routes/Payment/Payment";
 import Result from "./routes/Payment/Result";
 import UpdateCustomers from "./routes/Customer/UpdateCustomers";
@@ -55,7 +55,7 @@ function App() {
       <Route element={<AdminRoutes />}>
         <Route path="/approve-profiles" element={<ApproveProfiles />} />
         <Route path="/approve-updates" element={<ApproveUpdates />} />
-        <Route path="/admin/inmate-updates/:id" element={<AdminCustomer />} />
+        <Route path="/admin/inmate-updates/:id" element={<CustomerUpdateDetails />} />
         <Route path="/admin/inmate/:id" element={<Customer />} />
         <Route path="/delete-profiles" element={<DeleteProfiles />} />
         <Route path="/update-profiles" element={<UpdateProfiles />} />

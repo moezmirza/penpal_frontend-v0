@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { capitlize } from "../routes/Customer/Customer";
 
 function CustomerCard({
   showExpiresAt,
@@ -11,9 +12,11 @@ function CustomerCard({
   onProfileDeletion,
   onViewUpdate,
   onViewDetails,
+  onProfileStatus,
+  profileStatuses,
+  deactivateBtnRef
 }) {
   console.log("customerCard", customer, customer?.basicInfo);
-  const navigate = useNavigate();
   return (
     <div
       id="customer-card"
@@ -140,6 +143,16 @@ function CustomerCard({
             onClick={() => onProfileApproval(true, customer._id)}
           >
             Approve Profile
+          </button>
+        )}
+        {onProfileStatus && profileStatuses.includes(customer?.customerStatus?.status) && (
+          <button
+            ref={deactivateBtnRef}
+            type="button"
+            className="mt-3 bg-green-600 text-white px-3 py-3 rounded-lg hover:opacity-90"
+            onClick={() => onProfileStatus(customer._id)}
+          >
+            {capitlize(customer?.customerStatus?.status == "active" ? "Deactivate" : "Activate")}
           </button>
         )}
         {onProfileDeletion && (

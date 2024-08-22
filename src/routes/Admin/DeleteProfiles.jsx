@@ -6,12 +6,14 @@ import { useDel } from "../../api/useDel";
 import ConfrimPopup from "../../components/ConfrimPopup";
 import { includesCaseInsensitive } from "./ApproveUpdates";
 import CustomerCard from "../../components/CustomerCard";
+import { usePut } from "../../api/usePut";
 
 function DeleteProfiles() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inputVal, setInputVal] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
+  const [showDelPopup, setShowDelPopup] = useState(false);
+  const [showStatusPopup, setShowStatusPopup] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [loadMoreMsg, setLoadMoreMsg] = useState("");
   const clientId = useRef();
@@ -19,7 +21,9 @@ function DeleteProfiles() {
   const itemsPerPage = 40;
 
   const get = useGet();
+  const put = usePut()
   const del = useDel();
+  const deactivateBtnRef = useRef()
   const navigate = useNavigate();
 
   const handleFetchMoreCustomers = () => {
@@ -48,20 +52,55 @@ function DeleteProfiles() {
   };
 
   const handleDeleteProfile = (cid) => {
-    setShowPopup(true);
+    setShowDelPopup(true);
     clientId.current = cid;
   };
   const delProfile = () => {
     setCustomers((customers) =>
       customers.filter((customer) => customer._id != clientId?.current)
     );
-    setShowPopup(false);
+    setShowDelPopup(false);
     del(`/customer?id=${clientId?.current}`).then((response) => {
       const { success, data, error } = response;
       if (success) {
         console.log("customer deletion successful:", data);
       } else {
         console.error("Error deletiting customer:", error);
+      }
+      clientId.current = null;
+    });
+  };
+
+  const handleProfileStatus = (cid) => {
+    setShowStatusPopup(true)
+    clientId.current = cid;
+    console.log("insideProfileStatus", clientId.current, cid)
+  }
+  const changeProfileStatus = (e) => {
+    let currCustomerStatus, updatedStatus;
+    const updatedCustomers = customers.map((customer) => {
+      if (customer._id == clientId.current) {
+        currCustomerStatus = customer?.customerStatus?.status
+        updatedStatus = currCustomerStatus == "active" ? "inactive" : "active"
+        return {
+          ...customer,
+          customerStatus: {
+            ...customer?.customerStatus,
+            status: updatedStatus
+          }
+        }
+      }
+      return customer
+    })
+    setCustomers(updatedCustomers)
+    setShowStatusPopup(false);
+
+    put(`/admin/customer-status?id=${clientId?.current}`, { status: updatedStatus }).then((response) => {
+      const { success, data, error } = response;
+      if (success) {
+        console.log("customer (de)activation successful:", data);
+      } else {
+        console.error("Error (de)activating customer:", error);
       }
       clientId.current = null;
     });
@@ -99,13 +138,21 @@ function DeleteProfiles() {
   return (
     <div className="flex flex-col items-center gap-y-12 relative mt-6  mx-auto">
       <LoadingSpinner isLoading={loading} />
-      {showPopup && (
+      {showDelPopup && (
         <ConfrimPopup
-          onCloseClick={setShowPopup}
+          onCloseClick={setShowDelPopup}
           onConfirm={delProfile}
           confirmBtnTxt={"Delete profile"}
-          infoText={"It will delete prisoner's profile, changes will be irreversible"}
+          infoText={"It will delete inmate's profile, changes will be irreversible"}
           confirmBtnColor="red"
+        />
+      )}
+      {showStatusPopup && (
+        <ConfrimPopup
+          onCloseClick={setShowStatusPopup}
+          onConfirm={changeProfileStatus}
+          confirmBtnTxt={`Change profile status`}
+          infoText={"It will change inmate's profile status and make it invisible to users"}
         />
       )}
       <h1 className="md:text-3xl text-2xl font-bold underline">
@@ -132,6 +179,9 @@ function DeleteProfiles() {
               key={index}
               customer={customer}
               onProfileDeletion={handleDeleteProfile}
+              onProfileStatus={handleProfileStatus}
+              profileStatuses={["active", "inactive"]}
+              deactivateBtnRef={deactivateBtnRef}
               onViewDetails={() =>
                 navigate(`/admin/inmate/${customer?._id}`)
               }
