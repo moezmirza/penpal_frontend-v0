@@ -30,7 +30,7 @@ const adminNavbarLinkMap = {
   "Approve Profiles": "/approve-profiles",
   "Approve Updates": "/approve-updates",
   "Update Profiles": "/update-profiles",
-  "Delete Profiles": "/delete-profiles",
+  "Delete/Deactivate Profiles": "/delete-profiles",
 };
 function Navbar() {
   const user = useSelector((state) => state.user.currentUser);

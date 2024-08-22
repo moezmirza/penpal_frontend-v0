@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { capitlize } from "../routes/Customer/Customer";
 
 function CustomerCard({
   showExpiresAt,
@@ -11,9 +12,19 @@ function CustomerCard({
   onProfileDeletion,
   onViewUpdate,
   onViewDetails,
+  onProfileStatus,
+  profileStatuses,
+  deactivateBtnRef
 }) {
+  const customerStatus = customer?.customerStatus?.status
+  const statusColorMap = {
+    "active": "bg-green-500",
+    "inactive": "bg-gray-500",
+    "expired": "bg-red-500",
+    "new": "bg-fr-blue-100"
+  }
+  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"))
   console.log("customerCard", customer, customer?.basicInfo);
-  const navigate = useNavigate();
   return (
     <div
       id="customer-card"
@@ -27,7 +38,7 @@ function CustomerCard({
       />
       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
         <div className=" ">
-          <div className="flex gap-x-6 items-baseline">
+          <div className="flex gap-x-6 items-center">
             <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
               {customer?.basicInfo?.firstName} {customer?.basicInfo?.lastName}
             </p>
@@ -35,7 +46,7 @@ function CustomerCard({
               <img
                 src="assets/icons/filledHeart.svg"
                 alt=""
-                className="h-6"
+                className="h-6 mb-1"
               />
             }
             {customer?.customerStatus?.featuredPlacement &&
@@ -53,6 +64,11 @@ function CustomerCard({
                 className="h-6 cursor-pointer"
                 title="premium"
               />
+            }
+            {customerStatus && isAdmin &&
+              <p className={`${statusColorMap[customerStatus]} text-white p-1  border py-0 rounded mb-1`}>
+                {customerStatus == "new" ? "unpaid" : customerStatus}
+              </p>
             }
           </div>
 
@@ -142,6 +158,16 @@ function CustomerCard({
             Approve Profile
           </button>
         )}
+        {onProfileStatus && profileStatuses.includes(customer?.customerStatus?.status) && (
+          <button
+            ref={deactivateBtnRef}
+            type="button"
+            className="mt-3 bg-green-600 text-white px-3 py-3 rounded-lg hover:opacity-90"
+            onClick={() => onProfileStatus(customer._id)}
+          >
+            {capitlize(customer?.customerStatus?.status == "active" ? "Deactivate" : "Activate")}
+          </button>
+        )}
         {onProfileDeletion && (
           <button
             type="button"
@@ -170,7 +196,7 @@ function CustomerCard({
           </button>
         )}
       </div>
-    </div>
+    </div >
   );
 }
 

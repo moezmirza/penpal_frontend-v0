@@ -7,7 +7,7 @@ import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { basicInfoFieldLabelMap } from "../../utils/sharedState";
 import ContactInfo from "../../components/ContactInfo";
 
-function AdminCustomer() {
+function CustomerUpdateDetails() {
   const { id } = useParams();
   const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -108,10 +108,10 @@ function AdminCustomer() {
                     {customer?.basicInfo?.lastName}{" "}
                     {(updatedFields?.includes("firstName") ||
                       updatedFields?.includes("lastName")) && (
-                      <span className="font-normal text-xs text-green-500 ml-2">
-                        new
-                      </span>
-                    )}
+                        <span className="font-normal text-xs text-green-500 ml-2">
+                          new
+                        </span>
+                      )}
                   </p>
 
                   <div className="flex gap-3 justify-center md:justify-start flex-wrap ">
@@ -286,4 +286,4 @@ function AdminCustomer() {
   );
 }
 
-export default AdminCustomer;
+export default CustomerUpdateDetails
