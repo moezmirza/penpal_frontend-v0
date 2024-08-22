@@ -1,14 +1,12 @@
 {
     "rewrites": [
         {
-            "source": "/(.*)",
-            "destination": "/index.html"
-        }
-    ],
-    "routes": [
-        {
             "src": "/.well-known/apple-developer-merchantid-domain-association",
             "dest": "/apple-developer-merchantid-domain-association"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/index.html"
         }
     ]
 }
