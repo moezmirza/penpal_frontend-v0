@@ -16,6 +16,14 @@ function CustomerCard({
   profileStatuses,
   deactivateBtnRef
 }) {
+  const customerStatus = customer?.customerStatus?.status
+  const statusColorMap = {
+    "active": "bg-green-500",
+    "inactive": "bg-gray-500",
+    "expired": "bg-red-500",
+    "new": "bg-fr-blue-100"
+  }
+  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"))
   console.log("customerCard", customer, customer?.basicInfo);
   return (
     <div
@@ -30,7 +38,7 @@ function CustomerCard({
       />
       <div className="flex flex-col gap-y-3 md:w-7/12 w-full ">
         <div className=" ">
-          <div className="flex gap-x-6 items-baseline">
+          <div className="flex gap-x-6 items-center">
             <p className="font-semibold md:text-3xl text-lg mb-4 md:mb-1">
               {customer?.basicInfo?.firstName} {customer?.basicInfo?.lastName}
             </p>
@@ -38,7 +46,7 @@ function CustomerCard({
               <img
                 src="assets/icons/filledHeart.svg"
                 alt=""
-                className="h-6"
+                className="h-6 mb-1"
               />
             }
             {customer?.customerStatus?.featuredPlacement &&
@@ -56,6 +64,11 @@ function CustomerCard({
                 className="h-6 cursor-pointer"
                 title="premium"
               />
+            }
+            {customerStatus && isAdmin &&
+              <p className={`${statusColorMap[customerStatus]} text-white p-1  border py-0 rounded mb-1`}>
+                {customerStatus == "new" ? "unpaid" : customerStatus}
+              </p>
             }
           </div>
 
@@ -183,7 +196,7 @@ function CustomerCard({
           </button>
         )}
       </div>
-    </div>
+    </div >
   );
 }
 
