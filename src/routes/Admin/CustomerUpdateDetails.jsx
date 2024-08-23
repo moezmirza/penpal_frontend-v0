@@ -6,6 +6,7 @@ import { usePost } from "../../api/usePost";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { basicInfoFieldLabelMap } from "../../utils/sharedState";
 import ContactInfo from "../../components/ContactInfo";
+import AssociatedUsersInfo from "../../components/AssociatedUsersInfo";
 
 function CustomerUpdateDetails() {
   const { id } = useParams();
@@ -281,6 +282,8 @@ function CustomerUpdateDetails() {
           emailProvider={customer?.basicInfo?.institutionalEmailProvider}
           mailingAddress={customer?.basicInfo?.mailingAddress}
         />
+
+        <AssociatedUsersInfo updatedBy={customer?.updatedBy || null} paidBy={customer?.paidBy || null} />
       </div>
     </div>
   );

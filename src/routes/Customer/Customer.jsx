@@ -8,6 +8,7 @@ import {
   basicInfoFieldLabelMap,
 } from "../../utils/sharedState";
 import ContactInfo from "../../components/ContactInfo";
+import AssociatedUsersInfo from "../../components/AssociatedUsersInfo";
 
 export const capitlize = (string) => {
   return string[0].toUpperCase() + string.substring(1);
@@ -348,6 +349,10 @@ function Customer() {
           emailProvider={customer?.basicInfo?.institutionalEmailProvider}
           mailingAddress={customer?.basicInfo?.mailingAddress}
         />
+
+        {isAdmin &&
+          <AssociatedUsersInfo createdBy={customer?.createdBy || null} paidBy={customer?.paidBy || null} />
+        }
       </div>
 
       {/* <div

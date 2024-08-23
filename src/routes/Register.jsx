@@ -10,14 +10,17 @@ const Register = () => {
     lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
     terms: "false",
   });
 
   const [error, setError] = useState("");
+  const [passwordMismatchErr, setPasswordMismatchErr] = useState("")
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const post = usePost();
   const passwordRef = useRef();
+  const confirmPassworfRef = useRef()
   const imageRef = useRef();
   const isUserLoggedIn = JSON.parse(localStorage.getItem("userAuth"));
   const isAdminLoggedIn = JSON.parse(localStorage.getItem("adminAuth"));
@@ -57,11 +60,15 @@ const Register = () => {
     for (const key in formData) {
       console.log(key, formData[key], key == "terms", formData[key] == "false");
       if (key == "terms" && formData[key] == "false") {
-        setError("All fields are required");
+        setError("All fields are required!");
         return;
       }
       if (formData[key] === "") {
-        setError("All fields are required");
+        setError("All fields are required!");
+        return;
+      }
+      if (passwordMismatchErr) {
+        setError("Password's criteria not fulfilled!")
         return;
       }
     }
@@ -76,20 +83,31 @@ const Register = () => {
     }
   };
 
-  const changePassInputType = () => {
+  const changePasswordInputType = (e) => {
     console.log("inside drop", passwordRef.current.type);
     if (passwordRef.current.type == "password") {
       passwordRef.current.type = "text";
-      imageRef.current.src = "assets/icons/eye.svg";
+      confirmPassworfRef.current.type = "text"
+      e.target.src = "assets/icons/eye.svg";
     } else {
       passwordRef.current.type = "password";
-      imageRef.current.src = "assets/icons/eyeSlash.svg";
+      confirmPassworfRef.current.type = "password"
+      e.target.src = "assets/icons/eyeSlash.svg";
+    }
+  };
+
+  const handleBlur = () => {
+    console.log("blurred called")
+    if (formData.password !== formData.confirmPassword) {
+      setPasswordMismatchErr('Passwords do not match');
+    } else {
+      setPasswordMismatchErr('');
     }
   };
 
   return (
     <div className="flex justify-center md:items-center md:py-6 bg-b-general py-16 px-3  md:h-full ">
-      <div className="flex flex-col items-center gap-y-6 bg-white p-4 md:p-8 w-full h-fit md:w-2/5 rounded-lg relative">
+      <div className="flex flex-col items-center gap-y-3 bg-white p-4 md:p-8 w-full h-fit md:w-2/5 rounded-lg relative">
         <LoadingSpinner isLoading={loading} />
         <h2 className="md:text-4xl text-2xl font-bold text-gray-900 flex gap-x-4">
           Create Account
@@ -99,7 +117,7 @@ const Register = () => {
           {infoText}
         </p>
         {error && (
-          <p className="text-red-500 m-1 text-sm md:text-base">{error} </p>
+          <p className="text-red-500  text-sm md:text-base">{error} </p>
         )}
         <form
           onSubmit={handleSubmit}
@@ -146,7 +164,7 @@ const Register = () => {
                 alt=""
                 ref={imageRef}
                 className="h-4 md:h-6 cursor-pointer"
-                onClick={changePassInputType}
+                onClick={changePasswordInputType}
               />
             </div>
             <input
@@ -161,6 +179,24 @@ const Register = () => {
               placeholder="Enter your password"
             />
           </label>
+          <label className="text-left">
+            <div className="flex items-center gap-x-4">
+              Confirm Password
+              <span className="text-xs md:text-sm text-red-600 italic">{passwordMismatchErr}</span>
+            </div>
+            <input
+              ref={confirmPassworfRef}
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={`block w-full mt-2 rounded-md p-1.5 md:p-2 border ${passwordMismatchErr ? 'border-2 border-red-500' : 'border-gray-400'} outline-none focus:border-gray-700`}
+              required
+              placeholder="Confirm your password"
+            />
+          </label>
           <label className="flex gap-x-4 cursor-pointer">
             <input
               type="checkbox"
@@ -170,8 +206,8 @@ const Register = () => {
             />
             <p>
               I agree to the{" "}
-              <a className="underline" href="">
-                terms and privacy
+              <a className="underline" href="https://awayoutpenpals.com/terms-and-conditions/">
+                terms and conditions
               </a>
             </p>
           </label>

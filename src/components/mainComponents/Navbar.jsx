@@ -337,14 +337,14 @@ function NavbarOptions({ onShowDropdown, onSignout, onLinkClick, isAdmin, isUser
           <li key={linkName} onClick={onLinkClick}>
             <Link
               to={adminNavbarLinkMap[linkName]}
-              className="text-nowrap block px-4 py-1.5 md:py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+              className="block px-2 py-1.5 md:py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
             >
               {linkName}
             </Link>
           </li>
         ))}
         <li
-          className="block px-4 py-1.5 md:py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
+          className="block px-2 py-1.5 md:py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
           onClick={onSignout}
         >
           Sign out
@@ -361,7 +361,7 @@ function NavbarOptions({ onShowDropdown, onSignout, onLinkClick, isAdmin, isUser
               <div>
                 <div
                   onClick={() => onProfileDropdown(!profileDropdown)}
-                  className="px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 cursor-pointer"
+                  className="px-3 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 cursor-pointer"
                 >
                   {linkName}
                 </div>
@@ -379,13 +379,13 @@ function NavbarOptions({ onShowDropdown, onSignout, onLinkClick, isAdmin, isUser
               </div>
             </li>
           ) : linkName == "Explore Profiles" ?
-            <div>
+            <li>
               <div
                 onClick={() => {
                   onProfileDropdown(false)
                   onExploreProfileDropdown(!exploreProfileDropdown)
                 }}
-                className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 cursor-pointer"
+                className="block  px-3 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 cursor-pointer"
               >
                 {linkName}
               </div>
@@ -407,13 +407,13 @@ function NavbarOptions({ onShowDropdown, onSignout, onLinkClick, isAdmin, isUser
                   )}
                 </div>
               )}
-            </div >
+            </li>
 
             : (
               <li key={linkName} onClick={onLinkClick}>
                 <Link
                   to={userNavbarLinkMap[linkName]}
-                  className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 dark:hover:text-white"
+                  className="block  px-3 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 dark:hover:text-white"
                 >
                   {linkName}
                 </Link>
@@ -431,15 +431,15 @@ function NavbarOptions({ onShowDropdown, onSignout, onLinkClick, isAdmin, isUser
     );
   }
   return (
-    <div className="text-white flex gap-x-8 md:mr-12 md:text-base">
+    <>
       {Object.keys(unAuthNavbarLinkMap).map((linkName) => linkName == "Explore Profiles" ?
-        <div>
+        <li>
           <div
             onClick={() => {
               onProfileDropdown(false)
               onExploreProfileDropdown(!exploreProfileDropdown)
             }}
-            className="block  px-4 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 cursor-pointer"
+            className="px-3 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 cursor-pointer"
           >
             {linkName}
           </div>
@@ -456,15 +456,18 @@ function NavbarOptions({ onShowDropdown, onSignout, onLinkClick, isAdmin, isUser
               )}
             </div>
           )}
-        </div> : <Link
-          to={unAuthNavbarLinkMap[linkName]}
-          className="cursor-pointer hover:underline"
-        >
-          {linkName}
-        </Link>
-      )}
-    </div>
+        </li> :
+        <li>
+          <Link
+            to={unAuthNavbarLinkMap[linkName]}
+            className="block px-3 py-1.5 md:py-2 hover:underline dark:hover:bg-gray-600 dark:hover:text-white"
 
+          >
+            {linkName}
+          </Link>
+        </li>
+      )}
+    </>
   );
 }
 export { Navbar };
