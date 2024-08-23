@@ -21,7 +21,9 @@ function CustomerCard({
     "active": "bg-green-500",
     "inactive": "bg-gray-500",
     "expired": "bg-red-500",
-    "new": "bg-fr-blue-100"
+    "new": "bg-fr-blue-100",
+    "unpaid": "bg-fr-blue-100",
+    "unapproved": "bg-yellow-500",
   }
   const isAdmin = JSON.parse(localStorage.getItem("adminAuth"))
   console.log("customerCard", customer, customer?.basicInfo);
