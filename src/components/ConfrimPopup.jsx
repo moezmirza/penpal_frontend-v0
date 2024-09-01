@@ -1,6 +1,8 @@
 import React, { useRef } from "react";
 import { Link, useNavigate } from "react-router-dom"
 import PaymentReceipt from "./PaymentReciept";
+import { popupBtnText } from "../utils/sharedState";
+import { checkForChange } from "../utils/sharedMethods";
 
 function ConfrimPopup({
   onCloseClick,
@@ -15,20 +17,19 @@ function ConfrimPopup({
   fromLeft,
   onDelReceiptItem,
   isAdminLoggedIn,
+  unBilledFields,
+  currPhotos
 }) {
   const handleCloseClick = () => {
     onCloseClick(false);
   };
   const navigate = useNavigate();
   const popupRef = useRef();
-  console.log(
-    "updated fields",
-    updatedFields,
-    updatedFields.totalPaidPhotos,
-    updatedFields.totalPaidPhotos != 0,
-    Object.keys(updatedFields).length
-  );
-  
+
+  console.log("updatedFields", updatedFields, "currPhotos", currPhotos, "checkForChange", checkForChange(updatedFields, currPhotos))
+
+  let disableConfirm = confirmBtnColor == '2' && checkForChange(updatedFields, currPhotos)
+  console.log("disabled confirm", disableConfirm)
 
   return (
     <div
@@ -79,20 +80,20 @@ function ConfrimPopup({
             </svg>
             <div className="">
               {Object.keys(updatedFields).length != 0 && !isAdminLoggedIn ? (
-                <PaymentReceipt obj={updatedFields} onDelReceiptItem={onDelReceiptItem} />
+                <PaymentReceipt obj={updatedFields} unBilledFields={unBilledFields} onDelReceiptItem={onDelReceiptItem} />
               ) : (
                 <p className="text-gray-600 my-8">{infoText}</p>
               )}
             </div>
             <div className="flex flex-col gap-y-2 ">
-              {continueBtnTxt != "" && (
+              {continueBtnTxt && (
                 <button
                   data-modal-hide="popup-modal"
                   type="button"
                   className="text-white md:text-base text-sm bg-red-700 hover:bg-red-800 font-medium rounded-lg  px-5 py-2.5 text-center"
                   onClick={() => onCloseClick(false)}
                 >
-                  {continueBtnTxt}
+                  {popupBtnText[continueBtnTxt] ?? continueBtnTxt}
                 </button>
               )}
               <button
@@ -100,9 +101,10 @@ function ConfrimPopup({
                 type="button"
                 className={`text-white md:text-base text-sm ${confirmBtnColor ? "bg-red-700" : "bg-green-700"
                   } hover:opacity-90  font-medium rounded-lg  px-5 py-2.5 text-center`}
+                disabled={disableConfirm}
                 onClick={onConfirm}
               >
-                {confirmBtnTxt}
+                {popupBtnText[confirmBtnTxt] ?? confirmBtnTxt}
               </button>
             </div>
           </div>
