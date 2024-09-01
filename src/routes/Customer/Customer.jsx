@@ -133,10 +133,43 @@ function Customer() {
 
     setCustomer({ ...customer, profileApproved: true });
   };
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // getMonth() returns 0-11, so we add 1
+    const day = date.getDate().toString().padStart(2, '0'); // getDate() returns the day of the month
+    const year = date.getFullYear();
+    // Combine them into MMDDYYYY format
+    const formattedDate = `${month}-${day}-${year}`;
+
+    return formattedDate;
+  }
+
+  const convertInchesToFeetAndInches = (inches) => {
+    const feet = Math.floor(inches / 12);
+    const remainingInches = inches % 12;
+    return `${feet} ft. ${remainingInches} in.`;
+  }
+
   const profileApproval =
     customer?.profileApproved == false && customer?.createdByCurrent;
   const updateApproval =
     customer?.updateApproved == false && customer?.createdByCurrent;
+
+  const customerFieldValue = (field) => {
+    const basicInfo = customer?.basicInfo
+    if (field == "dateOfBirth") {
+      return formatDate(basicInfo[field])
+    }
+    else if (field == "height") {
+      return convertInchesToFeetAndInches(basicInfo[field])
+    }
+    return basicInfo[field]
+  }
+
+  const updateRoute = isAdmin ? `/admin/update-inmate/${id}` : `update-inmate/${id}`
+  const excludeBasinInfoFields = ["bio", "mailingAddress", "institutionalEmailProvider"]
+
   return (
     <div className="bg-c-basic min-h-screen px-3 xl:px-0 py-12">
       <div className="flex flex-col items-center gap-y-12 w-full xl:w-8/12 mx-auto">
@@ -154,7 +187,7 @@ function Customer() {
             </p>
           )} */}
           <LoadingSpinner isLoading={loading} />
-          <div className="flex flex-col gap-y-8">
+          <div className="flex flex-col gap-y-6">
             <div className="flex flex-col md:flex-row md:items-start gap-x-12 gap-y-6 relative">
               <img
                 src={customer?.photos?.imageUrl || "/assets/default.jpg"}
@@ -203,15 +236,14 @@ function Customer() {
                 </p>
               </div>
               <div className="flex flex-col items-center gap-y-3">
+                <button
+                  type="button"
+                  className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border text-white bg-yellow-600 rounded-lg hover:opacity-90 text-nowrap"
+                  onClick={() => navigate(updateRoute)}
+                >
+                  Update Profile
+                </button>
                 {!isAdmin && <>
-                  <button
-                    type="button"
-                    className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border text-white bg-yellow-600 rounded-lg hover:opacity-90 text-nowrap"
-                    onClick={() => navigate(`/update-inmate/${id}`)}
-                  >
-                    Update Profile
-                  </button>
-
                   <button
                     type="button"
                     className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-green-600  rounded-lg hover:opacity-90 text-nowrap"
@@ -265,41 +297,35 @@ function Customer() {
             </div>
 
             <div>
-              <h2 className=" text-lg md:text-xl my-4 text-white w-full bg-fr-blue-100 md:p-2.5 p-1.5 rounded ">
+              <h2 className=" text-lg md:text-xl my-4 text-white w-full bg-fr-blue-100 md:p-2.5 p-2 rounded ">
                 Basic Info
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2  gap-4 text-base md:text-lg">
-                {customer &&
-                  basicInfoDisplayFields.map((field) => {
-                    return (
-                      customer?.basicInfo[field] &&
-                      (field == "spokenLanguages" ? (
-                        <p key={field} className="flex flex-wrap items-end">
-                          <span className="font-semibold mr-1 ">
-                            {basicInfoFieldLabelMap[field]}:
-                          </span>
-                          {customer?.basicInfo[field].map((lang) => (
-                            <span className="mr-1">{lang}</span>
-                          ))}
-                        </p>
-                      ) : (field != "mailingAddress" &&
-                        <p key={field} className="">
-                          <span className="font-semibold mr-1">
-                            {basicInfoFieldLabelMap[field]}:
-                          </span>
-                          {field == "dateOfBirth"
-                            ? customer?.basicInfo[field].split("T")[0]
-                            : customer?.basicInfo[field]}
-                        </p>
-                      ))
-                    );
-                  })}
+                {customer && Object.keys(customer?.basicInfo).map((field) => {
+                  return field == "spokenLanguages" ? (
+                    <p key={field} className="flex flex-wrap items-end">
+                      <span className="font-semibold mr-1 ">
+                        {basicInfoFieldLabelMap[field]}:
+                      </span>
+                      {customer?.basicInfo[field].map((lang) => (
+                        <span className="mr-1">{lang}</span>
+                      ))}
+                    </p>
+                  ) : (!excludeBasinInfoFields.includes(field) && customer?.basicInfo[field] &&
+                    <p key={field} className="">
+                      <span className="font-semibold mr-1">
+                        {basicInfoFieldLabelMap[field]}:
+                      </span>
+                      {customerFieldValue(field)}
+                    </p>
+                  )
+                })}
               </div>
             </div>
             <div className="flex flex-col gap-y-10 ">
               <div>
-                <h2 className=" text-lg md:text-xl my-4 text-white w-full bg-fr-blue-100 md:p-2.5  p-1.5 rounded ">
+                <h2 className=" text-lg md:text-xl my-4 text-white w-full bg-fr-blue-100 md:p-2.5  p-2 rounded ">
                   Personality Info
                 </h2>
 
@@ -323,6 +349,9 @@ function Customer() {
                   )}
                 </div>
               </div>
+
+              <Photos photos={customer?.photos} />
+
               {isUser && (
                 <div className="">
 
@@ -425,4 +454,28 @@ const Star = ({ filled, onClick, onMouseEnter, onMouseLeave }) => {
     </svg>
   );
 };
+
+
+function Photos({ photos }) {
+  return (
+    <div>
+      <h2 className=" text-lg md:text-xl my-4 text-white w-full bg-fr-blue-100 md:p-2.5 p-1.5 rounded ">
+        Photos/Artworks
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
+        {photos?.artworks.map((image, index) => (
+          <div key={index} className="w-full h-48 overflow-hidden">
+            <img
+              src={image}
+              alt={`Image ${index + 1}`}
+              className="object-cover w-full h-full rounded-lg shadow-lg hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+
+  );
+
+}
 export default Customer;

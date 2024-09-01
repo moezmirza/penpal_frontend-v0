@@ -399,7 +399,7 @@ export const basicInfoFieldLabelMap = {
   mailingAddress: "Mailing Address",
   zipcode: "Zip Code",
   dateOfBirth: "Date of birth",
-  height: "Height(Inches)",
+  height: "Height (Inches)",
   weight: "Weight (Pounds)",
   hairColor: "Hair Color",
   eyeColor: "Eye Color",
@@ -461,7 +461,7 @@ export const basicInfoPlaceholderMap = {
   veteranStatus: "Veteran",
   institutionalEmailProvider: "john.doe@institution.edu",
   referredBy: "user creating the customer",
-  bio:"Please type your desired profile statement here (only 350 words are included FREE, its $9.95 for each additional 100 words over 350)"
+  bio: "Please type your desired profile statement here (only 350 words are included FREE, its $9.95 for each additional 100 words over 350)"
 
 };
 
@@ -580,3 +580,14 @@ export const emailProvidersLinkMap = {
   Corrlinks: "https://www.corrlinks.com/",
   "Other provider": "",
 };
+
+export const unBilledFields = ["mailingAddress", "institutionalEmailProvider"]
+
+
+
+export const popupBtnText = {
+  '0': "Continue Editing",
+  '1': "Confirm Creation",
+  '2': "Confirm Updation",
+
+}

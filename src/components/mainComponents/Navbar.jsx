@@ -29,6 +29,7 @@ const adminNavbarLinkMap = {
   Home: "https://awayoutpenpals.com/",
   "Approve Profiles": "/approve-profiles",
   "Approve Updates": "/approve-updates",
+  "Create Profile": "/admin/create-profile",
   "Update Profiles": "/update-profiles",
   "Delete/Deactivate Profiles": "/delete-profiles",
 };

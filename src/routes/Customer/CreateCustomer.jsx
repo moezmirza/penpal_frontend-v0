@@ -12,19 +12,19 @@ import {
   fieldStateNameMap,
   addonNameToStateMap,
   addonStatetoCost,
+  unBilledFields,
 } from "../../utils/sharedState";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../services/firebase";
-import { useSelector } from "react-redux";
 import { usePost } from "../../api/usePost";
 import { useGet } from "../../api/useGet";
 import { useNavigate, useParams } from "react-router-dom";
 import { usePut } from "../../api/usePut";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { v4 } from "uuid";
-import BasicInfo, { formattedImageName } from "../User/Profile/BasicInfo";
+import { formattedImageName } from "../User/Profile/BasicInfo";
 import ConfrimPopup from "../../components/ConfrimPopup";
-import { isEmpty, roundTo } from "../../utils/sharedMethods";
+import { calculateTotalCost, checkForChange, isEmpty, roundTo } from "../../utils/sharedMethods";
 import PaymentReceipt from "../../components/PaymentReciept";
 import { dummyBasicInfo, dummyPersonalityInfo } from "../../utils/mockState";
 
@@ -62,12 +62,12 @@ function CreateCustomer() {
     institutionalEmailProvider: [],
     religiousPref: [],
     highSchool: "",
-    highSchoolState: "",
     highSchoolCity: "",
+    highSchoolState: "",
     education: [],
     collegeName: "",
-    collegeState: "",
     collegeCity: "",
+    collegeState: "",
     homeTownCity: "",
     homeTownState: "",
     bodyType: [],
@@ -148,9 +148,9 @@ function CreateCustomer() {
 
   const [photos, setPhotos] = useState(photosIntialState);
   const [currPhotos, setCurrPhotos] = useState(photosIntialState);
-  const [basicInfo, setBasicInfo] = useState(dummyBasicInfo);
+  const [basicInfo, setBasicInfo] = useState(basicInfoIntialState);
   const [personalityInfo, setPersonalityInfo] = useState(
-    dummyPersonalityInfo);
+    personalityInfoInitialState);
   const [initialProfileData, setInitialProfileData] = useState({ basicInfo: {}, personalityInfo: {}, photos: {} })
   const [duesInfo, setDuesInfo] = useState(dueInitiallState);
   const [wordLimit, setWordLimit] = useState(0);
@@ -166,9 +166,7 @@ function CreateCustomer() {
     basicInfo: {},
     personalityInfo: {},
   };
-  // const updatedFields = useRef(updatedFieldsInitialState); // to keep track of updatedFields
   const [updatedFields, setUpdatedFields] = useState(updatedFieldsInitialState) // to keep track of updatedFields
-
   const uploadImage = async (imageFile, imageName, folder) => {
     try {
       const userProfileImgRef = ref(storage, `${folder}/${imageName}`);
@@ -243,7 +241,7 @@ function CreateCustomer() {
     setShowCreateConfirmPop(false);
     if (id) {
       //only for update
-      if (checkForChange(updatedFields)) {
+      if (checkForChange(updatedFields, currPhotos)) {
         setError("No changes made");
         return;
       }
@@ -327,7 +325,8 @@ function CreateCustomer() {
         }
       }
     } else {
-      const finalObj = {
+      const createEndpoint = isAdminLoggedIn ? "/admin/customer" : "/customer"
+      let finalObj = {
         photos: {
           imageUrl: imageDownloadURL,
           artworks: artworksDownloadURL,
@@ -338,7 +337,12 @@ function CreateCustomer() {
         wordLimit: wordLimit,
         totalPaidPhotos: total > 3 ? total - 3 : 0,
       };
-
+      if (isAdminLoggedIn) {
+        finalObj = {
+          ...finalObj,
+          "pay": true,
+        }
+      }
       console.log(
         "finalObjetct",
         finalObj,
@@ -348,7 +352,7 @@ function CreateCustomer() {
         personalityInfo
       );
 
-      const { success, data, error } = await post("/customer", finalObj);
+      const { success, data, error } = await post(createEndpoint, finalObj);
       if (success) {
         console.log("customer created", data);
         setCreatedCustomerId(data._id);
@@ -362,9 +366,11 @@ function CreateCustomer() {
           creation: true,
         };
         setDuesInfo(currDuesInfo);
-        payementBoxRef.current.scrollIntoView({
-          behavior: "smooth",
-        });
+        if (payementBoxRef) {
+          payementBoxRef.current.scrollIntoView({
+            behavior: "smooth",
+          });
+        }
       } else {
         setLoading(false);
         setDuesInfo(dueInitiallState);
@@ -391,8 +397,6 @@ function CreateCustomer() {
         [fieldKey]: true
       }
     }))
-    // updatedFields.current.basicInfo[fieldKey] = true;
-
     if (remove) {
       updatedArr = updatedArr.filter((item) => item != value);
     } else {
@@ -415,52 +419,43 @@ function CreateCustomer() {
 
     if (fieldName == "bio") {
       const text = e.target.value;
-      let wordCount = text.split(" ").length;
-      console.log("intialWordCount", intialWordCount);
-      let totalCount = 0
-      if (wordCount <= intialWordCount) {
-        setWordLimit(totalCount);
-        setUpdatedFields((updatedFields) => ({
-          ...updatedFields,
-          "wordLimit": totalCount
-        }))
-        return
-      }
+      let wordCount = text.split(/\s+/).length;
+      let exceededLimitNum = 0
       if (wordCount > 350) {
-        console.log("wordCount", wordCount);
-        if (wordCount > intialWordCount && intialWordCount >= 350) {
-          let netWordCount = wordCount - intialWordCount;
-          console.log("netWordCount", netWordCount);
-          if (netWordCount > 100) {
-            totalCount = Math.floor(netWordCount / 100);
-            console.log("totalCount", totalCount);
-            setWordLimit(totalCount);
-            // setWordNum(totalCount);
+        if (wordCount > intialWordCount && intialWordCount > 350) {
+          let currPaidWordCount = wordCount - 350;
+          let initialPaidWordCount = intialWordCount - 350
+          let ceilDiff = Math.ceil(currPaidWordCount / 100) - Math.ceil(initialPaidWordCount / 100)
+          if (ceilDiff > 0) { // greater than 0 checks whether 1st num is greater than 2nd or not
+            exceededLimitNum = ceilDiff
           }
-        } else if (intialWordCount < 350) {
+          else {
+            exceededLimitNum = 0
+          }
+        } else if (intialWordCount <= 350) {
           let netWordCount = wordCount - 350;
-          totalCount = Math.floor(netWordCount / 100);
-          setWordLimit(totalCount);
+          exceededLimitNum = Math.ceil(netWordCount / 100);
         }
       } else {
-        totalCount = 0
-        setWordLimit(totalCount);
+        exceededLimitNum = 0
       }
+      setWordLimit(exceededLimitNum)
       if (id) {
         setUpdatedFields((updatedFields) => ({
           ...updatedFields,
-          "wordLimit": totalCount
+          "wordLimit": exceededLimitNum
         }))
       }
     }
-    setUpdatedFields((updatedFields) => ({
-      ...updatedFields,
-      basicInfo: {
-        ...updatedFields.basicInfo,
-        [e.target.name]: true
-      }
-    }))
-    // updatedFields.current.basicInfo[e.target.name] = true;
+    if (id) {
+      setUpdatedFields((updatedFields) => ({
+        ...updatedFields,
+        basicInfo: {
+          ...updatedFields.basicInfo,
+          [e.target.name]: true
+        }
+      }))
+    }
     setBasicInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -497,7 +492,10 @@ function CreateCustomer() {
     else if (typeof dueInitiallState[field] == "number") return 0;
     else return {};
   };
-
+  const formatBasicInfoFields = (field, value) => {
+    if (basicInfoOptionsField.includes(field)) return [value]
+    return value
+  }
   useEffect(() => {
     const fetchCustomer = async () => {
       setLoading(true);
@@ -524,7 +522,7 @@ function CreateCustomer() {
         // assigning only state values
         Object.keys(basicInfo).forEach((field) => {
           basicInfoData[field] = fetchedBasicInfo[field]
-            ? fetchedBasicInfo[field]
+            ? formatBasicInfoFields(field, fetchedBasicInfo[field])
             : basicInfoEmptyFormat(field);
         });
 
@@ -563,7 +561,7 @@ function CreateCustomer() {
       console.log("inside here");
       fetchCustomer();
     } else {
-      // resetState();
+      resetState();
     }
   }, [id]);
 
@@ -574,18 +572,8 @@ function CreateCustomer() {
     setPersonalityInfo(personalityInfoInitialState);
     setDone(false);
     setUpdatedFields(updatedFieldsInitialState)
-    // updatedFields.current = updatedFieldsInitialState;
   };
-  const checkObjEmpty = (obj) => {
-    return Object.values(obj).every((value) => value == false)
-  };
-  const checkForChange = (obj) => {
-    return (
-      currPhotos.total == 0 &&
-      checkObjEmpty(obj.basicInfo) &&
-      checkObjEmpty(obj.personalityInfo)
-    );
-  };
+
 
   const handleSubmitBtn = () => {
     setError("");
@@ -593,7 +581,7 @@ function CreateCustomer() {
     if (id) {
       //only for update
 
-      if (checkForChange(updatedFields)) {
+      if (checkForChange(updatedFields, currPhotos)) {
         setError("No changes made");
         return;
       }
@@ -680,11 +668,13 @@ function CreateCustomer() {
           photosIntialState={photosIntialState}
           initialProfileData={initialProfileData}
           isAdminLoggedIn={isAdminLoggedIn}
+          unBilledFields={unBilledFields}
         />
         {!isAdminLoggedIn &&
           <div className="basis-[40%] flex flex-col gap-y-6">
-            <DuesSection
+            <PendingDuesSection
               duesInfo={duesInfo}
+              unBilledFields={unBilledFields}
               onDuesInfo={setDuesInfo}
               id={id}
               payementBoxRef={payementBoxRef}
@@ -729,13 +719,14 @@ function CustomerDetails({
   onPersonalityInfo,
   photosIntialState,
   initialProfileData,
-  isAdminLoggedIn
+  isAdminLoggedIn,
+  unBilledFields
 }) {
   const imageRef = useRef();
   const artworkRef = useRef();
 
   const bioWordsLenght =
-    basicInfo.bio == "" ? 0 : basicInfo.bio.split(" ").length;
+    basicInfo.bio == "" ? 0 : basicInfo.bio.split(/\s+/).length;
 
   const updatePhotosState = (updatdCurrPhotos) => {
     onCurrPhotos(updatdCurrPhotos);
@@ -871,22 +862,26 @@ function CustomerDetails({
       {showUpdateConfirmPop && (
         <ConfrimPopup
           updatedFields={updatedFields}
-          continueBtnTxt={"Continue editing"}
-          confirmBtnTxt={`Confirm ${id ? "updation" : "creation"}`}
+          continueBtnTxt={'0'}
+          confirmBtnTxt={'2'}
           onConfirm={handleUpdate}
           onCloseClick={setShowUpdateConfirmPop}
           onDelReceiptItem={handleDelUpdateRecieptItem}
           isAdminLoggedIn={isAdminLoggedIn}
           infoText={isAdminLoggedIn ? "It will update prisoner's profile, changes made will be irreversible" : ""}
+          unBilledFields={unBilledFields}
+          currPhotos={currPhotos}
         />
       )}
       {showCreateConfirmPop && (
         <ConfrimPopup
           updatedFields={duesInfo}
-          continueBtnTxt={"Continue editing"}
-          confirmBtnTxt={`Confirm ${id ? "updation" : "creation"}`}
+          continueBtnTxt={'0'}
+          confirmBtnTxt={'1'}
           onConfirm={handleUpdate}
           onCloseClick={setShowCreateConfirmPop}
+          isAdminLoggedIn={isAdminLoggedIn}
+          infoText={isAdminLoggedIn ? "It will create prisoner's profile, changes made will be irreversible" : ""}
         // onDelReceiptItem={handleDelCreateReceiptItem}
         />
       )}
@@ -942,7 +937,7 @@ function CustomerDetails({
       <div className="flex flex-col gap-y-6 text-sm  p-2 md:p-6 md:text-base">
         {id && !isAdminLoggedIn && (
           <p className="text-red-500 text-center md:text-sm text-xs italic">
-            *Each field update will cost $9.95
+            *Each field update will cost $9.95 expect Mailing Address and Institutional Email Provider
           </p>
         )}
         <div className="m-auto font-semibold text-xl md:text-3xl underline">
@@ -978,7 +973,7 @@ function CustomerDetails({
                 ></textarea>
                 {wordLimit != 0 && !isAdminLoggedIn && (
                   <p className="text-red-500 text-xs md:text-sm">
-                    free limit of 350 words exceeded, you'll have to pay $9.95
+                    free limit of words exceeded, you'll have to pay $9.95
                     for each extra 100 words.
                   </p>
                 )}
@@ -1106,7 +1101,6 @@ function CustomerDetails({
             className={`ml-auto  bg-fr-blue-200 w-1/3 md:w-1/5  text-sm md:text-base text-white p-1.5 rounded ${loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
               }`}
             onClick={handleSubmitBtn}
-            // disabled={loading}
             ref={updateBtnRef}
           >
             {id
@@ -1158,9 +1152,9 @@ function AddOns({ onClick, duesInfo }) {
   );
 }
 
-function DuesSection({
+function PendingDuesSection({
   duesInfo,
-  onDuesInfo,
+  unBilledFields,
   id,
   payementBoxRef,
   onPaynow,
@@ -1171,32 +1165,15 @@ function DuesSection({
   const addons = Object.keys(duesInfo).some(
     (field) => addonsList.includes(field) && duesInfo[field]
   );
-  let total = Object.keys(duesInfo).reduce((acc, curr) => {
-    if (curr === "basicInfo" || curr === "personalityInfo") {
-      const nestedTotal = Object.keys(duesInfo[curr]).reduce(
-        (nestedAcc, field) => {
-          return duesInfo[curr][field] ? nestedAcc + 9.95 : nestedAcc;
-        },
-        0
-      );
-      return acc + nestedTotal;
-    }
-    return duesInfo[curr] ? acc + addonStatetoCost[curr] : acc;
-  }, 0);
-  // adding paid photos
-  total = total + duesInfo.totalPaidPhotos * 9.95;
-
-  total = roundTo(total, 2);
-  console.log("total here", total, total != 0);
-  console.log("addons", addons);
-
+  let total = calculateTotalCost(duesInfo)
+  console.log("total", total)
   return (
     <div
       ref={payementBoxRef}
       className=" bg-white rounded-lg h-fit px-6 md:px-12 py-6 flex flex-col gap-y-6 border text-sm md:text-base"
     >
       <h1 className=" text-xl md:text-3xl underline font-bold text-center">Pending Dues</h1>
-      <PaymentReceipt obj={duesInfo} />
+      <PaymentReceipt obj={duesInfo} pendingDuesSection={true} unBilledFields={unBilledFields} />
       <div className="flex flex-col gap-y-2 text-white">
         <button
           className={`py-2 w-full bg-green-600 rounded-lg ${total == 0

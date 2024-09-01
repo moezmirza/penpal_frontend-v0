@@ -1,27 +1,9 @@
-import { roundTo } from "../utils/sharedMethods";
+import { calculateTotalCost, roundTo } from "../utils/sharedMethods";
 import { addonStatetoCost, addonStateToNameMap, basicInfoFieldLabelMap, stateFieldNameMap } from "../utils/sharedState";
-function PaymentReceipt({ obj, onDelReceiptItem }) {
-    console.log("object receipt", obj)
-    let total = 0;
-    Object.keys(obj).forEach((field) => {
-        if (field == "personalityInfo" || field == "basicInfo") {
-            total += Object.keys(obj[field]).reduce((acc, curr) => {
-                if (obj[field][curr]) return acc + 9.95;
-                return acc;
-            }, 0);
-        } else if (field == "wordLimit" || field == "totalPaidPhotos") {
-            total += obj[field] * 9.95;
+function PaymentReceipt({ obj, unBilledFields = [], onDelReceiptItem, pendingDuesSection }) {
+    console.log("paymentReceipt", obj)
 
-        } else if (field == "premiumPlacement" || field == "featuredPlacement") {
-            console.log("prem obj field", obj[field], addonStatetoCost[field])
-            total += obj[field] * addonStatetoCost[field]
-        }
-        else {
-            console.log("field", field, "cost", addonStatetoCost[field]);
-            total += obj[field] ? addonStatetoCost[field] : 0;
-        }
-    });
-    total = roundTo(total, 2);
+    let total = calculateTotalCost(obj)
 
     const unGroupFieldsMap = {
         "totalPaidPhotos": "Photos/Artworks",
@@ -42,7 +24,7 @@ function PaymentReceipt({ obj, onDelReceiptItem }) {
                     Object.keys(obj["basicInfo"]).map(
                         (field) =>
                             obj["basicInfo"][field] && (
-                                <RecieptItem field={field} cost={9.95} nameMap={basicInfoFieldLabelMap} onDelReceiptItem={onDelReceiptItem} type={"basicInfo"} />
+                                <RecieptItem field={field} cost={9.95} unBilledFields={unBilledFields} pendingDuesSection={pendingDuesSection} nameMap={basicInfoFieldLabelMap} onDelReceiptItem={onDelReceiptItem} type={"basicInfo"} />
                             )
                     )
                 ) : field == "totalPaidPhotos" && obj["totalPaidPhotos"] != 0 ? (
@@ -73,10 +55,21 @@ function PaymentReceipt({ obj, onDelReceiptItem }) {
 };
 
 
-function RecieptItem({ field, nameMap, cost, onDelReceiptItem, type }) {
+function RecieptItem({ field, nameMap, cost, onDelReceiptItem, unBilledFields = [], pendingDuesSection, type }) {
+    if (unBilledFields) {
+        console.log(
+            unBilledFields
+        )
+        console.log("fieldName", JSON.stringify(field), "exsit", unBilledFields.includes(field))
+    }
+    console.log("unbilledFields", unBilledFields, "pendingsection", pendingDuesSection, "field", field)
+    if (pendingDuesSection && unBilledFields.includes(field)) {
+        return null
+    }
+
     return <div className="flex justify-between">
         <p>{nameMap[field]}</p>
-        <p className="flex gap-x-8">${cost}
+        <p className="flex gap-x-8">${unBilledFields.includes(field) ? 0 : cost}
             {onDelReceiptItem &&
                 <img src="/assets/icons/xMarkGray.svg" onClick={() => onDelReceiptItem(field, type)} alt="" className=" h-6 cursor-pointer  rounded hover:bg-gray-200 px-1 p-0.5" />
             }
