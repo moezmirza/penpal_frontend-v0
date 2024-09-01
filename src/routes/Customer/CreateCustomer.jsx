@@ -411,51 +411,43 @@ function CreateCustomer() {
 
     if (fieldName == "bio") {
       const text = e.target.value;
-      let wordCount = text.split(" ").length;
-      console.log("intialWordCount", intialWordCount);
-      let totalCount = 0
-      if (wordCount <= intialWordCount) {
-        setWordLimit(totalCount);
-        setUpdatedFields((updatedFields) => ({
-          ...updatedFields,
-          "wordLimit": totalCount
-        }))
-        return
-      }
+      let wordCount = text.split(/\s+/).length;
+      let exceededLimitNum = 0
       if (wordCount > 350) {
-        console.log("wordCount", wordCount);
-        if (wordCount > intialWordCount && intialWordCount >= 350) {
-          let netWordCount = wordCount - intialWordCount;
-          console.log("netWordCount", netWordCount);
-          if (netWordCount > 100) {
-            totalCount = Math.floor(netWordCount / 100);
-            console.log("totalCount", totalCount);
-            setWordLimit(totalCount);
-            // setWordNum(totalCount);
+        if (wordCount > intialWordCount && intialWordCount > 350) {
+          let currPaidWordCount = wordCount - 350;
+          let initialPaidWordCount = intialWordCount - 350
+          let ceilDiff = Math.ceil(currPaidWordCount / 100) - Math.ceil(initialPaidWordCount / 100)  
+          if (ceilDiff > 0) { // greater than 0 checks whether 1st num is greater than 2nd or not
+            exceededLimitNum = ceilDiff
           }
-        } else if (intialWordCount < 350) {
+          else {
+            exceededLimitNum = 0
+          }
+        } else if (intialWordCount <= 350) {
           let netWordCount = wordCount - 350;
-          totalCount = Math.floor(netWordCount / 100);
-          setWordLimit(totalCount);
-        }
+          exceededLimitNum = Math.ceil(netWordCount / 100);
+         }
       } else {
-        totalCount = 0
-        setWordLimit(totalCount);
+        exceededLimitNum = 0
       }
+      setWordLimit(exceededLimitNum)
       if (id) {
         setUpdatedFields((updatedFields) => ({
           ...updatedFields,
-          "wordLimit": totalCount
+          "wordLimit": exceededLimitNum
         }))
       }
     }
-    setUpdatedFields((updatedFields) => ({
-      ...updatedFields,
-      basicInfo: {
-        ...updatedFields.basicInfo,
-        [e.target.name]: true
-      }
-    }))
+    if (id) {
+      setUpdatedFields((updatedFields) => ({
+        ...updatedFields,
+        basicInfo: {
+          ...updatedFields.basicInfo,
+          [e.target.name]: true
+        }
+      }))
+    }
     setBasicInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -726,7 +718,7 @@ function CustomerDetails({
   const artworkRef = useRef();
 
   const bioWordsLenght =
-    basicInfo.bio == "" ? 0 : basicInfo.bio.split(" ").length;
+    basicInfo.bio == "" ? 0 : basicInfo.bio.split(/\s+/).length;
 
   const updatePhotosState = (updatdCurrPhotos) => {
     onCurrPhotos(updatdCurrPhotos);
@@ -971,7 +963,7 @@ function CustomerDetails({
                 ></textarea>
                 {wordLimit != 0 && !isAdminLoggedIn && (
                   <p className="text-red-500 text-xs md:text-sm">
-                    free limit of 350 words exceeded, you'll have to pay $9.95
+                    free limit of words exceeded, you'll have to pay $9.95
                     for each extra 100 words.
                   </p>
                 )}
