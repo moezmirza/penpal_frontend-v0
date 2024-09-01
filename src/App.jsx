@@ -59,6 +59,7 @@ function App() {
         <Route path="/admin/inmate/:id" element={<Customer />} />
         <Route path="/delete-profiles" element={<DeleteProfiles />} />
         <Route path="/update-profiles" element={<UpdateProfiles />} />
+        <Route path="admin/create-profile" element={<CreateCustomer />}></Route>
         <Route path="/admin/update-inmate/:id" element={<UpdateCustomer />} />
         <Route path="*" element={<Navigate to="/approve-profiles" />} />
       </Route>

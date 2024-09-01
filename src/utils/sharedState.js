@@ -399,7 +399,7 @@ export const basicInfoFieldLabelMap = {
   mailingAddress: "Mailing Address",
   zipcode: "Zip Code",
   dateOfBirth: "Date of birth",
-  height: "Height",
+  height: "Height (Inches)",
   weight: "Weight (Pounds)",
   hairColor: "Hair Color",
   eyeColor: "Eye Color",

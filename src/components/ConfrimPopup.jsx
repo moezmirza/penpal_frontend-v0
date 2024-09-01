@@ -26,8 +26,6 @@ function ConfrimPopup({
   const navigate = useNavigate();
   const popupRef = useRef();
 
-  console.log("updatedFields", updatedFields, "currPhotos", currPhotos, "checkForChange", checkForChange(updatedFields, currPhotos))
-
   let disableConfirm = confirmBtnColor == '2' && checkForChange(updatedFields, currPhotos)
   console.log("disabled confirm", disableConfirm)
 

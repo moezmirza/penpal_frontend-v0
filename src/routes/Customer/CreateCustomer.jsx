@@ -325,7 +325,8 @@ function CreateCustomer() {
         }
       }
     } else {
-      const finalObj = {
+      const createEndpoint = isAdminLoggedIn ? "/admin/customer" : "/customer"
+      let finalObj = {
         photos: {
           imageUrl: imageDownloadURL,
           artworks: artworksDownloadURL,
@@ -336,7 +337,12 @@ function CreateCustomer() {
         wordLimit: wordLimit,
         totalPaidPhotos: total > 3 ? total - 3 : 0,
       };
-
+      if (isAdminLoggedIn) {
+        finalObj = {
+          ...finalObj,
+          "pay": true,
+        }
+      }
       console.log(
         "finalObjetct",
         finalObj,
@@ -346,7 +352,7 @@ function CreateCustomer() {
         personalityInfo
       );
 
-      const { success, data, error } = await post("/customer", finalObj);
+      const { success, data, error } = await post(createEndpoint, finalObj);
       if (success) {
         console.log("customer created", data);
         setCreatedCustomerId(data._id);
@@ -360,9 +366,11 @@ function CreateCustomer() {
           creation: true,
         };
         setDuesInfo(currDuesInfo);
-        payementBoxRef.current.scrollIntoView({
-          behavior: "smooth",
-        });
+        if (payementBoxRef) {
+          payementBoxRef.current.scrollIntoView({
+            behavior: "smooth",
+          });
+        }
       } else {
         setLoading(false);
         setDuesInfo(dueInitiallState);
@@ -417,7 +425,7 @@ function CreateCustomer() {
         if (wordCount > intialWordCount && intialWordCount > 350) {
           let currPaidWordCount = wordCount - 350;
           let initialPaidWordCount = intialWordCount - 350
-          let ceilDiff = Math.ceil(currPaidWordCount / 100) - Math.ceil(initialPaidWordCount / 100)  
+          let ceilDiff = Math.ceil(currPaidWordCount / 100) - Math.ceil(initialPaidWordCount / 100)
           if (ceilDiff > 0) { // greater than 0 checks whether 1st num is greater than 2nd or not
             exceededLimitNum = ceilDiff
           }
@@ -427,7 +435,7 @@ function CreateCustomer() {
         } else if (intialWordCount <= 350) {
           let netWordCount = wordCount - 350;
           exceededLimitNum = Math.ceil(netWordCount / 100);
-         }
+        }
       } else {
         exceededLimitNum = 0
       }
@@ -872,6 +880,8 @@ function CustomerDetails({
           confirmBtnTxt={'1'}
           onConfirm={handleUpdate}
           onCloseClick={setShowCreateConfirmPop}
+          isAdminLoggedIn={isAdminLoggedIn}
+          infoText={isAdminLoggedIn ? "It will create prisoner's profile, changes made will be irreversible" : ""}
         // onDelReceiptItem={handleDelCreateReceiptItem}
         />
       )}
