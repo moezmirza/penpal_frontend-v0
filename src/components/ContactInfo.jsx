@@ -7,6 +7,8 @@ function ContactInfo({
   emailProvider,
   mailingAddress,
 }) {
+
+
   return (
     <div className="mr-auto flex flex-col gap-y-6 w-full ">
       <h1 className="bg-fr-blue-200 text-white py-3 px-4 rounded text-lg md:text-xl px-6">
@@ -17,7 +19,7 @@ function ContactInfo({
           <div className="flex flex-col  gap-y-2 basis-1/3">
             <p className="text-lg font-semibold mb-1 underline">
               {" "}
-              Email Forwarding Option
+              E-Mail/Messaging Options
             </p>
             <p className="">
               <span className="font-semibold mr-2">Email Provider:</span>
