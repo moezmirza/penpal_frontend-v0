@@ -6,6 +6,7 @@ import { includesCaseInsensitive } from "../Admin/ApproveUpdates";
 import { MultiSelectField } from "../../components/mainComponents/MultiSelectField";
 import CustomerCard from "../../components/CustomerCard";
 import PageHeader from "../../components/PageHeader";
+import { itemsPerPage } from "../../utils/config";
 
 function SearchProfiles() {
   const [customers, setCustomers] = useState([]);
@@ -14,7 +15,6 @@ function SearchProfiles() {
   const [loadMoreMsg, setLoadMoreMsg] = useState("");
   const [inputVal, setInputVal] = useState("");
   const inputRef = useRef();
-  const itemsPerPage = 40;
   const get = useGet();
   const navigate = useNavigate();
   const { search } = useLocation()
@@ -56,10 +56,7 @@ function SearchProfiles() {
   const handleFetchMoreCustomers = () => {
     // if (user?.profileComplete) {
     //  page start from zero
-    const page =
-      customers.length === itemsPerPage
-        ? 1
-        : Math.floor(customers.length / itemsPerPage) + 1;
+    const page = nextPageNumber(customers.length)
     const fetchMoreCustomers = async () => {
       setIsLoadingMore(true);
       const { success, data, error } = await get(

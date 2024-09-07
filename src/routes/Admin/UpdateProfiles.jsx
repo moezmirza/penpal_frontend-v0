@@ -6,6 +6,7 @@ import { useDel } from "../../api/useDel";
 import ConfrimPopup from "../../components/ConfrimPopup";
 import { includesCaseInsensitive } from "./ApproveUpdates";
 import CustomerCard from "../../components/CustomerCard";
+import { itemsPerPage, nextPageNumber } from "../../utils/config";
 
 function UpdateProfiles() {
   const [customers, setCustomers] = useState([]);
@@ -15,17 +16,13 @@ function UpdateProfiles() {
   const [loadMoreMsg, setLoadMoreMsg] = useState("");
   const clientId = useRef();
   const inputRef = useRef();
-  const itemsPerPage = 40;
 
   const get = useGet();
   const del = useDel();
   const navigate = useNavigate();
 
   const handleFetchMoreCustomers = () => {
-    const page =
-      customers.length === itemsPerPage
-        ? 1
-        : Math.floor(customers.length / itemsPerPage) + 1;
+    const page = nextPageNumber(customers.length)
     const fetchMoreCustomers = async () => {
       setIsLoadingMore(true);
       const { success, data, error } = await get(

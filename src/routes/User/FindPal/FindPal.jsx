@@ -17,6 +17,7 @@ import {
 } from "../../../utils/sharedState";
 import { includesCaseInsensitive } from "../../Admin/ApproveUpdates";
 import CustomerCard from "../../../components/CustomerCard";
+import { itemsPerPage } from "../../../utils/config";
 
 export const mailTOLink = (email, name) => {
   const intialBody = `Hi ${name}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`;
@@ -36,7 +37,6 @@ function FindPal() {
   const navigate = useNavigate();
   const get = useGet();
 
-  const itemsPerPage = 30;
   const searchSectRef = useRef(null);
   const location = useLocation();
   const [inputVal, setInputVal] = useState("");
@@ -133,10 +133,7 @@ function FindPal() {
   const handleFetchMoreCustomers = () => {
     // if (user?.profileComplete) {
     //  page start from zero
-    const page =
-      customers.length === itemsPerPage
-        ? 1
-        : Math.floor(customers.length / itemsPerPage) + 1;
+    const page = nextPageNumber(customers.length)
     const fetchMoreCustomers = async () => {
       setIsLoadingMore(true);
       const { success, data, error } = await get(
