@@ -1,3 +1,4 @@
+import { UpdateMarker } from "../routes/Customer/Customer";
 import { emailProvidersLinkMap } from "../utils/sharedState";
 
 function ContactInfo({
@@ -6,8 +7,13 @@ function ContactInfo({
   inmateNumber,
   emailProvider,
   mailingAddress,
+  updatedFields,
+  isAdminUpdateEndpoint
 }) {
 
+  const showUpdatedDetails = (field) => {
+    return updatedFields?.includes(field) && isAdminUpdateEndpoint
+  }
 
   return (
     <div className="mr-auto flex flex-col gap-y-6 w-full ">
@@ -43,14 +49,24 @@ function ContactInfo({
             <p>
               <span className="font-semibold mr-2">Name:</span>
               {firstName} {lastName}
+              {(showUpdatedDetails("firstName") ||
+                showUpdatedDetails("lastName")) && (
+                  <UpdateMarker />
+                )}
             </p>
             <p>
               <span className="font-semibold mr-2">Inmate #:</span>
               {inmateNumber}
+              {(showUpdatedDetails("inmateNumber") &&
+                <UpdateMarker />
+              )}
             </p>
             <p>
               <span className="font-semibold mr-2">Mailing Address:</span>
               {mailingAddress}
+              {(showUpdatedDetails("mailingAddress") &&
+                <UpdateMarker />
+              )}
             </p>
           </div>
         </div>

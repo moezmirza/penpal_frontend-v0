@@ -24,7 +24,7 @@ export const mailTOLink = (email, name) => {
   return `mailto:${email}?subject=${encodeURIComponent(
     "Looking for a pal"
   )}&body=${encodeURIComponent(intialBody)}`;
-};
+}
 function FindPal() {
   const user = useSelector((state) => state.user.currentUser);
   const [customers, setCustomers] = useState([]);
@@ -253,7 +253,7 @@ function FindPal() {
             </h2>
             <div className="text-lg lg:text-xl ">
               Discover friendship, support, and a new perspective with
-              <p className="font-semibold ">A Way Out PenPals</p>
+              <p className="font-semibold ">A Way Out Pen Pals</p>
             </div>
             <div className="flex items-center gap-x-4 ">
               <button

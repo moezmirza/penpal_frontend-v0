@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGet } from "../../api/useGet";
 import { usePut } from "../../api/usePut";
 import { usePost } from "../../api/usePost";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import {
   basicInfoFieldLabelMap,
+  capitlize,
+  customerFieldValue
 } from "../../utils/sharedState";
 import ContactInfo from "../../components/ContactInfo";
 import AssociatedUsersInfo from "../../components/AssociatedUsersInfo";
 
-export const capitlize = (string) => {
-  return string[0].toUpperCase() + string.substring(1);
-
-}
 
 function Customer() {
   const { id } = useParams();
@@ -24,16 +22,33 @@ function Customer() {
   const get = useGet();
   const post = usePost();
   const put = usePut();
+  const { pathname: path } = useLocation()
+  console.log("location in customer", path)
+
 
   const navigate = useNavigate();
   useEffect(() => {
     window.scroll(0, 0);
   }, []);
 
+  const matchAdminUrlPattern = (url) => {
+    const regex = /^\/admin\/inmate-updates\/.{24}$/;
+    if (regex.test(url)) {
+      return true
+    }
+    return false
+  }
+
+
+  const isUser = JSON.parse(localStorage.getItem("userAuth"));
+  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
+  const isAdminUpdateEndpoint = isAdmin && matchAdminUrlPattern(path)
+
   useEffect(() => {
     const fetchCustomer = async () => {
       setLoading(true);
-      const { success, data, error } = await get(`/customer?id=${id}`);
+      const fetchEndpoint = isAdminUpdateEndpoint ? `/admin/update?approved=${false}&id=${id}` : `/customer?id=${id}`
+      const { success, data, error } = await get(fetchEndpoint);
       if (success) {
         console.log("customer data", data[0]);
         setCustomer(data[0]);
@@ -92,127 +107,70 @@ function Customer() {
   //       e.target.innerText = "Sent";
   //     }
   //   }
-  // };
-
-  const basicInfoDisplayFields = [
-    "inmateNumber",
-    "mailingAddress",
-    "zipcode",
-    "dateOfBirth",
-    "height",
-    "weight",
-    "hairColor",
-    "eyeColor",
-    "spokenLanguages",
-    "institutionalEmailProvider",
-    "referredBy",
-    "religiousPref",
-    "education",
-    "nameOfCollege",
-    "bodyType",
-    "astrologicalSign",
-    "relationShipStatus",
-    "veteranStatus",
-  ];
-  const isUser = JSON.parse(localStorage.getItem("userAuth"));
-  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
-
-  const handleApprovalUpdate = async (e, status, cid) => {
-    e.target.innerText = "Approved";
-    e.target.disabled = true;
-
-    put(`/admin/approve-customer?id=${cid}`).then((response) => {
-      const { success, data, error } = response;
-      if (success) {
-        navigate("/admin/approve-profiles");
-        console.log("Approval update successful:", data);
-      } else {
-        console.error("Error approving customer:", error);
-      }
-    });
-
-    setCustomer({ ...customer, profileApproved: true });
-  };
-
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // getMonth() returns 0-11, so we add 1
-    const day = date.getDate().toString().padStart(2, '0'); // getDate() returns the day of the month
-    const year = date.getFullYear();
-    // Combine them into MMDDYYYY format
-    const formattedDate = `${month}-${day}-${year}`;
-
-    return formattedDate;
-  }
-
-  const convertInchesToFeetAndInches = (inches) => {
-    const feet = Math.floor(inches / 12);
-    const remainingInches = inches % 12;
-    return `${feet} ft. ${remainingInches} in.`;
-  }
-
-  const profileApproval =
-    customer?.profileApproved == false && customer?.createdByCurrent;
-  const updateApproval =
-    customer?.updateApproved == false && customer?.createdByCurrent;
-
-  const customerFieldValue = (field) => {
-    const basicInfo = customer?.basicInfo
-    if (field == "dateOfBirth") {
-      return formatDate(basicInfo[field])
-    }
-    else if (field == "height") {
-      return convertInchesToFeetAndInches(basicInfo[field])
-    }
-    return basicInfo[field]
-  }
-
-  const updateRoute = isAdmin ? `/admin/update-inmate/${id}` : `update-inmate/${id}`
+  // }
+  const updateRoute = isAdmin ? `/admin/update-inmate/${id}` : `/update-inmate/${id}`
   const excludeBasinInfoFields = ["bio", "mailingAddress", "institutionalEmailProvider"]
+  const updatedFields = customer?.updatedFields || [];
 
+  const showUpdatedDetails = (field) => {
+    return updatedFields?.includes(field) && isAdminUpdateEndpoint
+
+  }
   return (
     <div className="bg-c-basic min-h-screen px-3 xl:px-0 py-12">
       <div className="flex flex-col items-center gap-y-12 w-full xl:w-8/12 mx-auto">
         <div
           id="profile-details"
           className={`bg-white  w-full border rounded-lg flex flex-col gap-y-4 p-6 border-2`}
-        // className={`bg-white  w-full border ${
-        //   (profileApproval || updateApproval) && "border-red-500"
-        // }  rounded-lg flex flex-col gap-y-4 p-6`}
         >
-          {/* {(profileApproval || updateApproval) && (
-            <p className="text-red-500 text-center md:text-xl text-sm ">
-              {profileApproval ? "Profile" : "Profile Updates"} pending for
-              approval
-            </p>
-          )} */}
           <LoadingSpinner isLoading={loading} />
           <div className="flex flex-col gap-y-6">
             <div className="flex flex-col md:flex-row md:items-start gap-x-12 gap-y-6 relative">
-              <img
-                src={customer?.photos?.imageUrl || "/assets/default.jpg"}
-                alt=""
-                className="h-80 w-full md:h-44 md:w-44 rounded"
-              />
+              <div>
+                <img
+                  src={customer?.photos?.imageUrl || "/assets/default.jpg"}
+                  alt=""
+                  className="h-80 w-full md:h-44 md:w-44 rounded"
+                />
+                {showUpdatedDetails("imageUrl") && (
+                  <UpdateMarker />
+                )}
+              </div>
               <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0 ">
                 <div>
                   <p className="font-semibold text-2xl md:text-3xl mb-2 md:mb-1 text-center md:text-left">
                     {customer?.basicInfo?.firstName}{" "}
                     {customer?.basicInfo?.lastName}
+                    {(showUpdatedDetails("firstName") ||
+                      showUpdatedDetails("lastName")) && (
+                        <UpdateMarker />
+                      )}
                   </p>
 
                   <div className="flex gap-3 justify-center md:justify-start flex-wrap ">
                     <p className="text-nowrap">
                       {customer?.basicInfo?.age || "N/A"} yrs
+                      {showUpdatedDetails("age") && (
+                        <UpdateMarker />
+                      )}
                     </p>
                     <p className="text-nowrap">
                       {customer?.basicInfo?.gender || "N/A"}
+                      {showUpdatedDetails("gender") && (
+                        <UpdateMarker />
+                      )}
                     </p>
                     <p className="text-nowrap">
                       {customer?.basicInfo?.orientation || "N/A"}
+                      {showUpdatedDetails("orientation") && (
+                        <UpdateMarker />
+                      )}
                     </p>
                     <p className="text-nowrap">
                       {customer?.basicInfo?.race || "N/A"}
+                      {showUpdatedDetails("race") && (
+                        <UpdateMarker />
+                      )}
                     </p>
                     <span className="flex gap-x-1 items-baseline">
                       <img
@@ -228,6 +186,9 @@ function Customer() {
                   </div>
                 </div>
                 <p>
+                  {showUpdatedDetails("bio") && (
+                    <UpdateMarker />
+                  )}
                   {customer?.basicInfo?.bio || (
                     <span className="italic mt-6 text-gray-500 text-center md:text-left">
                       No bio added
@@ -311,13 +272,20 @@ function Customer() {
                       {customer?.basicInfo[field].map((lang) => (
                         <span className="mr-1">{lang}</span>
                       ))}
+                      {showUpdatedDetails(field) && (
+                        <UpdateMarker />
+                      )}
                     </p>
+
                   ) : (!excludeBasinInfoFields.includes(field) && customer?.basicInfo[field] &&
                     <p key={field} className="">
                       <span className="font-semibold mr-1">
                         {basicInfoFieldLabelMap[field]}:
                       </span>
-                      {customerFieldValue(field)}
+                      {customerFieldValue(field, customer?.basicInfo)}
+                      {showUpdatedDetails(field) && (
+                        <UpdateMarker />
+                      )}
                     </p>
                   )
                 })}
@@ -336,6 +304,7 @@ function Customer() {
                         <div key={key}>
                           <p className="font-semibold  ">
                             {capitlize(key)}
+                            {showUpdatedDetails(key) && <UpdateMarker />}
                           </p>
                           <ul className="flex gap-x-3 md:flex-col">
                             {customer?.personalityInfo[key].map((value) => (
@@ -350,7 +319,7 @@ function Customer() {
                 </div>
               </div>
 
-              <Photos photos={customer?.photos} />
+              <Photos photos={customer?.photos} artworksChanged={showUpdatedDetails("artworks")} />
 
               {isUser && (
                 <div className="">
@@ -377,6 +346,8 @@ function Customer() {
           inmateNumber={customer?.basicInfo?.inmateNumber}
           emailProvider={customer?.basicInfo?.institutionalEmailProvider}
           mailingAddress={customer?.basicInfo?.mailingAddress}
+          updatedFields={updatedFields}
+          isAdminUpdateEndpoint={isAdminUpdateEndpoint}
         />
 
         {isAdmin &&
@@ -455,12 +426,17 @@ const Star = ({ filled, onClick, onMouseEnter, onMouseLeave }) => {
   );
 };
 
-
-function Photos({ photos }) {
+export const UpdateMarker = () => {
+  return <span className="font-normal text-xs text-green-500 ml-2">
+    new
+  </span>
+}
+function Photos({ photos, artworksChanged }) {
   return (
     <div>
       <h2 className=" text-lg md:text-xl my-4 text-white w-full bg-fr-blue-100 md:p-2.5 p-1.5 rounded ">
         Photos/Artworks
+        {artworksChanged && <UpdateMarker />}
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
         {photos?.artworks.map((image, index) => (
@@ -476,6 +452,6 @@ function Photos({ photos }) {
     </div>
 
   );
-
 }
+
 export default Customer;

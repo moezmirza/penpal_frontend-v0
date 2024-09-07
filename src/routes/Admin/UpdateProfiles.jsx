@@ -11,7 +11,6 @@ function UpdateProfiles() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inputVal, setInputVal] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [loadMoreMsg, setLoadMoreMsg] = useState("");
   const clientId = useRef();
@@ -47,25 +46,6 @@ function UpdateProfiles() {
     fetchMoreCustomers();
   };
 
-  const handleDeleteProfile = (cid) => {
-    setShowPopup(true);
-    clientId.current = cid;
-  };
-  const delProfile = () => {
-    setCustomers((customers) =>
-      customers.filter((customer) => customer._id != clientId?.current)
-    );
-    setShowPopup(false);
-    del(`/customer?id=${clientId?.current}`).then((response) => {
-      const { success, data, error } = response;
-      if (success) {
-        console.log("customer deletion successful:", data);
-      } else {
-        console.error("Error deletiting customer:", error);
-      }
-      clientId.current = null;
-    });
-  };
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -99,15 +79,6 @@ function UpdateProfiles() {
   return (
     <div className="flex flex-col items-center gap-y-12 relative mt-6  mx-auto">
       <LoadingSpinner isLoading={loading} />
-      {showPopup && (
-        <ConfrimPopup
-          onCloseClick={setShowPopup}
-          onConfirm={delProfile}
-          confirmBtnTxt={"Delete profile"}
-          infoText={"It will permanently delete prison profile"}
-          confirmBtnColor="red"
-        />
-      )}
       <h1 className="md:text-3xl text-2xl font-bold underline">
         Update Profiles
       </h1>

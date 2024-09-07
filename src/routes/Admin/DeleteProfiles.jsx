@@ -7,6 +7,7 @@ import ConfrimPopup from "../../components/ConfrimPopup";
 import { includesCaseInsensitive } from "./ApproveUpdates";
 import CustomerCard from "../../components/CustomerCard";
 import { usePut } from "../../api/usePut";
+import { adminDialogText } from "../../utils/sharedState";
 
 function DeleteProfiles() {
   const [customers, setCustomers] = useState([]);
@@ -143,7 +144,7 @@ function DeleteProfiles() {
           onCloseClick={setShowDelPopup}
           onConfirm={delProfile}
           confirmBtnTxt={"Delete profile"}
-          infoText={"It will delete inmate's profile, changes will be irreversible"}
+          infoText={adminDialogText['delete-profile']}
           confirmBtnColor="red"
         />
       )}
@@ -152,7 +153,7 @@ function DeleteProfiles() {
           onCloseClick={setShowStatusPopup}
           onConfirm={changeProfileStatus}
           confirmBtnTxt={`Change profile status`}
-          infoText={"It will change inmate's profile status and make it invisible to users"}
+          infoText={adminDialogText['status']}
         />
       )}
       <h1 className="md:text-3xl text-2xl font-bold underline">

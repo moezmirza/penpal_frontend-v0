@@ -5,6 +5,7 @@ import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { usePut } from "../../api/usePut";
 import ConfrimPopup from "../../components/ConfrimPopup";
 import CustomerCard from "../../components/CustomerCard";
+import { adminDialogText } from "../../utils/sharedState";
 
 function ApproveProfiles() {
   const [customers, setCustomers] = useState([]);
@@ -79,7 +80,7 @@ function ApproveProfiles() {
           onCloseClick={setShowPopup}
           onConfirm={approveProfile}
           confirmBtnTxt={"Confirm approval"}
-          infoText={"It will approve profile"}
+          infoText={adminDialogText['approve-profile']}
         />
       )}
       <h1 className="md:text-3xl text-2xl font-bold underline">

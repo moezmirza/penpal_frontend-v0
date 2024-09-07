@@ -55,7 +55,7 @@ function App() {
       <Route element={<AdminRoutes />}>
         <Route path="/approve-profiles" element={<ApproveProfiles />} />
         <Route path="/approve-updates" element={<ApproveUpdates />} />
-        <Route path="/admin/inmate-updates/:id" element={<CustomerUpdateDetails />} />
+        <Route path="/admin/inmate-updates/:id" element={<Customer />} />
         <Route path="/admin/inmate/:id" element={<Customer />} />
         <Route path="/delete-profiles" element={<DeleteProfiles />} />
         <Route path="/update-profiles" element={<UpdateProfiles />} />

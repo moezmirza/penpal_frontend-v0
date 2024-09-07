@@ -13,6 +13,7 @@ import {
   addonNameToStateMap,
   addonStatetoCost,
   unBilledFields,
+  adminDialogText,
 } from "../../utils/sharedState";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../services/firebase";
@@ -307,9 +308,12 @@ function CreateCustomer() {
         console.log("pendingDues", newPendingDues);
         setDuesInfo(newPendingDues);
         updateBtnRef.current.disabled = false;
-        payementBoxRef.current.scrollIntoView({
-          behavior: "smooth",
-        });
+        if (payementBoxRef.current) {
+          payementBoxRef.current.scrollIntoView({
+            behavior: "smooth",
+          });
+
+        }
       } else {
         console.log("errorMsg", error, error?.message);
 
@@ -868,7 +872,7 @@ function CustomerDetails({
           onCloseClick={setShowUpdateConfirmPop}
           onDelReceiptItem={handleDelUpdateRecieptItem}
           isAdminLoggedIn={isAdminLoggedIn}
-          infoText={isAdminLoggedIn ? "It will update prisoner's profile, changes made will be irreversible" : ""}
+          infoText={isAdminLoggedIn ? adminDialogText['update'] : ""}
           unBilledFields={unBilledFields}
           currPhotos={currPhotos}
         />
@@ -881,7 +885,7 @@ function CustomerDetails({
           onConfirm={handleUpdate}
           onCloseClick={setShowCreateConfirmPop}
           isAdminLoggedIn={isAdminLoggedIn}
-          infoText={isAdminLoggedIn ? "It will create prisoner's profile, changes made will be irreversible" : ""}
+          infoText={isAdminLoggedIn ? adminDialogText['create'] : ""}
         // onDelReceiptItem={handleDelCreateReceiptItem}
         />
       )}

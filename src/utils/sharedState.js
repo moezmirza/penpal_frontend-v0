@@ -583,11 +583,51 @@ export const emailProvidersLinkMap = {
 
 export const unBilledFields = ["mailingAddress", "institutionalEmailProvider"]
 
-
-
 export const popupBtnText = {
   '0': "Continue Editing",
   '1': "Confirm Creation",
   '2': "Confirm Updation",
 
+}
+
+export const adminDialogText = {
+  'delete-profile': "It will delete inmate's profile, click confirm to proceed",
+  'update': "It will update inmate's profile, click confirm to proceed",
+  'create': "It will create inmate's profile, click confirm to proceed",
+  'status': "It will change inmate's profile status, click confirm to proceed",
+  'approve-profile': "It will approve inmate's profile status, click confirm to proceed",
+  'approve-update': "It will approve inmate's profile update, click confirm to proceed",
+  'reject-update': "It will reject inmate's profile update, click confirm to proceed",
+}
+
+export const capitlize = (string) => {
+  return string[0].toUpperCase() + string.substring(1);
+
+}
+
+export const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // getMonth() returns 0-11, so we add 1
+  const day = date.getDate().toString().padStart(2, '0'); // getDate() returns the day of the month
+  const year = date.getFullYear();
+  // Combine them into MMDDYYYY format
+  const formattedDate = `${month}-${day}-${year}`;
+
+  return formattedDate;
+}
+
+export const convertInchesToFeetAndInches = (inches) => {
+  const feet = Math.floor(inches / 12);
+  const remainingInches = inches % 12;
+  return `${feet} ft. ${remainingInches} in.`;
+}
+
+export const customerFieldValue = (field, basicInfo) => {
+  if (field == "dateOfBirth") {
+    return formatDate(basicInfo[field])
+  }
+  else if (field == "height") {
+    return convertInchesToFeetAndInches(basicInfo[field])
+  }
+  return basicInfo[field]
 }

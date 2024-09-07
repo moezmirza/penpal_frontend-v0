@@ -1,7 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { capitlize } from "../routes/Customer/Customer";
-
+import { capitlize } from "../utils/sharedState";
 function CustomerCard({
   showExpiresAt,
   customer,

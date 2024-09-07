@@ -4,7 +4,7 @@ import { useGet } from "../../api/useGet";
 import { usePut } from "../../api/usePut";
 import { usePost } from "../../api/usePost";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { basicInfoFieldLabelMap } from "../../utils/sharedState";
+import { basicInfoFieldLabelMap, capitlize, customerFieldValue } from "../../utils/sharedState";
 import ContactInfo from "../../components/ContactInfo";
 import AssociatedUsersInfo from "../../components/AssociatedUsersInfo";
 
@@ -101,7 +101,6 @@ function CustomerUpdateDetails() {
                   </span>
                 )}
               </div>
-
               <div className="flex flex-col justify-center gap-1 md:w-7/12 w-full mb-6 md:mb-0">
                 <div>
                   <p className="font-semibold text-3xl mb-2 md:mb-1 text-center md:text-left">
@@ -198,53 +197,39 @@ function CustomerUpdateDetails() {
               </div> */}
             </div>
 
-            <div>
-              <h2 className="font-semibold text-3xl md:text-2xl my-4 underline">
-                Basic Info
-              </h2>
-
-              <div className="grid md:grid-cols-2  grid-cols-1  gap-4">
-                {customer &&
-                  basicInfoDisplayFields.map((field) => {
-                    return (
-                      customer?.basicInfo[field] &&
-                      (field == "spokenLanguages" ? (
-                        <p className="flex flex-wrap items-end">
-                          <span className="font-semibold mr-1 text-lg">
-                            {basicInfoFieldLabelMap[field]}:
-                          </span>
-                          {customer?.basicInfo[field].map((lang) => (
-                            <span className="mr-1">{lang}</span>
-                          ))}
-                        </p>
-                      ) : (
-                        <p className="">
-                          <span className="font-semibold mr-1 text-lg">
-                            {basicInfoFieldLabelMap[field]}:
-                          </span>
-                          {field == "dateOfBirth"
-                            ? customer?.basicInfo[field].split("T")[0]
-                            : customer?.basicInfo[field]}
-                          {updatedFields.includes(field) && (
-                            <span className="text-xs text-green-500 ml-2">
-                              new
-                            </span>
-                          )}
-                        </p>
-                      ))
-                    );
-                  })}
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2  gap-4 text-base md:text-lg">
+              {customer && Object.keys(customer?.basicInfo).map((field) => {
+                return field == "spokenLanguages" ? (
+                  <p key={field} className="flex flex-wrap items-end">
+                    <span className="font-semibold mr-1 ">
+                      {basicInfoFieldLabelMap[field]}:
+                    </span>
+                    {customer?.basicInfo[field].map((lang) => (
+                      <span className="mr-1">{lang}</span>
+                    ))}
+                  </p>
+                ) : (!excludeBasinInfoFields.includes(field) && customer?.basicInfo[field] &&
+                  <p key={field} className="">
+                    <span className="font-semibold mr-1">
+                      {basicInfoFieldLabelMap[field]}:
+                    </span>
+                    {customerFieldValue(field, basicInfo)}
+                  </p>
+                )
+              })}
             </div>
             <div className="flex flex-col gap-y-10">
               <div>
-                <h2 className="font-semibold text-3xl md:text-2xl my-4 flex items-end">
+                {/* <h2 className="font-semibold text-3xl md:text-2xl my-4 flex items-end">
                   <p className="underline">Personality Info</p>
-                  {/* {updatedFields?.includes("personality") && (
+                  {updatedFields?.includes("personality") && (
                     <span className="font-normal text-xs text-green-500 ml-2">
                       new
                     </span>
-                  )} */}
+                  )}
+                </h2> */}
+                <h2 className=" text-lg md:text-xl my-4 text-white w-full bg-fr-blue-100 md:p-2.5  p-2 rounded ">
+                  Personality Info
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -253,7 +238,7 @@ function CustomerUpdateDetails() {
                       key != "_id" && (
                         <div key={key}>
                           <p className="font-semibold text-lg ">
-                            {key.toUpperCase()}{" "}
+                            {capitlize(key)}{" "}
                             {updatedFields.includes(key) && (
                               <span className="text-xs text-green-500 ml-2">
                                 new
@@ -272,9 +257,12 @@ function CustomerUpdateDetails() {
                   )}
                 </div>
               </div>
+              <Photos photos={customer?.photos} />
             </div>
           </div>
         </div>
+
+
         <ContactInfo
           firstName={customer?.basicInfo?.firstName}
           lastName={customer?.basicInfo?.lastName}
@@ -285,7 +273,7 @@ function CustomerUpdateDetails() {
 
         <AssociatedUsersInfo updatedBy={customer?.updatedBy || null} paidBy={customer?.paidBy || null} />
       </div>
-    </div>
+    </div >
   );
 }
 

@@ -5,6 +5,7 @@ import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { usePut } from "../../api/usePut";
 import ConfrimPopup from "../../components/ConfrimPopup";
 import CustomerCard from "../../components/CustomerCard";
+import { adminDialogText } from "../../utils/sharedState";
 
 export const includesCaseInsensitive = (str, substring) => {
   return str?.toLowerCase().includes(substring.toLowerCase());
@@ -99,7 +100,7 @@ function ApproveUpdates() {
           onCloseClick={setShowApprovePopup}
           onConfirm={approveProfile}
           confirmBtnTxt={"Confirm approval"}
-          infoText={"It will approve the profile's update"}
+          infoText={adminDialogText['approve-update']}
         />
       )}
       {showRejectPopup && (
@@ -107,7 +108,7 @@ function ApproveUpdates() {
           onCloseClick={setShowRejectPopup}
           onConfirm={rejectProfile}
           confirmBtnTxt={"Confirm rejection"}
-          infoText={"It will reject the profile's update"}
+          infoText={adminDialogText['reject-update']}
           confirmBtnColor="red"
         />
       )}
