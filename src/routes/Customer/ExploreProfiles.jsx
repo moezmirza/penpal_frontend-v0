@@ -63,7 +63,7 @@ function SearchProfiles() {
     const fetchMoreCustomers = async () => {
       setIsLoadingMore(true);
       const { success, data, error } = await get(
-        `/customer?p=0&l=${itemsPerPage}&options=${option}`
+        `/customer?p=${page}&l=${itemsPerPage}&options=${option}`
       );
       if (success) {
         setIsLoadingMore(false);

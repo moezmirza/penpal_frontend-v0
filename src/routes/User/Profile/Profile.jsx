@@ -29,24 +29,22 @@ function Profile() {
       <div className="md:w-1/2 w-full px-3">
         <div id="tabs" className="flex cursor-pointer">
           <div
-            className={`rounded border md:px-3 md:py-2 md:text-lg text-sm px-2 py-1.5  ${
-              showTab ? "bg-fr-blue-200 text-white" : "bg-white text-black"
-            }`}
+            className={`rounded border md:px-3 md:py-2 md:text-lg text-sm px-2 py-1.5  ${showTab ? "bg-fr-blue-200 text-white" : "bg-white text-black"
+              }`}
             onClick={() => setShowTab(true)}
           >
             Profile
           </div>
           <div
-            className={`rounded border md:px-3 md:py-2 md:text-lg text-sm px-2 py-1.5  ${
-              !showTab ? "bg-fr-blue-200 text-white" : "bg-white text-black"
-            }`}
+            className={`rounded border md:px-3 md:py-2 md:text-lg text-sm px-2 py-1.5  ${!showTab ? "bg-fr-blue-200 text-white" : "bg-white text-black"
+              }`}
             onClick={() => setShowTab(false)}
           >
             Questionnaire
           </div>
         </div>
 
-        {showTab ? <BasicInfo onTabSwitch={setShowTab} /> : <Questionairre />}
+        {showTab ? <BasicInfo onShowTab={setShowTab} /> : <Questionairre />}
       </div>
     </div>
   );

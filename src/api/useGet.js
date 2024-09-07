@@ -10,7 +10,6 @@ function useGet() {
 
   const get = async (url, initialToken = null) => {
     console.log("here inside of get");
-
     try {
       const authToken = authInfo.token;
       const completeUrl = baseApi + url;

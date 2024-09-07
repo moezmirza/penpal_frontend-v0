@@ -24,7 +24,7 @@ export const mailTOLink = (email, name) => {
   return `mailto:${email}?subject=${encodeURIComponent(
     "Looking for a pal"
   )}&body=${encodeURIComponent(intialBody)}`;
-};
+}
 function FindPal() {
   const user = useSelector((state) => state.user.currentUser);
   const [customers, setCustomers] = useState([]);
@@ -230,8 +230,8 @@ function FindPal() {
       includesCaseInsensitive(customer?.basicInfo?.lastName, inputVal)
   );
   return (
-    <div className="flex flex-col gap-y-12 w-full md:py-0 mb-16">
-      <div className="bg-b-gradient-3 p-3 md:pt-32 md:p-28">
+    <div className="flex flex-col gap-y-8 w-full md:py-0 mb-16">
+      <div className="bg-b-gradient-3 p-3 md:p-28">
         <div
           id="hero-section"
           className="flex flex-col-reverse gap-y-6 lg:flex-row md:justify-between bg-fr-blue-200 p-3 md:p-6 border rounded-lg "
@@ -241,7 +241,7 @@ function FindPal() {
               onCloseClick={setGetStartedPopup}
               onConfirm={() => navigate("/user-profile")}
               confirmBtnTxt={"Complete profile"}
-              infoText={"Complete your profile to find your matches"}
+              infoText={"Complete your profile to find your best matches!"}
             />
           )}
           <div className="text-white my-auto ml-0 md:ml-6 flex flex-col gap-y-8">
@@ -253,7 +253,7 @@ function FindPal() {
             </h2>
             <div className="text-lg lg:text-xl ">
               Discover friendship, support, and a new perspective with
-              <p className="font-semibold ">A Way Out PenPals</p>
+              <p className="font-semibold ">A Way Out Pen Pals</p>
             </div>
             <div className="flex items-center gap-x-4 ">
               <button
@@ -271,17 +271,17 @@ function FindPal() {
           </div>
           <img src="/assets/heroImage.png" alt="" className="h-80 lg:h-auto" />
         </div>
+        <hr className="border border-gray-300 w-9/12 mx-auto mt-16" />
       </div>
 
-        <hr className="border border-gray-300 w-9/12 mx-auto" />
 
       <div
         ref={searchSectRef}
         id="findpal"
-        className="flex flex-col gap-y-8 bg-white px-4 md:p-6 relative"
+        className="flex flex-col gap-y-8 bg-white px-4 relative"
       >
         <div className="flex flex-col items-start gap-y-3 md:justify-between md:flex-row">
-          <p className="text-2xl md:text-4xl font-bold">Find your best pal.</p>
+          <p className="text-2xl md:text-4xl font-bold">Find your best matches.</p>
           <button
             className=" border text-white px-5 py-1 md:py-2 bg-fr-blue-200 rounded-md hover:opacity-90"
             onClick={handleClearFilters}
