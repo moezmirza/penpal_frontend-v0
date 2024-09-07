@@ -14,7 +14,7 @@ export const formattedImageName = (name) => {
   return `imageNameS${name}imageNameE`;
 };
 
-function BasicInfo({ onTabSwitch }) {
+function BasicInfo({ onShowTab }) {
   const imageRef = useRef(null);
   const currentUser = useSelector((state) => state.user.currentUser);
   const [loading, setLoading] = useState(false);
@@ -83,7 +83,7 @@ function BasicInfo({ onTabSwitch }) {
         dispatch(setCurrentUser(data));
         if (!currentUser.profileComplete) {
           // when the profile is incomplete
-          onTabSwitch(false);
+          onShowTab(false);
         }
         setDone(true);
         console.log(currentUser);

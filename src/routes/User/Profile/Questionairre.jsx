@@ -9,6 +9,7 @@ import { useGet } from "../../../api/useGet";
 import { useNavigate } from "react-router-dom";
 import { setCurrentUserProfileStatus } from "../../../state/slices/userSlice";
 import { fieldOptionMap, fieldStateNameMap } from "../../../utils/sharedState";
+import ConfrimPopup from "../../../components/ConfrimPopup";
 
 function Questionairre() {
   const personalityInfoState = useSelector(
@@ -22,6 +23,7 @@ function Questionairre() {
   const navigate = useNavigate();
   const get = useGet();
   const put = usePut();
+  const [showPopup, setShowPop] = useState(false)
   const [personalityInfo, setPersonalityInfo] = useState({
     hobbies: [],
     sports: [],
@@ -54,7 +56,7 @@ function Questionairre() {
       setDone(true);
       console.log("currentUser", currentUser);
       if (!currentUser.profileComplete) {
-        navigate("/#findpal");
+        setShowPop(true)
       }
     } else {
       console.log("errorMsg", error);
@@ -112,7 +114,14 @@ function Questionairre() {
       <div className="m-auto font-semibold text-xl md:text-2xl">Edit Info</div>
       {error && <p className="text-red-500 mt-1"> {error} </p>}
       <LoadingSpinner isLoading={loading} isDone={done} />
-
+      {showPopup &&
+        <ConfrimPopup
+          onCloseClick={setShowPop}
+          onConfirm={() => navigate("/#findpal")}
+          confirmBtnTxt={"View my matches"}
+          infoText={"Congratulations on completing your profile! Now, you'll be shown pal profiles that match your preferences. You can view your matches by clicking dashboard or click the link below to see them right away."}
+        />
+      }
       {Object.keys(fieldOptionMap).map((key) => (
         <MultiSelectField
           key={key}

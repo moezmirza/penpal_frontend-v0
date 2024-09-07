@@ -21,6 +21,7 @@ function ConfrimPopup({
   currPhotos
 }) {
   const handleCloseClick = () => {
+    console.log("close bebing clicked")
     onCloseClick(false);
   };
   const navigate = useNavigate();
