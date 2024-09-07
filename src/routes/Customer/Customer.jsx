@@ -353,6 +353,9 @@ function Customer() {
         {isAdmin &&
           <AssociatedUsersInfo createdBy={customer?.createdBy || null} paidBy={customer?.paidBy || null} />
         }
+        {isAdmin && customer?.specialInstructions &&
+          <NoteForAdmin noteForAdmin={customer?.specialInstructionsText} />
+        }
       </div>
 
       {/* <div
@@ -382,6 +385,18 @@ function Customer() {
   );
 }
 
+
+const NoteForAdmin = ({ noteForAdmin }) => {
+  return <div className="mr-auto flex flex-col gap-y-6 w-full ">
+    <h1 className="bg-fr-blue-200 text-white py-3 px-4 rounded text-lg md:text-xl px-6">
+      Note for Admin </h1>
+    <div className="border rounded-lg">
+      <div className="bg-white flex justify-between flex-col md:flex-row gap-y-12  py-3 md:px-12 px-6  w-full ">
+        {noteForAdmin}
+      </div>
+    </div>
+  </div>
+}
 
 
 const RatingScale = ({ initialRating = 0, onRatingChange }) => {

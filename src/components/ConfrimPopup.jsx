@@ -18,7 +18,10 @@ function ConfrimPopup({
   onDelReceiptItem,
   isAdminLoggedIn,
   unBilledFields,
-  currPhotos
+  currPhotos,
+  noteForAdmin,
+  setNoteForAdmin,
+  popupType = ""
 }) {
   const handleCloseClick = () => {
     console.log("close bebing clicked")
@@ -29,6 +32,8 @@ function ConfrimPopup({
 
   let disableConfirm = confirmBtnColor == '2' && checkForChange(updatedFields, currPhotos)
   console.log("disabled confirm", disableConfirm)
+
+  const noteToAdminPopup = ["create", "update"]
 
   return (
     <div
@@ -84,6 +89,18 @@ function ConfrimPopup({
                 <p className="text-gray-600 my-8">{infoText}</p>
               )}
             </div>
+            {
+              !isAdminLoggedIn && noteToAdminPopup.includes(popupType) &&
+              < textarea
+                name="mailingAddress"
+                value={noteForAdmin}
+                onChange={(e) => setNoteForAdmin(e.target.value)}
+                placeholder={"Leave a note for admin..."}
+                rows={3}
+                className={`mb-4 bg-transparent block w-full my-1.5 rounded-md p-1.5 border focus:border-gray-700 border-gray-400 outline-none`}
+              ></textarea>
+
+            }
             <div className="flex flex-col gap-y-2 ">
               {continueBtnTxt && (
                 <button
@@ -109,7 +126,7 @@ function ConfrimPopup({
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 export default ConfrimPopup;

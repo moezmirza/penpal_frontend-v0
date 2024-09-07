@@ -149,10 +149,11 @@ function CreateCustomer() {
 
   const [photos, setPhotos] = useState(photosIntialState);
   const [currPhotos, setCurrPhotos] = useState(photosIntialState);
-  const [basicInfo, setBasicInfo] = useState(basicInfoIntialState);
+  const [basicInfo, setBasicInfo] = useState(dummyBasicInfo);
   const [personalityInfo, setPersonalityInfo] = useState(
-    personalityInfoInitialState);
+    dummyPersonalityInfo);
   const [initialProfileData, setInitialProfileData] = useState({ basicInfo: {}, personalityInfo: {}, photos: {} })
+  const [noteForAdmin, setNoteForAdmin] = useState("")
   const [duesInfo, setDuesInfo] = useState(dueInitiallState);
   const [wordLimit, setWordLimit] = useState(0);
   const [intialWordCount, setIntialWordCount] = useState(0);
@@ -282,6 +283,9 @@ function CreateCustomer() {
           (updatedFields.totalPaidPhotos || 0) +
           (duesInfo.totalPaidPhotos || 0) : 0,
       };
+      if (noteForAdmin) {
+        finalObj.specialInstructions = noteForAdmin
+      }
       console.log("finalObjetct to be putted", finalObj);
 
       const updateEndpoint = isAdminLoggedIn ? "/admin/customer" : "/customer"
@@ -347,6 +351,9 @@ function CreateCustomer() {
           "pay": true,
         }
       }
+      if (noteForAdmin) {
+        finalObj.specialInstructions = noteForAdmin
+      }
       console.log(
         "finalObjetct",
         finalObj,
@@ -362,12 +369,13 @@ function CreateCustomer() {
         setCreatedCustomerId(data._id);
         setLoading(false);
         setDone(true);
-
         console.log("duesInfo", duesInfo);
         const currDuesInfo = {
           totalPaidPhotos: total > 3 ? total - 3 : 0,
           wordLimit: wordLimit,
           creation: true,
+          premiumPlacement: 0,
+          featuredPlacement: 0
         };
         setDuesInfo(currDuesInfo);
         if (payementBoxRef) {
@@ -565,7 +573,7 @@ function CreateCustomer() {
       console.log("inside here");
       fetchCustomer();
     } else {
-      resetState();
+      // resetState();
     }
   }, [id]);
 
@@ -673,6 +681,8 @@ function CreateCustomer() {
           initialProfileData={initialProfileData}
           isAdminLoggedIn={isAdminLoggedIn}
           unBilledFields={unBilledFields}
+          noteForAdmin={noteForAdmin}
+          setNoteForAdmin={setNoteForAdmin}
         />
         {!isAdminLoggedIn &&
           <div className="basis-[40%] flex flex-col gap-y-6">
@@ -724,7 +734,9 @@ function CustomerDetails({
   photosIntialState,
   initialProfileData,
   isAdminLoggedIn,
-  unBilledFields
+  unBilledFields,
+  noteForAdmin,
+  setNoteForAdmin
 }) {
   const imageRef = useRef();
   const artworkRef = useRef();
@@ -735,13 +747,11 @@ function CustomerDetails({
   const updatePhotosState = (updatdCurrPhotos) => {
     onCurrPhotos(updatdCurrPhotos);
     if (id) {
-      // updatedFields.current.wordLimit = wordLimit;
       if (photos.total > 3) {
         onUpdatedFields((updatedFields) => ({
           ...updatedFields,
           "totalPaidPhotos": updatdCurrPhotos.total
         }))
-        //  updatedFields.current.totalPaidPhotos = currPhotos.total;
       } else {
         const totalPhotoCount = photos.total + updatdCurrPhotos.total;
         if (totalPhotoCount > 3) {
@@ -749,7 +759,6 @@ function CustomerDetails({
             ...updatedFields,
             "totalPaidPhotos": totalPhotoCount - 3
           }))
-          //  updatedFields.current.totalPaidPhotos = totalPhotoCount - 3;
         }
       }
     }
@@ -875,6 +884,9 @@ function CustomerDetails({
           infoText={isAdminLoggedIn ? adminDialogText['update'] : ""}
           unBilledFields={unBilledFields}
           currPhotos={currPhotos}
+          noteForAdmin={noteForAdmin}
+          setNoteForAdmin={setNoteForAdmin}
+          popupType={'update'}
         />
       )}
       {showCreateConfirmPop && (
@@ -886,7 +898,11 @@ function CustomerDetails({
           onCloseClick={setShowCreateConfirmPop}
           isAdminLoggedIn={isAdminLoggedIn}
           infoText={isAdminLoggedIn ? adminDialogText['create'] : ""}
+          noteForAdmin={noteForAdmin}
+          setNoteForAdmin={setNoteForAdmin}
+          popupType={'create'}
         // onDelReceiptItem={handleDelCreateReceiptItem}
+
         />
       )}
       <div className="bg-gray-300 w-full rounded-lg p-2 md:p-6 flex flex-col items-center gap-y-6">
