@@ -99,6 +99,7 @@ function UpdateProfiles() {
             <CustomerCard
               key={index}
               customer={customer}
+              onViewDetails={() => navigate(`/admin/inmate/${customer?._id}`)}
               onUpdate={() => navigate(`/admin/update-inmate/${customer?._id}`)}
             />
           ))}

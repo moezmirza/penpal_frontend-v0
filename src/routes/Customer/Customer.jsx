@@ -47,7 +47,7 @@ function Customer() {
   useEffect(() => {
     const fetchCustomer = async () => {
       setLoading(true);
-      const fetchEndpoint = isAdminUpdateEndpoint ? `/admin/update?approved=${false}&id=${id}` : `/customer?id=${id}`
+      const fetchEndpoint = isAdminUpdateEndpoint ? `/admin/update?approved=${false}&id=${id}` : isAdmin ? `/admin/customer?id=${id}` : `/customer?id=${id}`
       const { success, data, error } = await get(fetchEndpoint);
       if (success) {
         console.log("customer data", data[0]);
@@ -353,7 +353,7 @@ function Customer() {
         {isAdmin &&
           <AssociatedUsersInfo createdBy={customer?.createdBy || null} paidBy={customer?.paidBy || null} />
         }
-        {isAdmin && customer?.specialInstructions &&
+        {isAdmin && customer?.specialInstructionsFlag &&
           <NoteForAdmin noteForAdmin={customer?.specialInstructionsText} />
         }
       </div>
