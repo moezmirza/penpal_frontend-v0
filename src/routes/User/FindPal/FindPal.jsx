@@ -17,7 +17,7 @@ import {
 } from "../../../utils/sharedState";
 import { includesCaseInsensitive } from "../../Admin/ApproveUpdates";
 import CustomerCard from "../../../components/CustomerCard";
-import { itemsPerPage } from "../../../utils/config";
+import { itemsPerPage, nextPageNumber } from "../../../utils/config";
 
 export const mailTOLink = (email, name) => {
   const intialBody = `Hi ${name}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`;
