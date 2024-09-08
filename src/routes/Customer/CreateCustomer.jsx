@@ -149,9 +149,9 @@ function CreateCustomer() {
 
   const [photos, setPhotos] = useState(photosIntialState);
   const [currPhotos, setCurrPhotos] = useState(photosIntialState);
-  const [basicInfo, setBasicInfo] = useState(dummyBasicInfo);
+  const [basicInfo, setBasicInfo] = useState(basicInfoIntialState);
   const [personalityInfo, setPersonalityInfo] = useState(
-    dummyPersonalityInfo);
+    personalityInfoInitialState);
   const [initialProfileData, setInitialProfileData] = useState({ basicInfo: {}, personalityInfo: {}, photos: {} })
   const [noteForAdmin, setNoteForAdmin] = useState("")
   const [duesInfo, setDuesInfo] = useState(dueInitiallState);
@@ -573,7 +573,7 @@ function CreateCustomer() {
       console.log("inside here");
       fetchCustomer();
     } else {
-      // resetState();
+      resetState();
     }
   }, [id]);
 

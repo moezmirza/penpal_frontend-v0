@@ -6,7 +6,7 @@ import { includesCaseInsensitive } from "../Admin/ApproveUpdates";
 import { MultiSelectField } from "../../components/mainComponents/MultiSelectField";
 import CustomerCard from "../../components/CustomerCard";
 import PageHeader from "../../components/PageHeader";
-import { itemsPerPage } from "../../utils/config";
+import { itemsPerPage, nextPageNumber } from "../../utils/config";
 
 function SearchProfiles() {
   const [customers, setCustomers] = useState([]);
