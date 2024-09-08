@@ -5,6 +5,7 @@ import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { includesCaseInsensitive } from "../Admin/ApproveUpdates";
 import CustomerCard from "../../components/CustomerCard";
 import PageHeader from "../../components/PageHeader";
+import { nextPageNumber, itemsPerPage } from "../../utils/config";
 
 function UpdateCustomers() {
   const [customers, setCustomers] = useState([]);
@@ -13,7 +14,6 @@ function UpdateCustomers() {
   const [loadMoreMsg, setLoadMoreMsg] = useState("");
   const [inputVal, setInputVal] = useState("");
   const inputRef = useRef();
-  const itemsPerPage = 40;
 
   const get = useGet();
   const navigate = useNavigate()
@@ -40,10 +40,7 @@ function UpdateCustomers() {
   const handleFetchMoreCustomers = () => {
     // if (user?.profileComplete) {
     //  page start from zero
-    const page =
-      customers.length === itemsPerPage
-        ? 1
-        : Math.floor(customers.length / itemsPerPage) + 1;
+    const page = nextPageNumber(customers.length)
     const fetchMoreCustomers = async () => {
       setIsLoadingMore(true);
       const { success, data, error } = await get(
@@ -88,7 +85,7 @@ function UpdateCustomers() {
         <p className="text-center text-sm md:text-base">
           No profiles to display
         </p>
-       ) : (
+      ) : (
         <div className="flex flex-col gap-y-6 w-full xl:w-10/12 px-4 md:px-8">
           {filteredCustomers.map((customer, index) => (
             <CustomerCard

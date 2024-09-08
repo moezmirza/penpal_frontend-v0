@@ -8,6 +8,7 @@ import { includesCaseInsensitive } from "./ApproveUpdates";
 import CustomerCard from "../../components/CustomerCard";
 import { usePut } from "../../api/usePut";
 import { adminDialogText } from "../../utils/sharedState";
+import { itemsPerPage, nextPageNumber } from "../../utils/config";
 
 function DeleteProfiles() {
   const [customers, setCustomers] = useState([]);
@@ -19,7 +20,6 @@ function DeleteProfiles() {
   const [loadMoreMsg, setLoadMoreMsg] = useState("");
   const clientId = useRef();
   const inputRef = useRef();
-  const itemsPerPage = 40;
 
   const get = useGet();
   const put = usePut()
@@ -28,10 +28,7 @@ function DeleteProfiles() {
   const navigate = useNavigate();
 
   const handleFetchMoreCustomers = () => {
-    const page =
-      customers.length === itemsPerPage
-        ? 1
-        : Math.floor(customers.length / itemsPerPage) + 1;
+    const page = nextPageNumber(customers.length)
     const fetchMoreCustomers = async () => {
       setIsLoadingMore(true);
       const { success, data, error } = await get(
