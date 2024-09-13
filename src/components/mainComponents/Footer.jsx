@@ -7,8 +7,8 @@ const Footer = () => {
   return (
     <div className=" flex flex-col gap-y-4 bg-b-gradient-2 text-gray-300">
 
-      <div className="flex justify-around pt-24 px-24 font-semibold">
-        <div className="w-1/3 flex flex-col gap-y-8 text-white font-normal">
+      <div className="flex flex-col gap-y-12 md:flex-row justify-none lg:justify-around pt-24 px-12 lg:px-24 font-semibold">
+        <div className="w-full md:w-1/3 flex flex-col gap-y-8 text-white font-normal">
           <a href="https://awayoutpenpals.com">
             <img
               src="/assets/logo.jpeg"
