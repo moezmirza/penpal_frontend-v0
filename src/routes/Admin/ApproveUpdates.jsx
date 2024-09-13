@@ -93,7 +93,7 @@ function ApproveUpdates() {
       includesCaseInsensitive(customer?.basicInfo?.lastName, inputVal)
   );
   return (
-    <div className="flex flex-col items-center gap-y-12 relative mt-6 w-full mx-auto">
+    <div className="flex flex-col items-center gap-y-12 relative my-6 w-full mx-auto">
       <LoadingSpinner isLoading={loading} />
       {showApprovePopup && (
         <ConfrimPopup

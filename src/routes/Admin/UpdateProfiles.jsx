@@ -74,7 +74,7 @@ function UpdateProfiles() {
   );
 
   return (
-    <div className="flex flex-col items-center gap-y-12 relative mt-6  mx-auto">
+    <div className="flex flex-col items-center gap-y-12 relative my-6  mx-auto">
       <LoadingSpinner isLoading={loading} />
       <h1 className="md:text-3xl text-2xl font-bold underline">
         Update Profiles

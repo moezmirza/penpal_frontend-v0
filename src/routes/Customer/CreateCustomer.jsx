@@ -271,11 +271,6 @@ function CreateCustomer() {
       }, {});
 
       const finalObj = {
-        photos: {
-          imageUrl: imageDownloadURL,
-          artworks: artworksDownloadURL,
-          total: total,
-        },
         basicInfo: updatedBasicInfo,
         personalityInfo: updatedPersonalityInfo,
         wordLimit: updatedFields?.wordLimit ? (wordLimit || 0) + (duesInfo.wordLimit || 0) : 0,
@@ -283,6 +278,13 @@ function CreateCustomer() {
           (updatedFields.totalPaidPhotos || 0) +
           (duesInfo.totalPaidPhotos || 0) : 0,
       };
+      if (total > 0) {
+        finalObj.photos = {
+          imageUrl: imageDownloadURL,
+          artworks: artworksDownloadURL,
+          total: total,
+        }
+      }
       if (noteForAdmin) {
         finalObj.specialInstructions = noteForAdmin
       }
@@ -957,7 +959,7 @@ function CustomerDetails({
       <div className="flex flex-col gap-y-6 text-sm  p-2 md:p-6 md:text-base">
         {id && !isAdminLoggedIn && (
           <p className="text-red-500 text-center md:text-sm text-xs italic">
-            *Each field update will cost $9.95 expect Mailing Address and Institutional Email Provider
+            *Each field update will cost $9.95 except Mailing Address and Institutional Email Provider
           </p>
         )}
         <div className="m-auto font-semibold text-xl md:text-3xl underline">
@@ -1140,8 +1142,8 @@ function CustomerDetails({
 function AddOns({ onClick, duesInfo }) {
   const addonsList = ["Feature Placement", "Premium Placement"];
   const addonCostMap = {
-    "Feature Placement": "$14.95",
-    "Premium Placement": "$24.95",
+    "Feature Placement": addonStatetoCost["featuredPlacement"],
+    "Premium Placement": addonStatetoCost["premiumPlacement"],
   };
 
   const handleChange = (add, addon) => {
