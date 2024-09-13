@@ -97,7 +97,7 @@ function ConfrimPopup({
                 onChange={(e) => setNoteForAdmin(e.target.value)}
                 placeholder={"Leave a note for admin..."}
                 rows={3}
-                className={`mb-4 bg-transparent block w-full my-1.5 rounded-md p-1.5 border focus:border-gray-700 border-gray-400 outline-none`}
+                className={`mb-4 bg-transparent block w-full my-1.5 placeholder-gray-700 rounded-md p-1.5 border focus:border-gray-700 border-gray-400 outline-none`}
               ></textarea>
 
             }

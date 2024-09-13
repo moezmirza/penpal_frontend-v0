@@ -278,7 +278,7 @@ function FindPal() {
         className="flex flex-col gap-y-8 bg-white px-4 relative"
       >
         <div className="flex flex-col items-start gap-y-3 md:justify-between md:flex-row">
-          <p className="text-2xl md:text-4xl font-bold">Find your best matches.</p>
+          <p className="text-2xl md:text-4xl font-bold">Here's your best matches.</p>
           <button
             className=" border text-white px-5 py-1 md:py-2 bg-fr-blue-200 rounded-md hover:opacity-90"
             onClick={handleClearFilters}

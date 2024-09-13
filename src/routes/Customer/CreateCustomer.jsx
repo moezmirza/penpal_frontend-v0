@@ -959,7 +959,7 @@ function CustomerDetails({
       <div className="flex flex-col gap-y-6 text-sm  p-2 md:p-6 md:text-base">
         {id && !isAdminLoggedIn && (
           <p className="text-red-500 text-center md:text-sm text-xs italic">
-            *Each field update will cost $9.95 expect Mailing Address and Institutional Email Provider
+            *Each field update will cost $9.95 except Mailing Address and Institutional Email Provider
           </p>
         )}
         <div className="m-auto font-semibold text-xl md:text-3xl underline">
