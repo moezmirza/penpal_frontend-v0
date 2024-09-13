@@ -43,7 +43,6 @@ function Customer() {
   const isUser = JSON.parse(localStorage.getItem("userAuth"));
   const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
   const isAdminUpdateEndpoint = isAdmin && matchAdminUrlPattern(path)
-
   useEffect(() => {
     const fetchCustomer = async () => {
       setLoading(true);
@@ -277,7 +276,7 @@ function Customer() {
                       )}
                     </p>
 
-                  ) : (!excludeBasinInfoFields.includes(field) && customer?.basicInfo[field] &&
+                  ) : (!excludeBasinInfoFields.includes(field) && customer?.basicInfo[field] && basicInfoFieldLabelMap[field] &&
                     <p key={field} className="">
                       <span className="font-semibold mr-1">
                         {basicInfoFieldLabelMap[field]}:
