@@ -74,7 +74,7 @@ function CustomerUpdateDetails() {
     "nameOfCollege",
     "bodyType",
     "astrologicalSign",
-    "relationShipStatus",
+    "relationshipStatus",
     "veteranStatus",
   ];
 

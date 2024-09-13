@@ -66,14 +66,14 @@ function CreateCustomer() {
     highSchoolCity: "",
     highSchoolState: "",
     education: [],
-    collegeName: "",
+    college: "",
     collegeCity: "",
     collegeState: "",
     homeTownCity: "",
     homeTownState: "",
     bodyType: [],
     astrologicalSign: [],
-    relationShipStatus: [],
+    relationshipStatus: [],
     veteranStatus: [],
     bio: "",
   };
@@ -113,14 +113,14 @@ function CreateCustomer() {
       highSchoolState: false,
       highSchoolCity: false,
       education: false,
-      collegeName: false,
+      college: false,
       collegeState: false,
       collegeCity: false,
       homeTownCity: false,
       homeTownState: false,
       bodyType: false,
       astrologicalSign: false,
-      relationShipStatus: false,
+      relationshipStatus: false,
       veteranStatus: false,
       bio: false,
       imageUrl: false,
@@ -335,6 +335,7 @@ function CreateCustomer() {
         }
       }
     } else {
+      console.log("basicInfo", basicInfo)
       const createEndpoint = isAdminLoggedIn ? "/admin/customer" : "/customer"
       let finalObj = {
         photos: {
@@ -380,7 +381,7 @@ function CreateCustomer() {
           featuredPlacement: 0
         };
         setDuesInfo(currDuesInfo);
-        if (payementBoxRef) {
+        if (payementBoxRef.current) {
           payementBoxRef.current.scrollIntoView({
             behavior: "smooth",
           });
