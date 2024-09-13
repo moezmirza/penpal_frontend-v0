@@ -271,11 +271,6 @@ function CreateCustomer() {
       }, {});
 
       const finalObj = {
-        photos: {
-          imageUrl: imageDownloadURL,
-          artworks: artworksDownloadURL,
-          total: total,
-        },
         basicInfo: updatedBasicInfo,
         personalityInfo: updatedPersonalityInfo,
         wordLimit: updatedFields?.wordLimit ? (wordLimit || 0) + (duesInfo.wordLimit || 0) : 0,
@@ -283,6 +278,13 @@ function CreateCustomer() {
           (updatedFields.totalPaidPhotos || 0) +
           (duesInfo.totalPaidPhotos || 0) : 0,
       };
+      if (total > 0) {
+        finalObj.photos = {
+          imageUrl: imageDownloadURL,
+          artworks: artworksDownloadURL,
+          total: total,
+        }
+      }
       if (noteForAdmin) {
         finalObj.specialInstructions = noteForAdmin
       }
