@@ -299,7 +299,7 @@ function Customer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-base md:text-lg">
                   {Object.keys(customer?.personalityInfo || []).map(
                     (key) =>
-                      key != "_id" && (
+                      key != "_id" && customer?.personalityInfo[key].length != 0 && (
                         <div key={key}>
                           <p className="font-semibold  ">
                             {capitlize(key)}

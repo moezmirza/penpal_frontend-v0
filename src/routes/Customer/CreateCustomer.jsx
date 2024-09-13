@@ -871,7 +871,7 @@ function CustomerDetails({
     }
     onDuesInfo(updatedDuesInfo)
   }
-
+  const numberTypeFields = ["age", "height", "weight"]
 
   return (
     <div className="basis-[60%] bg-white rounded-lg relative">
@@ -1024,7 +1024,7 @@ function CustomerDetails({
                   <InputField
                     key={field}
                     labelText={basicInfoFieldLabelMap[field]}
-                    type={field === "dateOfBirth" ? "date" : "text"}
+                    type={field === "dateOfBirth" ? "date" : numberTypeFields.includes(field) ? "number" : "text"}
                     placeholder={basicInfoPlaceholderMap[field]}
                     name={field}
                     value={basicInfo[field]}
