@@ -1142,8 +1142,8 @@ function CustomerDetails({
 function AddOns({ onClick, duesInfo }) {
   const addonsList = ["Feature Placement", "Premium Placement"];
   const addonCostMap = {
-    "Feature Placement": "$14.95",
-    "Premium Placement": "$24.95",
+    "Feature Placement": addonStatetoCost["featuredPlacement"],
+    "Premium Placement": addonStatetoCost["premiumPlacement"],
   };
 
   const handleChange = (add, addon) => {

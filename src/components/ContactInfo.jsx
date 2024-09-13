@@ -29,7 +29,7 @@ function ContactInfo({
             </p>
             <p className="">
               <span className="font-semibold mr-2">Email Provider:</span>
-              {emailProvider}
+              {emailProvider} {showUpdatedDetails("institutionalEmailProvider") && <UpdateMarker />}
             </p>
             <p>
               <a

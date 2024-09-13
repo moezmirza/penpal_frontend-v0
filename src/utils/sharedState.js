@@ -554,8 +554,8 @@ export const addonStateToNameMap = {
 export const addonStatetoCost = {
   creation: 99.95,
   renewal: 79.95,
-  featuredPlacement: 14.95,
-  premiumPlacement: 24.95,
+  featuredPlacement: 14.99,
+  premiumPlacement: 24.99,
 };
 
 export const othersFilterList = [
