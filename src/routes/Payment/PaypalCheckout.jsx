@@ -12,31 +12,42 @@ const PaypalCheckout = ({ cid, paymentDetails }) => {
     console.log("paymentdetails", paymentDetails)
     const post = usePost()
     const createOrder = async (data, actions) => {
-        const { success, error } = await post(
+        const { success, data:postData,error } = await post(
             `/payment/create-checkout-session?provider=paypal`,
             {
                 cid,
                 ...paymentDetails,
             }
         );
+
+        const orderData = success ? postData.order : null;
+        console.log("orderData", orderData, postData, success)
+
+        if(orderData.id){
+            console.log('Order created successfully. Order ID:', orderData.id);
+            return orderData.id;
+        }
         if (error) {
+            console.log('Error creating order:', error);
             alert("An unexpected error occurred! Please try again later.");
         }
     };
 
 
     // // check Approval
-    const onApprove = (data, actions) => {
-        const { success, error } = post(
+    const onApprove = async (data, actions) => {
+        const { success, data:postData, error } = await post(
             `/payment/capture-paypal?orderId=${data.orderID}`
         );
         if (error) {
+            console.log('Error capturing order:', error);
             alert("An unexpected error occurred! Please try again later.");
         }
     };
 
     //capture likely error
     const onError = (data, actions) => {
+        console.log('Error onError:', data);
         alert("An unexpected error occurred! Please try again later.");
     };
 
