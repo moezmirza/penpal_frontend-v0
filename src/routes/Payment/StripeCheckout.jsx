@@ -5,10 +5,6 @@ import {
   EmbeddedCheckout,
 } from "@stripe/react-stripe-js";
 import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
   useLocation,
 } from "react-router-dom";
 import { usePost } from "../../api/usePost";
@@ -21,7 +17,7 @@ const stripePromise = loadStripe(
   import.meta.env.VITE_STRIPE_PUBLIC_KEY
 );
 
-const CheckoutForm = () => {
+const StripeCheckout= () => {
   const [clientSecret, setClientSecret] = useState("");
   const post = usePost();
   const { state } = useLocation();
@@ -63,4 +59,4 @@ const CheckoutForm = () => {
   );
 };
 
-export default CheckoutForm;
+export default StripeCheckout
