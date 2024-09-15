@@ -9,6 +9,7 @@ import { store } from "./state/store.js";
 import { Navbar } from "./components/mainComponents/Navbar.jsx";
 import LayoutProvider from "./providers/LayoutProvider.jsx";
 import AuthProvider from "./providers/AuthProvider.jsx";
+import PayPalPaymentProvider from "./providers/PaypalPaymentProvider.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   // <React.StrictMode>
@@ -16,7 +17,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <AuthProvider>
         <LayoutProvider>
-          <App />
+          <PayPalPaymentProvider>
+            <App />
+          </PayPalPaymentProvider>
         </LayoutProvider>
       </AuthProvider>
     </Provider>

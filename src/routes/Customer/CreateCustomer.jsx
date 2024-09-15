@@ -28,6 +28,8 @@ import ConfrimPopup from "../../components/ConfrimPopup";
 import { calculateTotalCost, checkForChange, isEmpty, roundTo } from "../../utils/sharedMethods";
 import PaymentReceipt from "../../components/PaymentReciept";
 import { dummyBasicInfo, dummyPersonalityInfo } from "../../utils/mockState";
+import PaypalCheckout from "../Payment/PaypalCheckout";
+import Paynow from "../Payment/PaymentPopup";
 
 function CreateCustomer() {
   const [error, setError] = useState("");
@@ -689,7 +691,7 @@ function CreateCustomer() {
         />
         {!isAdminLoggedIn &&
           <div className="basis-[40%] flex flex-col gap-y-6">
-            <PendingDuesSection
+            <PendingDues
               duesInfo={duesInfo}
               unBilledFields={unBilledFields}
               onDuesInfo={setDuesInfo}
@@ -1175,13 +1177,40 @@ function AddOns({ onClick, duesInfo }) {
   );
 }
 
-function PendingDuesSection({
+
+function PendingDues({
   duesInfo,
   unBilledFields,
   id,
   payementBoxRef,
   onPaynow,
+  renewal
 }) {
+
+  return <div
+    ref={payementBoxRef}
+    className="bg-white rounded-lg h-fit px-6 md:px-12 py-6 flex flex-col gap-y-6 border text-sm md:text-base"
+  >
+    <h1 className="text-xl md:text-3xl underline font-bold text-center">Pending Dues</h1>
+    <PendingDuesDetails
+      duesInfo={duesInfo}
+      unBilledFields={unBilledFields}
+      id={id}
+      onPaynow={onPaynow}
+      renewal={renewal}
+    />
+  </div>
+
+
+}
+
+export const PendingDuesDetails = ({
+  duesInfo,
+  unBilledFields,
+  id,
+  onPaynow,
+  renewal
+}) => {
   console.log("duesInfo", duesInfo);
 
   const addonsList = ["featuredPlacement", "premiumPlacement", "renewal"];
@@ -1191,28 +1220,33 @@ function PendingDuesSection({
   let total = calculateTotalCost(duesInfo)
   console.log("total", total)
   return (
-    <div
-      ref={payementBoxRef}
-      className=" bg-white rounded-lg h-fit px-6 md:px-12 py-6 flex flex-col gap-y-6 border text-sm md:text-base"
-    >
-      <h1 className=" text-xl md:text-3xl underline font-bold text-center">Pending Dues</h1>
+    <>
       <PaymentReceipt obj={duesInfo} pendingDuesSection={true} unBilledFields={unBilledFields} />
-      <div className="flex flex-col gap-y-2 text-white">
+      <div className="flex flex-col gap-y-2">
         <button
-          className={`py-2 w-full bg-green-600 rounded-lg ${total == 0
+          className={`py-2 w-full flex items-center  justify-center gap-x-4  bg-black rounded-lg ${total == 0
             ? "opacity-50 cursor-not-allowed"
-            : "curose-pointer"
+            : "curose-pointer text-white"
             }`}
           disabled={total == 0}
           onClick={onPaynow}
         >
-          Pay now
+
+          <img src="/assets/icons/apple.svg" alt="" className="h-8" />
+          Pay with apple pay
+
         </button>
+
+        <p className="mx-auto w-fit">OR </p>
+        <PaypalCheckout id={id} paymentDetails={duesInfo} />
+      </div>
+      {!renewal &&
         <p className="text-gray-600 italic text-center text-xs md:text-sm">
           {`*First ${id ? "update" : "create"} your profile to pay for it`}
         </p>
-      </div>
-    </div>
+      }
+    </ >
+
   );
 }
 

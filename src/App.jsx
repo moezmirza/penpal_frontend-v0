@@ -13,8 +13,8 @@ import ManageCustomers from "./routes/Customer/ManageCustomers";
 import ApproveProfiles from "./routes/Admin/ApproveProfiles";
 import ApproveUpdates from "./routes/Admin/ApproveUpdates";
 import CustomerUpdateDetails from "./routes/Admin/CustomerUpdateDetails";
-import CheckoutForm from "./routes/Payment/Payment";
-import Result from "./routes/Payment/Result";
+import StripeCheckout from "./routes/Payment/StripeCheckout";
+import StripeResult from "./routes/Payment/StripeResult";
 import UpdateCustomers from "./routes/Customer/UpdateCustomers";
 import ExploreProfiles from "./routes/Customer/ExploreProfiles";
 import DeleteProfiles from "./routes/Admin/DeleteProfiles";
@@ -47,8 +47,8 @@ function App() {
         <Route path="/update-inmate/:id" element={<UpdateCustomer />} />
         <Route path="/manage-inmates" element={<ManageCustomers />} />
         <Route path="/update-inmates" element={<UpdateCustomers />} />
-        <Route path="/payment" element={<CheckoutForm />} />
-        <Route path="/payment/result" element={<Result />} />
+        <Route path="/payment" element={<StripeCheckout />} />
+        <Route path="/payment/result" element={<StripeResult />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Route>
 
