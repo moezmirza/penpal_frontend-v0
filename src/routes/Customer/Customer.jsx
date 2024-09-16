@@ -360,7 +360,7 @@ function Customer() {
         />
 
         {isAdmin &&
-          <AssociatedUsersInfo createdBy={customer?.createdBy || null} paidBy={customer?.paidBy || null} />
+          <AssociatedUsersInfo updatedBy={customer?.updatedBy} createdBy={customer?.createdBy || null} paidBy={customer?.paidBy || null} />
         }
         {isAdmin && customer?.specialInstructionsFlag &&
           <NoteForAdmin noteForAdmin={customer?.specialInstructionsText} />
