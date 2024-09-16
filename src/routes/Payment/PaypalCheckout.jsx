@@ -1,44 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { usePost } from "../../api/usePost";
 import { calculateTotalCost } from "../../utils/sharedMethods";
 
-const PaypalCheckout = ({ cid, paymentDetails }) => {
+const PaypalCheckout = ({ id, paymentDetails }) => {
     const [success, setSuccess] = useState(false);
-    const [ErrorMessage, setErrorMessage] = useState("");
     const [{ options, isPending }, dispatch] = usePayPalScriptReducer()
     const [orderID, setOrderID] = useState(false);
-
-    console.log("paymentdetails paypal", paymentDetails)
     const post = usePost()
+    const paymentDetailsRef = useRef(paymentDetails);
+    paymentDetailsRef.current = paymentDetails; // Keep ref
+    console.log("paymentdetails paypal", "cid", id, paymentDetails)
+
     const createOrder = async (data, actions) => {
-        const { success, data:postData,error } = await post(
+        const { success, data: result, error } = await post(
             `/payment/create-checkout-session?provider=paypal`,
             {
-                cid,
-                ...paymentDetails,
+                id,
+                ...paymentDetailsRef.current,
             }
         );
-
-        const orderData = success ? postData.order : null;
-        console.log("orderData", orderData, postData, success)
-
-        if(orderData.id){
-            console.log('Order created successfully. Order ID:', orderData.id);
-            return orderData.id;
-        }
-        if (error) {
-            console.log('Error creating order:', error);
-            alert("An unexpected error occurred! Please try again later.");
-        }
+        const orderId = result.order.id
+        setOrderID(orderId)
+        return orderId
     };
 
 
-    // // check Approval
-    const onApprove = async (data, actions) => {
-        const { success, data:postData, error } = await post(
-            `/payment/capture-paypal?orderId=${data.orderID}`
+    const onApprove = (data, actions) => {
+        const { success, error } = post(
+            `/payment/capture-paypal?orderId=${orderID}`
         );
         if (error) {
             console.log('Error capturing order:', error);
@@ -46,7 +37,6 @@ const PaypalCheckout = ({ cid, paymentDetails }) => {
         }
     };
 
-    //capture likely error
     const onError = (data, actions) => {
         console.log('Error onError:', data);
         alert("An unexpected error occurred! Please try again later.");
