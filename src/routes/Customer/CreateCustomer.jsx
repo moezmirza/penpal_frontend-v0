@@ -1196,7 +1196,7 @@ function PendingDues({
       duesInfo={duesInfo}
       unBilledFields={unBilledFields}
       id={id}
-      onPaynow={onPaynow}
+      onStripePay={onPaynow}
       renewal={renewal}
     />
   </div>
@@ -1208,7 +1208,7 @@ export const PendingDuesDetails = ({
   duesInfo,
   unBilledFields,
   id,
-  onPaynow,
+  onStripePay,
   renewal
 }) => {
   console.log("duesInfo", duesInfo);
@@ -1224,20 +1224,16 @@ export const PendingDuesDetails = ({
       <PaymentReceipt obj={duesInfo} pendingDuesSection={true} unBilledFields={unBilledFields} />
       <div className="flex flex-col gap-y-2">
         <button
-          className={`py-2 w-full flex items-center  justify-center gap-x-4  bg-black rounded-lg ${total == 0
-            ? "opacity-50 cursor-not-allowed"
-            : "curose-pointer text-white"
+          className={`py-2 md:py-2.5 w-full flex items-center text-sm md:text-base justify-center gap-x-4 text-white  bg-black rounded-md cursor-pointer ${total == 0
+            && "opacity-50"
             }`}
           disabled={total == 0}
-          onClick={onPaynow}
+          onClick={onStripePay}
         >
-
-          <img src="/assets/icons/apple.svg" alt="" className="h-8" />
+          <img src="/assets/icons/apple.svg" alt="" className="h-5 md:h-8" />
           Pay with apple pay
 
         </button>
-
-        <p className="mx-auto w-fit">OR </p>
         <PaypalCheckout id={id} paymentDetails={duesInfo} />
       </div>
       {!renewal &&

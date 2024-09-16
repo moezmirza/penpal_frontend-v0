@@ -81,7 +81,7 @@ function UpdateCustomers() {
     setShowPaymentOptions(true)
   }
 
-  const handlePaynow = () => {
+  const handleStripePay = () => {
     navigate(`/payment`, {
       state: {
         cid: currentCustomer.current,
@@ -102,7 +102,7 @@ function UpdateCustomers() {
       <LoadingSpinner isLoading={loading} />
 
       {showPaymentOptions &&
-        <Paynow id={currentCustomer.current} duesInfo={{ "renewal": true }} onPaynow={handlePaynow} onClosePopup={() =>
+        <Paynow id={currentCustomer.current} duesInfo={{ "renewal": true }} onStripePay={handleStripePay} onClosePopup={() =>
           setShowPaymentOptions(false)
         } />
       }
