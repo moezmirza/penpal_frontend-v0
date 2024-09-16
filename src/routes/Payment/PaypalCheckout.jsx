@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { usePost } from "../../api/usePost";
+import { calculateTotalCost } from "../../utils/sharedMethods";
 
 const PaypalCheckout = ({ cid, paymentDetails }) => {
     const [success, setSuccess] = useState(false);
@@ -9,7 +10,7 @@ const PaypalCheckout = ({ cid, paymentDetails }) => {
     const [{ options, isPending }, dispatch] = usePayPalScriptReducer()
     const [orderID, setOrderID] = useState(false);
 
-    console.log("paymentdetails", paymentDetails)
+    console.log("paymentdetails paypal", paymentDetails)
     const post = usePost()
     const createOrder = async (data, actions) => {
         const { success, data:postData,error } = await post(
@@ -58,10 +59,13 @@ const PaypalCheckout = ({ cid, paymentDetails }) => {
         }
     }, [success]);
 
+    const total = calculateTotalCost(paymentDetails)
+
     return isPending ?
         <LoadingSpinner />
         :
         <PayPalButtons
+            disabled={total == 0}
             style={{ layout: "vertical" }}
             createOrder={createOrder}
             onApprove={onApprove}

@@ -11,6 +11,7 @@ import {
 } from "../../utils/sharedState";
 import ContactInfo from "../../components/ContactInfo";
 import AssociatedUsersInfo from "../../components/AssociatedUsersInfo";
+import Paynow from "../Payment/PaymentPopup";
 
 
 function Customer() {
@@ -23,7 +24,7 @@ function Customer() {
   const post = usePost();
   const put = usePut();
   const { pathname: path } = useLocation()
-  console.log("location in customer", path)
+  const [showPaymentOptions, setShowPaymentOptions] = useState(false)
 
 
   const navigate = useNavigate();
@@ -115,6 +116,20 @@ function Customer() {
     return updatedFields?.includes(field) && isAdminUpdateEndpoint
 
   }
+  const handleRenew = (cid) => {
+    setShowPaymentOptions(true)
+  }
+  const handleStripePay = () => {
+    navigate(`/payment`, {
+      state: {
+        cid: currentCustomer.current,
+        paymentDetails: {
+          renewal: true,
+          totalAmount: 79.95,
+        },
+      },
+    })
+  }
   return (
     <div className="bg-c-basic min-h-screen px-3 xl:px-0 py-12">
       <div className="flex flex-col items-center gap-y-12 w-full xl:w-8/12 mx-auto">
@@ -123,6 +138,11 @@ function Customer() {
           className={`bg-white  w-full border rounded-lg flex flex-col gap-y-4 p-6 border-2`}
         >
           <LoadingSpinner isLoading={loading} />
+          {showPaymentOptions &&
+            <Paynow id={customer._id} duesInfo={{ "renewal": true }} onStripePay={handleStripePay} onClosePopup={() =>
+              setShowPaymentOptions(false)
+            } />
+          }
           <div className="flex flex-col gap-y-6">
             <div className="flex flex-col md:flex-row md:items-start gap-x-12 gap-y-6 relative">
               <div>
@@ -207,17 +227,7 @@ function Customer() {
                   <button
                     type="button"
                     className="flex items-center justify-center  mx-auto w-full py-2.5 px-4 border  text-white bg-green-600  rounded-lg hover:opacity-90 text-nowrap"
-                    onClick={() =>
-                      navigate(`/payment`, {
-                        state: {
-                          cid: id,
-                          paymentDetails: {
-                            renewal: true,
-                            totalAmount: 79.95,
-                          },
-                        },
-                      })
-                    }
+                    onClick={() => handleRenew(customer?._id)}
                   >
                     Renew Profile
                   </button>
