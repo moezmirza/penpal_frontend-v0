@@ -35,7 +35,7 @@ function useGet() {
         "response",
         response.data.data
       );
-      return { success: true, data: response.data.data };
+      return { success: true, data: response.data.data, responseData: response?.data };
     } catch (error) {
       console.error("reqType", "get", "endPoint", url, "error:", error);
       return {

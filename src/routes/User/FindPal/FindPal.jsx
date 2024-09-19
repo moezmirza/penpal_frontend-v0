@@ -18,6 +18,7 @@ import {
 import { includesCaseInsensitive } from "../../Admin/ApproveUpdates";
 import CustomerCard from "../../../components/CustomerCard";
 import { itemsPerPage, nextPageNumber } from "../../../utils/config";
+import PurchaseTable from "../Table/PurchaseTable";
 
 export const mailTOLink = (email, name) => {
   const intialBody = `Hi ${name}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`;
@@ -26,6 +27,8 @@ export const mailTOLink = (email, name) => {
     "Looking for a pal"
   )}&body=${encodeURIComponent(intialBody)}`;
 }
+const LIMIT = 10;
+
 function FindPal() {
   const user = useSelector((state) => state.user.currentUser);
   const [customers, setCustomers] = useState([]);
@@ -33,6 +36,11 @@ function FindPal() {
   const [loading, setLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [getStartedPopup, setGetStartedPopup] = useState(false);
+  const [purchasePage, setPurchaesPage] = useState(1);
+  const [totalPurchasePages, setTotalPurchaesPage] = useState(1);
+  const [purchaseLoading, setPurchaeLoading] = useState(false);
+  const [purchases, setPurchases] = useState(null);
+  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
   // const [viewMorePopup, setViewMorePopup] = useState(false);
   const navigate = useNavigate();
   const get = useGet();
@@ -129,6 +137,30 @@ function FindPal() {
     };
     fetchCustomers();
   }, []);
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user") ?? "");
+    const fetchPurchases = async () => {
+      setPurchaeLoading(true);
+      const { success, data, error, responseData } = await get(
+        `/admin/payment-histories?page=${purchasePage}&limit=${LIMIT}&customer`
+      );
+      if (success) {
+        setPurchaeLoading(false);
+        setTotalPurchaesPage(responseData?.totalPages)
+        setPurchases(data);
+
+        console.log("data", data);
+      } else {
+        setPurchaeLoading(false);
+
+        console.log("error", error);
+      }
+    };
+    if(userData && userData?.role == "admin") {
+      fetchPurchases();
+    }
+  }, [purchasePage]);
 
   const handleFetchMoreCustomers = () => {
     // if (user?.profileComplete) {
@@ -352,6 +384,9 @@ function FindPal() {
           </button>
         )}
       </div>
+      {isAdmin &&
+        <PurchaseTable className="mx-4" purchases={purchases} totalPages={totalPurchasePages} page={purchasePage} setPage={setPurchaesPage} />
+      }
     </div>
   );
 }

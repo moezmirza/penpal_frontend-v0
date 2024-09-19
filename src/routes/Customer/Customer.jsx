@@ -12,7 +12,9 @@ import {
 import ContactInfo from "../../components/ContactInfo";
 import AssociatedUsersInfo from "../../components/AssociatedUsersInfo";
 import Paynow from "../Payment/PaymentPopup";
+import PurchaseTable from "../User/Table/PurchaseTable";
 
+const LIMIT = 10;
 
 function Customer() {
   const { id } = useParams();
@@ -20,6 +22,11 @@ function Customer() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [msgText, setMsgText] = useState("");
+  const [purchasePage, setPurchaesPage] = useState(1);
+  const [totalPurchasePages, setTotalPurchaesPage] = useState(1);
+  const [purchaseLoading, setPurchaeLoading] = useState(false);
+  const [purchases, setPurchases] = useState(null);
+
   const get = useGet();
   const post = usePost();
   const put = usePut();
@@ -31,6 +38,29 @@ function Customer() {
   useEffect(() => {
     window.scroll(0, 0);
   }, []);
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user") ?? "");
+    const fetchPurchases = async () => {
+      setPurchaeLoading(true);
+      const { success, data, error, responseData } = await get(
+        `/admin/payment-histories?page=${purchasePage}&limit=${LIMIT}&customer=${id}`
+      );
+      if (success) {
+        setPurchaeLoading(false);
+        setTotalPurchaesPage(responseData?.totalPages)
+        setPurchases(data);
+
+        console.log("data", data);
+      } else {
+        setPurchaeLoading(false);
+
+        console.log("error", error);
+      }
+    };
+    if(userData && userData?.role == "admin") {
+      fetchPurchases();
+    }
+  }, [purchasePage]);
 
   const matchAdminUrlPattern = (url) => {
     const regex = /^\/admin\/inmate-updates\/.{24}$/;
@@ -364,6 +394,11 @@ function Customer() {
         }
         {isAdmin && customer?.specialInstructionsFlag &&
           <NoteForAdmin noteForAdmin={customer?.specialInstructionsText} />
+        }
+        {isAdmin && 
+          <div className="w-full">
+            <PurchaseTable purchases={purchases} totalPages={totalPurchasePages} page={purchasePage} setPage={setPurchaesPage} className='' />
+          </div>
         }
       </div>
 
