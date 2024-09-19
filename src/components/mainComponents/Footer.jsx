@@ -26,45 +26,25 @@ const Footer = () => {
             <a className="underline decoration-blue-400 text-sm" href={`${websiteURL}terms-of-service/`}>Terms of Service</a>
           </div>
         </div>
-        <div className="flex justify-between basis-[65%] flex-wrap gap-10">
-          
-        <div className="">
-          <h2 className="text-2xl font-semibold mb-8 text-white">Navigation</h2>
-          <ul className="flex flex-col gap-y-4">
-            <li><a href={`${websiteURL}`} className="hover:underline whitespace-nowrap">Home</a></li>
-            <li><a href={`${websiteURL}/about-us/`} className="hover:underline whitespace-nowrap">About Us</a></li>
-            <li><a href={`https://app.awayoutpenpals.com`} className="hover:underline whitespace-nowrap">Dashboard</a></li>
-            <li><a href={`${websiteURL}/how-it-works/`} className="hover:underline whitespace-nowrap">How It Works</a></li>
-            <li><a href={`${websiteURL}/pricing/`} className="hover:underline whitespace-nowrap">Pricing</a></li>
-            <li><a href={`${websiteURL}/faq/`} className="hover:underline whitespace-nowrap">FAQ</a></li>
-            <li><a href={`${websiteURL}/contact-us/`} className="hover:underline whitespace-nowrap">Contact Us</a></li>
-          </ul>
-
-        </div>
-        <div className="">
-          <h2 className="text-2xl font-semibold mb-8 text-white">Resources</h2>
-          <ul className="flex flex-col gap-y-4">
-            <li><a href="#" className="hover:underline">About Securus</a></li>
-            <li><a href="#" className="hover:underline">Facilities We Serve</a></li>
-            <li><a href="#" className="hover:underline">Facilities & Pricing</a></li>
-            <li><a href="#" className="hover:underline">Correctional Staff</a></li>
-            <li><a href="#" className="hover:underline">Tariffs</a></li>
-            <li><a href="#" className="hover:underline">Rates</a></li>
-            <li><a href="#" className="hover:underline">FCC</a></li>
-            <li><a href="#" className="hover:underline">California Attorneys</a></li>
-            <li><a href="#" className="hover:underline">California Residents</a></li>
-          </ul>
-        </div>
-        <div className="">
-          <ul className="flex flex-col gap-y-4">
-            <li><a href="#" className="hover:underline">Customer Care</a></li>
-            <li><a href="#" className="hover:underline">Report Technical Issues</a></li>
-            <li><a href="#" className="hover:underline">Securus Technologies LLC</a></li>
-            <li><a href="#" className="hover:underline">Securus Technologies on LinkedIn</a></li>
-            <li><a href="#" className="hover:underline">Legal & Regulatory</a></li>
-            <li><a href={`${websiteURL}/terms-and-conditions/`} className="hover:underline">Terms and Conditions</a></li>
-          </ul>
-        </div>
+        <div className="flex justify-around basis-[65%] flex-wrap gap-10">
+          <div className="">
+            <h2 className="text-2xl font-semibold mb-8 text-white">Navigation</h2>
+            <ul className="flex flex-col gap-y-4">
+              <li><a href={`${websiteURL}`} className="hover:underline whitespace-nowrap">Home</a></li>
+              <li><a href={`${websiteURL}/about-us/`} className="hover:underline whitespace-nowrap">About Us</a></li>
+              <li><a href={`${websiteURL}/faq/`} className="hover:underline whitespace-nowrap">FAQ</a></li>
+              <li><a href={`${websiteURL}/contact-us/`} className="hover:underline whitespace-nowrap">Contact Us</a></li>
+            </ul>
+          </div>
+          <div className="">
+            <h2 className="text-2xl font-semibold mb-8 text-white">Platform</h2>
+            <ul className="flex flex-col gap-y-4">
+              <li><a href={`https://app.awayoutpenpals.com`} className="hover:underline whitespace-nowrap">Dashboard</a></li>
+              <li><a href={`${websiteURL}/how-it-works/`} className="hover:underline whitespace-nowrap">How It Works</a></li>
+              <li><a href={`${websiteURL}/pricing/`} className="hover:underline whitespace-nowrap">Pricing</a></li>
+              <li><a href={`${websiteURL}/terms-and-conditions/`} className="hover:underline">Terms and Conditions</a></li>
+            </ul>
+          </div>
         </div>
 
       </div>
