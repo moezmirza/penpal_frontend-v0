@@ -183,7 +183,7 @@ const Login = () => {
           <span className="text-2xl md:text-3xl">👋</span>{" "}
         </h2>
         <p className="text-gray-500  text-center">
-          Enter your credentionals to login
+          Enter your credentials to login
         </p>
         {error && <p className="text-red-500 mt-1 text-center"> {error} </p>}
         {resendEmail && (
