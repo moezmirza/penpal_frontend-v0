@@ -5,6 +5,7 @@ import { MultiSelectField } from "../../../components/mainComponents/MultiSelect
 import { LoadingSpinner } from "../../../components/LoadingSpinner";
 import { useGet } from "../../../api/useGet";
 import ConfirmPopup from "../../../components/ConfrimPopup";
+import AddPaymentPopup from "../../../components/AddPaymentModal";
 import {
   ageGrpList,
   educationList,
@@ -18,6 +19,9 @@ import {
 import { includesCaseInsensitive } from "../../Admin/ApproveUpdates";
 import CustomerCard from "../../../components/CustomerCard";
 import { itemsPerPage, nextPageNumber } from "../../../utils/config";
+import PurchaseTable from "../Table/PurchaseTable";
+import UserTable from "../Table/UserTable";
+import { usePost } from "../../../api/usePost";
 
 export const mailTOLink = (email, name) => {
   const intialBody = `Hi ${name}, I'm looking for a penpal. I'd like to find out more about how you work. I'm looking forward to your reply!`;
@@ -26,6 +30,8 @@ export const mailTOLink = (email, name) => {
     "Looking for a pal"
   )}&body=${encodeURIComponent(intialBody)}`;
 }
+const LIMIT = 10;
+
 function FindPal() {
   const user = useSelector((state) => state.user.currentUser);
   const [customers, setCustomers] = useState([]);
@@ -33,9 +39,23 @@ function FindPal() {
   const [loading, setLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [getStartedPopup, setGetStartedPopup] = useState(false);
+  const [purchasePage, setPurchaesPage] = useState(1);
+  const [totalPurchasePages, setTotalPurchaesPage] = useState(1);
+  const [totalUserPages, setTotalUserPages] = useState(1);
+  const [purchaseLoading, setPurchaeLoading] = useState(false);
+  const [purchases, setPurchases] = useState(null);
+  const [users, setUsers] = useState(null);
+  const [userLoading, setUserLoading] = useState(null);
+  const [userPage, setUserPage] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [referralLoading, setReferralLoading] = useState(false);
+  const [paymentPopup, setPaymentPopup] = useState(false);
+
+  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
   // const [viewMorePopup, setViewMorePopup] = useState(false);
   const navigate = useNavigate();
   const get = useGet();
+  const post = usePost();
 
   const searchSectRef = useRef(null);
   const location = useLocation();
@@ -129,6 +149,72 @@ function FindPal() {
     };
     fetchCustomers();
   }, []);
+
+  const fetchUsers = async () => {
+    setUserLoading(true);
+    const { success, data, error, responseData } = await get(
+      `/admin/user-listing?page=${userPage}&limit=${LIMIT}&user=`
+    );
+    if (success) {
+      setUserLoading(false);
+      setTotalUserPages(responseData?.totalPages)
+      setUsers(data);
+
+    } else {
+      setUserLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user") ?? "");
+    if(userData && userData?.role == "admin") {
+      fetchUsers();
+    }
+  }, [userPage]);
+
+
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user") ?? "");
+    const fetchPurchases = async () => {
+      setPurchaeLoading(true);
+      const { success, data, error, responseData } = await get(
+        `/admin/payment-histories?page=${purchasePage}&limit=${LIMIT}&customer`
+      );
+      if (success) {
+        setPurchaeLoading(false);
+        setTotalPurchaesPage(responseData?.totalPages)
+        setPurchases(data);
+
+        console.log("data", data);
+      } else {
+        setPurchaeLoading(false);
+
+        console.log("error", error);
+      }
+    };
+    if(userData && userData?.role == "admin") {
+      fetchPurchases();
+    }
+  }, [purchasePage]);
+
+  const handleAddReferral = async (amount) => {
+    const { success } = await post(
+      "/admin/add-referral",
+      {
+        userId: selectedUser?._id,
+        amount: parseFloat(amount),
+      }
+    );
+    if (success) {
+      fetchUsers();
+      setReferralLoading(false);
+      setPaymentPopup(false);
+
+    } else {
+      setReferralLoading(false);
+    }
+  }
 
   const handleFetchMoreCustomers = () => {
     // if (user?.profileComplete) {
@@ -352,6 +438,21 @@ function FindPal() {
           </button>
         )}
       </div>
+      {isAdmin &&
+        <PurchaseTable className="mx-4" purchases={purchases} totalPages={totalPurchasePages} page={purchasePage} setPage={setPurchaesPage} />
+      }
+      {isAdmin &&
+        <UserTable ble setPopup={setPaymentPopup} setSelectedUser={setSelectedUser} className="mx-4" listing={users} totalPages={totalUserPages} page={userPage} setPage={setUserPage} />
+      }
+      {paymentPopup && (
+        <AddPaymentPopup
+          onCloseClick={() => {setPaymentPopup(false); setSelectedUser(null)}}
+          onConfirm={(amount) => handleAddReferral(amount)}
+          confirmBtnTxt={"Add Balance"}
+          infoText={'approve-profile'}
+          loading={referralLoading}
+        />
+      )}
     </div>
   );
 }

@@ -1,8 +1,8 @@
+import { useSelector } from "react-redux";
 import { calculateTotalCost, roundTo } from "../utils/sharedMethods";
 import { addonStatetoCost, addonStateToNameMap, basicInfoFieldLabelMap, stateFieldNameMap } from "../utils/sharedState";
 function PaymentReceipt({ obj, unBilledFields = [], onDelReceiptItem, pendingDuesSection }) {
-    console.log("paymentReceipt", obj)
-
+    const user = useSelector((state) => state.user.currentUser);
     let total = calculateTotalCost(obj)
 
     const unGroupFieldsMap = {
@@ -49,6 +49,12 @@ function PaymentReceipt({ obj, unBilledFields = [], onDelReceiptItem, pendingDue
                 <p>Total</p>
                 <p>${total}</p>
             </div>
+            {user?.referralBalance && user?.referralBalance>0 && (
+            <div className="flex justify-between">
+                <p>Referral Balance</p>
+                <p>${user?.referralBalance}</p>
+            </div>
+            )}
         </div>
     );
 

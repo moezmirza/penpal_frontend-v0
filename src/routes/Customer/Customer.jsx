@@ -12,14 +12,22 @@ import {
 import ContactInfo from "../../components/ContactInfo";
 import AssociatedUsersInfo from "../../components/AssociatedUsersInfo";
 import Paynow from "../Payment/PaymentPopup";
+import PurchaseTable from "../User/Table/PurchaseTable";
+import AddPaymentPopup from "../../components/AddPaymentModal";
 
+const LIMIT = 10;
 
 function Customer() {
   const { id } = useParams();
   const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [msgText, setMsgText] = useState("");
+  const [purchasePage, setPurchaesPage] = useState(1);
+  const [totalPurchasePages, setTotalPurchaesPage] = useState(1);
+  const [purchaseLoading, setPurchaeLoading] = useState(false);
+  const [purchases, setPurchases] = useState(null);
+  const [paymentPopup, setPaymentPopup] = useState(false);
+
   const get = useGet();
   const post = usePost();
   const put = usePut();
@@ -31,6 +39,29 @@ function Customer() {
   useEffect(() => {
     window.scroll(0, 0);
   }, []);
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user") ?? "");
+    const fetchPurchases = async () => {
+      setPurchaeLoading(true);
+      const { success, data, error, responseData } = await get(
+        `/admin/payment-histories?page=${purchasePage}&limit=${LIMIT}&customer=${id}`
+      );
+      if (success) {
+        setPurchaeLoading(false);
+        setTotalPurchaesPage(responseData?.totalPages)
+        setPurchases(data);
+
+        console.log("data", data);
+      } else {
+        setPurchaeLoading(false);
+
+        console.log("error", error);
+      }
+    };
+    if(userData && userData?.role == "admin") {
+      fetchPurchases();
+    }
+  }, [purchasePage]);
 
   const matchAdminUrlPattern = (url) => {
     const regex = /^\/admin\/inmate-updates\/.{24}$/;
@@ -96,18 +127,6 @@ function Customer() {
       console.log("error updating rating", error);
     }
   };
-  // const handleMsgSend = async (e) => {
-  //   e.target.disabled = true;
-  //   e.target.innerText = "Sending...";
-  //   if (msgText != "") {
-  //     const { success, data, error } = await post(`/user/chat?id=${id}`, {
-  //       messageText: msgText,
-  //     });
-  //     if (success) {
-  //       e.target.innerText = "Sent";
-  //     }
-  //   }
-  // }
   const updateRoute = isAdmin ? `/admin/update-inmate/${id}` : `/update-inmate/${id}`
   const excludeBasinInfoFields = ["bio", "mailingAddress", "institutionalEmailProvider"]
   const updatedFields = customer?.updatedFields || [];
@@ -249,7 +268,6 @@ function Customer() {
                     {customer?.isFavorite ? "Favorite" : "Add to Favorites"}
                   </button>
                 </>
-
                 }
                 {/* <button
                   type="button"
@@ -365,6 +383,11 @@ function Customer() {
         {isAdmin && customer?.specialInstructionsFlag &&
           <NoteForAdmin noteForAdmin={customer?.specialInstructionsText} />
         }
+        {
+          <div className="w-full">
+            <PurchaseTable purchases={purchases} totalPages={totalPurchasePages} page={purchasePage} setPage={setPurchaesPage} className='' />
+          </div>
+        }
       </div>
 
       {/* <div
@@ -390,6 +413,14 @@ function Customer() {
           Send Message
         </button>
       </div> */}
+      {paymentPopup && (
+        <AddPaymentPopup
+          onCloseClick={setPaymentPopup}
+          onConfirm={() => console.log('Im Clicked')}
+          confirmBtnTxt={"Add Balance"}
+          infoText={'approve-profile'}
+        />
+      )}
     </div >
   );
 }

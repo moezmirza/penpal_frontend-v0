@@ -23,8 +23,8 @@ function CustomerCard({
     "unpaid": "bg-fr-blue-100",
     "unapproved": "bg-yellow-500",
   }
-  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"))
-  console.log("customerCard", customer, customer?.basicInfo);
+  const isAdmin = JSON.parse(localStorage.getItem("adminAuth"));
+  
   return (
     <div
       id="customer-card"

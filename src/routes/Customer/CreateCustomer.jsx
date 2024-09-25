@@ -1211,8 +1211,6 @@ export const PendingDuesDetails = ({
   onStripePay,
   renewal
 }) => {
-  console.log("duesInfo", duesInfo);
-
   const addonsList = ["featuredPlacement", "premiumPlacement", "renewal"];
   const addons = Object.keys(duesInfo).some(
     (field) => addonsList.includes(field) && duesInfo[field]
@@ -1232,7 +1230,6 @@ export const PendingDuesDetails = ({
         >
           <img src="/assets/icons/apple.svg" alt="" className="h-5 md:h-8" />
           Pay with apple pay
-
         </button>
         <PaypalCheckout id={id} paymentDetails={duesInfo} />
       </div>
