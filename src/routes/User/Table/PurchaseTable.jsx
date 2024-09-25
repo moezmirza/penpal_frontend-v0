@@ -3,8 +3,6 @@ import Pagination from "./Pagination";
 import { formatDate } from "../../../utils/sharedState";
 
 const PurchaseTable = ({ page, setPage, totalPages, purchases, className }) => {
-  console.log('purchases-totalPages', totalPages);
-
 
   const handlePageClick = (event) => {
     setPage(event.selected + 1);
@@ -12,6 +10,7 @@ const PurchaseTable = ({ page, setPage, totalPages, purchases, className }) => {
 
   return (
     <div className={`relative sm:rounded-lg ${className}`}>
+      <h2 style={{fontSize: '18px', fontWeight: 600}}>Purchases History</h2>
       {purchases?.length > 0 && (
         <>
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -20,6 +19,7 @@ const PurchaseTable = ({ page, setPage, totalPages, purchases, className }) => {
             <th scope="col" className="px-6 py-3">Date</th>
             <th scope="col" className="px-6 py-3">Status</th>
             <th scope="col" className="px-6 py-3">Total Price</th>
+            {/* <th scope="col" className="px-6 py-3">Actions</th> */}
           </tr>
         </thead>
         <tbody>

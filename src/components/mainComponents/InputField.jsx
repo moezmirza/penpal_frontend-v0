@@ -10,11 +10,9 @@ function InputField({
   onChange,
   required,
 }) {
-  console.log("label", labelText, "name", name, "required", required);
   return (
     <div>
       <RequiredFieldLabel labelText={labelText} required={required} />
-
       <input
         type={type}
         name={name}
