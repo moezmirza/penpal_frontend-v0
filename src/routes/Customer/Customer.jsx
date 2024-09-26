@@ -426,7 +426,7 @@ function Customer() {
         {isAdmin && customer?.specialInstructionsFlag &&
           <NoteForAdmin noteForAdmin={customer?.specialInstructionsText} />
         }
-        {
+        {isAdmin &&
           <div className="w-full">
             <PurchaseTable purchases={purchases} totalPages={totalPurchasePages} page={purchasePage} setPage={setPurchaesPage} className='' />
           </div>

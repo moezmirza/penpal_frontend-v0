@@ -79,6 +79,7 @@ const Login = () => {
           const currentUser = {
             firstName: "Admin",
             email: user.email,
+            role: 'admin'
           };
           const authInfo = {
             token: user.accessToken,

@@ -3,7 +3,7 @@ import { Navbar } from "../components/mainComponents/Navbar";
 
 import Footer from "../components/mainComponents/Footer";
 import { useSelector } from "react-redux";
-import CallSupport from "../components/CallSupport";
+// import CallSupport from "../components/CallSupport";
 import { useLocation } from "react-router-dom";
 
 function LayoutProvider({ children }) {
@@ -19,7 +19,7 @@ function LayoutProvider({ children }) {
     <div className="flex flex-col justify-between h-screen">
         <Navbar />
       <div className="flex-grow mt-16 md:mt-20 ">{children}</div>
-      <CallSupport />
+      {/* <CallSupport /> */}
 
       {isUser && !isAdmin && (
         <div className="flex-none">

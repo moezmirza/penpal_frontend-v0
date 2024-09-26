@@ -55,7 +55,7 @@ function ContactInfo({
                 )}
             </p>
             <p>
-              <span className="font-semibold mr-2">Inmate #:</span>
+              <span className="font-semibold mr-2">DOC/Inmate #:</span>
               {inmateNumber}
               {(showUpdatedDetails("inmateNumber") &&
                 <UpdateMarker />
