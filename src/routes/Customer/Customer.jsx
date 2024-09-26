@@ -192,6 +192,10 @@ function Customer() {
     }
   };
 
+  const printGenres = (genre) => {
+    return genre.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, str => str.toUpperCase());
+  }
+
   return (
     <div className="bg-c-basic min-h-screen px-3 xl:px-0 py-12">
       <div className="flex flex-col items-center gap-y-12 w-full xl:w-8/12 mx-auto">
@@ -373,7 +377,7 @@ function Customer() {
                       key != "_id" && customer?.personalityInfo[key].length != 0 && (
                         <div key={key}>
                           <p className="font-semibold  ">
-                            {capitlize(key)}
+                            {capitlize(printGenres(key))}
                             {showUpdatedDetails(key) && <UpdateMarker />}
                           </p>
                           <ul className="flex gap-x-3 md:flex-col">
