@@ -393,7 +393,7 @@ export const basicInfoFieldLabelMap = {
   inmateNumber: "DOC/Inmate #",
   age: "Age",
   gender: "Gender",
-  orientation: "Orientation",
+  orientation: "Sexual Orientation",
   city: "City",
   state: "State",
   mailingAddress: "Mailing Address",

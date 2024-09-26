@@ -66,7 +66,7 @@ const MultiSelectField = memo(
     }, []);
     return (
       <div ref={containerRef} className="w-full relative  text-sm md:text-base">
-        <RequiredFieldLabel labelText={labelText} required={required} />
+        <RequiredFieldLabel labelText={labelText == 'Orientation' ? 'Sexual Orientation': labelText} required={required} />
 
         <div
           id="wrapper"

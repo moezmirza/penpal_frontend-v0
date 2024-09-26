@@ -354,7 +354,7 @@ function Customer() {
                   ) : (!excludeBasinInfoFields.includes(field) && customer?.basicInfo[field] && basicInfoFieldLabelMap[field] &&
                     <p key={field} className="">
                       <span className="font-semibold mr-1">
-                        {basicInfoFieldLabelMap[field]}:
+                        {basicInfoFieldLabelMap[field] == 'Orientation' ? 'Sexual Orientation': basicInfoFieldLabelMap[field]}:
                       </span>
                       {customerFieldValue(field, customer?.basicInfo)}
                       {showUpdatedDetails(field) && (
