@@ -108,7 +108,7 @@ function CustomerCard({
           </p>
         )}
         <p>
-          <span className="font-medium mr-1"> Mainling Addres:</span>
+          <span className="font-medium mr-1"> Mailing Addres:</span>
           {customer?.basicInfo?.mailingAddress || "N/A"}
         </p>
       </div>
