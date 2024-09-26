@@ -360,9 +360,9 @@ export const fieldOptionMap = {
   Sports: sports,
   Likes: likes,
   Personality: personality,
-  BookGenres: bookGenres,
-  MusicGenres: musicGenres,
-  MovieGenres: movieGenres,
+  'Book Genres': bookGenres,
+  'Music Genres': musicGenres,
+  'Movie Genres': movieGenres,
 };
 
 export const fieldStateNameMap = {
@@ -370,9 +370,9 @@ export const fieldStateNameMap = {
   Sports: "sports",
   Likes: "likes",
   Personality: "personality",
-  BookGenres: "bookGenres",
-  MusicGenres: "musicGenres",
-  MovieGenres: "movieGenres",
+  'Book Genres': "bookGenres",
+  'Music Genres': "musicGenres",
+  'Movie Genres': "movieGenres",
 };
 
 export const stateFieldNameMap = {
