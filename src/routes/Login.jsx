@@ -92,6 +92,7 @@ const Login = () => {
             token: user.accessToken,
             userAuth: true,
           };
+          localStorage.setItem("token", user.accessToken);
           let { success, data, error } = await get("/user", authInfo.token);
           console.log(success, "UserData", data);
           if (success) {

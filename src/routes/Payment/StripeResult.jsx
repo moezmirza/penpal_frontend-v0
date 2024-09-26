@@ -1,8 +1,14 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useGet } from "../../api/useGet";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AuthContext } from "../../providers/AuthProvider";
+import { setCurrentUser } from "../../state/slices/userSlice";
 
 function Result() {
+  const dispatch = useDispatch();
+  const { updateAuthInfo } = useContext(AuthContext);
+
   const [status, setStatus] = useState(null);
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
@@ -19,6 +25,19 @@ function Result() {
       if (success) {
         console.log("finalData", data);
         setStatus(data.status);
+        const token = localStorage.getItem("token");
+        const authInfo = {
+          token: token,
+          userAuth: true,
+        };
+        let { success, data, error } = await get("/user", authInfo.token);
+        console.log(success, "UserData", data);
+        if (success) {
+          dispatch(setCurrentUser(data));
+        } else {
+          console.log("error while getting user creds");
+        }
+        updateAuthInfo(authInfo);
       } else {
         setStatus("open");
       }

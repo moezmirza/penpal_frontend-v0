@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGet } from "../../api/useGet";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
@@ -7,8 +7,15 @@ import CustomerCard from "../../components/CustomerCard";
 import PageHeader from "../../components/PageHeader";
 import { nextPageNumber, itemsPerPage } from "../../utils/config";
 import Paynow from "../Payment/PaymentPopup";
+import { usePost } from "../../api/usePost";
+import { useDispatch } from "react-redux";
+import { AuthContext } from "../../providers/AuthProvider";
+import { setCurrentUser } from "../../state/slices/userSlice";
 
 function UpdateCustomers() {
+  const dispatch = useDispatch();
+  const { updateAuthInfo } = useContext(AuthContext);
+
   const [customers, setCustomers] = useState([]);
   const [showPaymentOptions, setShowPaymentOptions] = useState(false)
   const currentCustomer = useRef("")
@@ -19,7 +26,13 @@ function UpdateCustomers() {
   const inputRef = useRef();
 
   const get = useGet();
+  const post = usePost();
   const navigate = useNavigate()
+
+  const paymentDetails = {
+    renewal: true,
+    totalAmount: 79.95,
+  };
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -85,13 +98,50 @@ function UpdateCustomers() {
     navigate(`/payment`, {
       state: {
         cid: currentCustomer.current,
-        paymentDetails: {
-          renewal: true,
-          totalAmount: 79.95,
-        },
+        paymentDetails
       },
     })
   }
+
+  const handleReferralPay = async () => {
+    try {
+      console.log('currentCustomer.current', currentCustomer.current)
+      const { success, data, error } = await post(
+        "/payment/pay-with-referral",
+        {
+          cid: currentCustomer.current,
+          ...paymentDetails,
+        }
+      );
+      if (success) {
+        setShowPaymentOptions(false);
+
+        const token = localStorage.getItem("token");
+        const authInfo = {
+          token: token,
+          userAuth: true,
+        };
+        let { success, data, error } = await get("/user", authInfo.token);
+        console.log(success, "UserData", data);
+        if (success) {
+          dispatch(setCurrentUser(data));
+        } else {
+          console.log("error while getting user creds");
+        }
+        updateAuthInfo(authInfo);
+        setTimeout(() => {
+          navigate(`/update-inmates`);
+        }, 1000);
+
+        navigate(`/update-inmates`);
+
+      }
+    } catch(err) {
+      console.log('err', err);
+    }
+  };
+
+
   return (
     <div className="flex flex-col gap-y-6  mb-32 items-center justify-between  relative w-full">
       <PageHeader title="Update/Renew Profiles"
@@ -102,7 +152,7 @@ function UpdateCustomers() {
       <LoadingSpinner isLoading={loading} />
 
       {showPaymentOptions &&
-        <Paynow id={currentCustomer.current} duesInfo={{ "renewal": true }} onStripePay={handleStripePay} onClosePopup={() =>
+        <Paynow id={currentCustomer.current} onReferralPay={handleReferralPay} duesInfo={{ "renewal": true }} onStripePay={handleStripePay} onClosePopup={() =>
           setShowPaymentOptions(false)
         } />
       }

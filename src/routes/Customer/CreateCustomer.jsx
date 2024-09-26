@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import { RequiredFieldLabel } from "../../components/mainComponents/RequiredFieldLabel";
 import { MultiSelectField } from "../../components/mainComponents/MultiSelectField";
 import { InputField } from "../../components/mainComponents/InputField";
@@ -30,8 +30,14 @@ import PaymentReceipt from "../../components/PaymentReciept";
 import { dummyBasicInfo, dummyPersonalityInfo } from "../../utils/mockState";
 import PaypalCheckout from "../Payment/PaypalCheckout";
 import Paynow from "../Payment/PaymentPopup";
+import { useDispatch, useSelector } from "react-redux";
+import { AuthContext } from "../../providers/AuthProvider";
+import { setCurrentUser } from "../../state/slices/userSlice";
 
 function CreateCustomer() {
+  const dispatch = useDispatch();
+  const { updateAuthInfo } = useContext(AuthContext);
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showUpdateConfirmPop, setShowUpdateConfirmPop] = useState(false);
@@ -359,14 +365,6 @@ function CreateCustomer() {
       if (noteForAdmin) {
         finalObj.specialInstructions = noteForAdmin
       }
-      console.log(
-        "finalObjetct",
-        finalObj,
-        "basicInfo",
-        basicInfo,
-        "personalitInfo",
-        personalityInfo
-      );
 
       const { success, data, error } = await post(createEndpoint, finalObj);
       if (success) {
@@ -644,6 +642,44 @@ function CreateCustomer() {
     }
   };
 
+  const handleReferralPay = async () => {
+    try {
+      const payload = {};
+      if (id) {
+        payload.cid = id;
+      } else {
+        payload.cid = createdCustomerId;
+      }
+      const { success, data, error } = await post(
+        "/payment/pay-with-referral",
+        {
+          cid: payload.cid,
+          ...duesInfo,
+        }
+      );
+      if (success) {
+        const token = localStorage.getItem("token");
+        const authInfo = {
+          token: token,
+          userAuth: true,
+        };
+        let { success, data, error } = await get("/user", authInfo.token);
+        console.log(success, "UserData", data);
+        if (success) {
+          dispatch(setCurrentUser(data));
+        } else {
+          console.log("error while getting user creds");
+        }
+        updateAuthInfo(authInfo);
+        
+        setTimeout(() => {
+          navigate(`/update-inmates`);
+        }, 1000);
+      }
+    } catch(err) {
+
+    }
+  };
 
   return (
     <div className="bg-c-basic flex flex-col items-center gap-y-6 py-8 px-3  md:p-12 relative">
@@ -698,6 +734,7 @@ function CreateCustomer() {
               id={id}
               payementBoxRef={payementBoxRef}
               onPaynow={handlePaynow}
+              onReferralPay={handleReferralPay}
             />
             <AddOns onClick={setDuesInfo} duesInfo={duesInfo} />
 
@@ -1184,6 +1221,7 @@ function PendingDues({
   id,
   payementBoxRef,
   onPaynow,
+  onReferralPay,
   renewal
 }) {
 
@@ -1197,6 +1235,7 @@ function PendingDues({
       unBilledFields={unBilledFields}
       id={id}
       onStripePay={onPaynow}
+      onReferralPay={onReferralPay}
       renewal={renewal}
     />
   </div>
@@ -1209,8 +1248,11 @@ export const PendingDuesDetails = ({
   unBilledFields,
   id,
   onStripePay,
+  onReferralPay,
   renewal
 }) => {
+  const user = useSelector((state) => state.user.currentUser);
+  console.log('user', user);
   const addonsList = ["featuredPlacement", "premiumPlacement", "renewal"];
   const addons = Object.keys(duesInfo).some(
     (field) => addonsList.includes(field) && duesInfo[field]
@@ -1221,6 +1263,17 @@ export const PendingDuesDetails = ({
     <>
       <PaymentReceipt obj={duesInfo} pendingDuesSection={true} unBilledFields={unBilledFields} />
       <div className="flex flex-col gap-y-2">
+      {user?.referralBalance && user?.referralBalance > 0 && user?.referralBalance > total && (
+      <button
+      className={`py-2 md:py-2.5 w-full flex bg-fr-blue-100 items-center text-sm md:text-base justify-center gap-x-4 text-white  bg-black rounded-md cursor-pointer ${total == 0
+        && "opacity-50"
+        }`}
+      disabled={total == 0}
+      onClick={onReferralPay}
+    >
+      Pay with referral amount
+    </button>
+      )}
         <button
           className={`py-2 md:py-2.5 w-full flex items-center text-sm md:text-base justify-center gap-x-4 text-white  bg-black rounded-md cursor-pointer ${total == 0
             && "opacity-50"

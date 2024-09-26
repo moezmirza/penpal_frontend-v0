@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGet } from "../../api/useGet";
 import { usePut } from "../../api/usePut";
@@ -14,10 +14,15 @@ import AssociatedUsersInfo from "../../components/AssociatedUsersInfo";
 import Paynow from "../Payment/PaymentPopup";
 import PurchaseTable from "../User/Table/PurchaseTable";
 import AddPaymentPopup from "../../components/AddPaymentModal";
-
+import { setCurrentUser } from "../../state/slices/userSlice";
+import { AuthContext } from "../../providers/AuthProvider";
+import { useDispatch } from "react-redux";
 const LIMIT = 10;
 
 function Customer() {
+  const dispatch = useDispatch();
+  const { updateAuthInfo } = useContext(AuthContext);
+
   const { id } = useParams();
   const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -149,6 +154,44 @@ function Customer() {
       },
     })
   }
+
+  const handleReferralPay = async () => {
+    try {
+      const paymentDetails = {
+        renewal: true,
+        totalAmount: 79.95,
+      };
+      const { success, data, error } = await post(
+        "/payment/pay-with-referral",
+        {
+          cid: currentCustomer.current,
+          ...paymentDetails,
+        }
+      );
+      if (success) {
+        setShowPaymentOptions(false);
+        const token = localStorage.getItem("token");
+        const authInfo = {
+          token: token,
+          userAuth: true,
+        };
+        let { success, data, error } = await get("/user", authInfo.token);
+        console.log(success, "UserData", data);
+        if (success) {
+          dispatch(setCurrentUser(data));
+        } else {
+          console.log("error while getting user creds");
+        }
+        updateAuthInfo(authInfo);
+        setTimeout(() => {
+          navigate(`/update-inmates`);
+        }, 1000);
+      }
+    } catch(err) {
+
+    }
+  };
+
   return (
     <div className="bg-c-basic min-h-screen px-3 xl:px-0 py-12">
       <div className="flex flex-col items-center gap-y-12 w-full xl:w-8/12 mx-auto">
@@ -158,7 +201,7 @@ function Customer() {
         >
           <LoadingSpinner isLoading={loading} />
           {showPaymentOptions &&
-            <Paynow id={customer._id} duesInfo={{ "renewal": true }} onStripePay={handleStripePay} onClosePopup={() =>
+            <Paynow id={customer._id} onReferralPay={handleReferralPay} duesInfo={{ "renewal": true }} onStripePay={handleStripePay} onClosePopup={() =>
               setShowPaymentOptions(false)
             } />
           }
