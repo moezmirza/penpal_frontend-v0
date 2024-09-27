@@ -39,7 +39,6 @@ function Chat() {
           const chatInd = data?.findIndex(
             (chat) => chat.receiver._id == newCustomerChat._id
           );
-          console.log("chatInd----here", chatInd);
           if (chatInd == -1) {
             const chatObj = {
               messages: [],

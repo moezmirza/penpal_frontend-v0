@@ -3,7 +3,9 @@ import { usePost } from "../api/usePost";
 import { Link, useNavigate } from "react-router-dom";
 import mapAuthCodeToMessage from "../utils/authCodeMap";
 import { LoadingSpinner } from "../components/LoadingSpinner";
-
+import { InputField } from "../components/mainComponents/InputField";
+import { MultiSelectField } from "../components/mainComponents/MultiSelectField";
+import { stateList } from "../utils/sharedState";
 const Register = () => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -11,6 +13,10 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    mailingAddress: "",
+    state: [],
+    city: "",
+    zipCode: "",
     terms: "false",
   });
 
@@ -105,6 +111,23 @@ const Register = () => {
     }
   };
 
+  const handleBasicInfoOptionsFieldChange = (label, value, remove) => {
+    const fieldKey = 'state';
+    let updatedArr = formData[fieldKey];
+    setFormData((updatedFields) => ({
+      ...updatedFields,
+        [fieldKey]: true
+    }))
+    if (remove) {
+      updatedArr = updatedArr.filter((item) => item != value);
+    } else {
+      updatedArr = [value];
+    }
+    const newObj = { ...formData, [fieldKey]: updatedArr };
+    console.log("updated object", newObj);
+    setFormData(newObj);
+  };
+
   return (
     <div className="flex justify-center md:items-center md:py-6 bg-b-general py-16 px-3  md:h-full ">
       <div className="flex flex-col items-center gap-y-3 bg-white p-4 md:p-8 w-full h-fit md:w-2/5 rounded-lg relative">
@@ -197,6 +220,57 @@ const Register = () => {
               placeholder="Confirm your password"
             />
           </label>
+          <label>
+          <div className="flex items-center gap-x-4">
+              Mailing Address
+            </div>
+                <textarea
+                  name="mailingAddress"
+                  value={formData.mailingAddress}
+                  onChange={handleChange}
+                  placeholder={"123 Main St, Apt 4B"}
+                  maxRows={2}
+                  className={` resize-none bg-transparent block w-full my-1.5 rounded-md p-1.5 border focus:border-gray-700 border-gray-400 outline-none`}
+                ></textarea>
+              </label>
+              <label>
+              <div className="flex items-center gap-x-4">
+                State
+            </div>
+              <MultiSelectField
+                key={"state"}
+                placeholderText={stateList[0]}
+                dropdownOptions={stateList}
+                selectedOptions={formData.state}
+                onChange={handleBasicInfoOptionsFieldChange}
+              />
+            </label>
+            <label>
+            <div className="flex items-center gap-x-4">
+                City
+            </div>
+            <InputField
+              key={"city"}
+              type={"text"}
+              placeholder={"New York"}
+              name={"city"}
+              value={formData.city}
+              onChange={handleChange}
+            />
+            </label>
+            <label>
+            <div className="flex items-center gap-x-4">
+                Zip Code
+            </div>
+            <InputField
+                    key={"zipCode"}
+                    type={"text"}
+                    placeholder={"59499"}
+                    name={"zipCode"}
+                    value={formData.zipCode}
+                    onChange={handleChange}
+                  />
+            </label>
           <label className="flex gap-x-4 cursor-pointer">
             <input
               type="checkbox"
