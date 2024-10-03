@@ -75,7 +75,7 @@ function Result() {
         className="flex flex-col items-center my-24 gap-y-6 mx-6"
       >
         <p className="text-base md:text-xl text-center">
-          Thank you for your corporeation! Your payment was successful.
+          Thank you for your corporation! Your payment was successful.
         </p>
         <button className="bg-green-600 text-white py-2 px-4 rounded text-base md:text-xl">
           Hurry!
