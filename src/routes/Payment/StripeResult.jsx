@@ -30,10 +30,10 @@ function Result() {
           token: token,
           userAuth: true,
         };
-        let { success, data, error } = await get("/user", authInfo.token);
-        console.log(success, "UserData", data);
+        let { success, data: userData } = await get("/user", authInfo.token);
+        console.log(success, "UserData", userData);
         if (success) {
-          dispatch(setCurrentUser(data));
+          dispatch(setCurrentUser(userData));
         } else {
           console.log("error while getting user creds");
         }
