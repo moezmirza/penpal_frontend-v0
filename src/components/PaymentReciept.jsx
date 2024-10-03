@@ -33,10 +33,10 @@ function PaymentReceipt({ obj, unBilledFields = [], onDelReceiptItem, pendingDue
                     <RecieptItem field={field} cost={roundTo(9.95 * obj[field], 2)} onDelReceiptItem={onDelReceiptItem} nameMap={unGroupFieldsMap} />
                 ) :
                     field == "premiumPlacement" && obj["premiumPlacement"] != 0 ? (
-                        <RecieptItem field={field} cost={roundTo(24.95 * obj[field], 2)} onDelReceiptItem={onDelReceiptItem} nameMap={addonStateToNameMap} />
+                        <RecieptItem field={field} cost={roundTo(24.99 * obj[field], 2)} onDelReceiptItem={onDelReceiptItem} nameMap={addonStateToNameMap} />
                     ) :
                         field == "featuredPlacement" && obj["featuredPlacement"] != 0 ? (
-                            <RecieptItem field={field} cost={roundTo(14.95 * obj[field], 2)} onDelReceiptItem={onDelReceiptItem} nameMap={addonStateToNameMap} />
+                            <RecieptItem field={field} cost={roundTo(14.99 * obj[field], 2)} onDelReceiptItem={onDelReceiptItem} nameMap={addonStateToNameMap} />
                         ) : (
                             obj[field] == true && (
                                 <RecieptItem field={field} cost={addonStatetoCost[field]} onDelReceiptItem={onDelReceiptItem} nameMap={addonStateToNameMap} />
@@ -52,7 +52,7 @@ function PaymentReceipt({ obj, unBilledFields = [], onDelReceiptItem, pendingDue
             {user?.referralBalance && user?.referralBalance>0 && (
             <div className="flex justify-between">
                 <p>Referral Balance</p>
-                <p>${user?.referralBalance}</p>
+                <p>${user?.referralBalance.toFixed(2)}</p>
             </div>
             )}
         </div>
