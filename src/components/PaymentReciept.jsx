@@ -1,8 +1,8 @@
-import { useSelector } from "react-redux";
 import { calculateTotalCost, roundTo } from "../utils/sharedMethods";
 import { addonStatetoCost, addonStateToNameMap, basicInfoFieldLabelMap, stateFieldNameMap } from "../utils/sharedState";
 function PaymentReceipt({ obj, unBilledFields = [], onDelReceiptItem, pendingDuesSection }) {
-    const user = useSelector((state) => state.user.currentUser);
+    console.log("paymentReceipt", obj)
+
     let total = calculateTotalCost(obj)
 
     const unGroupFieldsMap = {
@@ -33,10 +33,10 @@ function PaymentReceipt({ obj, unBilledFields = [], onDelReceiptItem, pendingDue
                     <RecieptItem field={field} cost={roundTo(9.95 * obj[field], 2)} onDelReceiptItem={onDelReceiptItem} nameMap={unGroupFieldsMap} />
                 ) :
                     field == "premiumPlacement" && obj["premiumPlacement"] != 0 ? (
-                        <RecieptItem field={field} cost={roundTo(24.99 * obj[field], 2)} onDelReceiptItem={onDelReceiptItem} nameMap={addonStateToNameMap} />
+                        <RecieptItem field={field} cost={roundTo(addonStatetoCost["premiumPlacement"] * obj[field], 2)} onDelReceiptItem={onDelReceiptItem} nameMap={addonStateToNameMap} />
                     ) :
                         field == "featuredPlacement" && obj["featuredPlacement"] != 0 ? (
-                            <RecieptItem field={field} cost={roundTo(14.99 * obj[field], 2)} onDelReceiptItem={onDelReceiptItem} nameMap={addonStateToNameMap} />
+                            <RecieptItem field={field} cost={roundTo(addonStatetoCost["featuredPlacement"] * obj[field], 2)} onDelReceiptItem={onDelReceiptItem} nameMap={addonStateToNameMap} />
                         ) : (
                             obj[field] == true && (
                                 <RecieptItem field={field} cost={addonStatetoCost[field]} onDelReceiptItem={onDelReceiptItem} nameMap={addonStateToNameMap} />
@@ -49,12 +49,6 @@ function PaymentReceipt({ obj, unBilledFields = [], onDelReceiptItem, pendingDue
                 <p>Total</p>
                 <p>${total}</p>
             </div>
-            {user?.referralBalance && user?.referralBalance>0 && (
-            <div className="flex justify-between">
-                <p>Referral Balance</p>
-                <p>${user?.referralBalance.toFixed(2)}</p>
-            </div>
-            )}
         </div>
     );
 
