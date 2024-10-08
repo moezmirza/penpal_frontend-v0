@@ -51,11 +51,11 @@ function PaymentReceipt({ obj, unBilledFields = [], onDelReceiptItem, pendingDue
                 <p>Total</p>
                 <p>${total}</p>
             </div>
-            {user?.referralBalance && user?.referralBalance > 0 && (
-                <div className="flex justify-between">
-                    <p>Referral Balance</p>
-                    <p>${user?.referralBalance}</p>
-                </div>
+            {user?.referralBalance && user?.referralBalance>0 && (
+            <div className="flex justify-between">
+                <p>Referral Balance</p>
+                <p>${user?.referralBalance.toFixed(2)}</p>
+            </div>
             )}
         </div>
     );
