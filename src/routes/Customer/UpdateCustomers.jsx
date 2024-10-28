@@ -14,6 +14,7 @@ import { setCurrentUser } from "../../state/slices/userSlice";
 
 function UpdateCustomers() {
   const dispatch = useDispatch();
+
   const { updateAuthInfo } = useContext(AuthContext);
 
   const [customers, setCustomers] = useState([]);
