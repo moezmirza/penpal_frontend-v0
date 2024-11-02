@@ -27,7 +27,6 @@ import { formattedImageName } from "../User/Profile/BasicInfo";
 import ConfrimPopup from "../../components/ConfrimPopup";
 import { calculateTotalCost, checkForChange, isEmpty, roundTo } from "../../utils/sharedMethods";
 import PaymentReceipt from "../../components/PaymentReciept";
-import { dummyBasicInfo, dummyPersonalityInfo } from "../../utils/mockState";
 import PaypalCheckout from "../Payment/PaypalCheckout";
 import Paynow from "../Payment/PaymentPopup";
 import { useDispatch, useSelector } from "react-redux";
@@ -39,6 +38,7 @@ function CreateCustomer() {
   const { updateAuthInfo } = useContext(AuthContext);
 
   const [error, setError] = useState("");
+  const [duesError, setDuesError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showUpdateConfirmPop, setShowUpdateConfirmPop] = useState(false);
   const [showCreateConfirmPop, setShowCreateConfirmPop] = useState(false);
@@ -592,6 +592,7 @@ function CreateCustomer() {
 
   const handleSubmitBtn = () => {
     setError("");
+    setDuesError("");
     setDone(false);
     if (id) {
       //only for update
@@ -635,10 +636,12 @@ function CreateCustomer() {
   const handlePaynow = () => {
     if (id) {
       navigate("/payment", { state: { cid: id, paymentDetails: duesInfo } });
-    } else {
+    } else if (createdCustomerId){
       navigate("/payment", {
         state: { cid: createdCustomerId, paymentDetails: duesInfo },
       });
+    } else {
+      setDuesError("Please Create a Customer First");
     }
   };
 
@@ -736,6 +739,11 @@ function CreateCustomer() {
               onPaynow={handlePaynow}
               onReferralPay={handleReferralPay}
             />
+                      <div>
+            {duesError && (
+              <p className="text-fr-red w-fit text-sm md:text-base">{duesError}</p>
+            )}
+          </div>
             <AddOns onClick={setDuesInfo} duesInfo={duesInfo} />
 
           </div>
