@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGet } from "../../api/useGet";
 import { usePut } from "../../api/usePut";
@@ -32,6 +32,7 @@ function Customer() {
   const [purchaseLoading, setPurchaeLoading] = useState(false);
   const [purchases, setPurchases] = useState(null);
   const [paymentPopup, setPaymentPopup] = useState(false);
+  const currentCustomer = useRef("")
 
   const get = useGet();
   const post = usePost();
@@ -141,6 +142,7 @@ function Customer() {
 
   }
   const handleRenew = (cid) => {
+    currentCustomer.current = cid
     setShowPaymentOptions(true)
   }
   const handleStripePay = () => {
