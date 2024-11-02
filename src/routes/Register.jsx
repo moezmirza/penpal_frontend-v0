@@ -124,7 +124,6 @@ const Register = () => {
       updatedArr = [value];
     }
     const newObj = { ...formData, [fieldKey]: updatedArr };
-    console.log("updated object", newObj);
     setFormData(newObj);
   };
 
