@@ -25,7 +25,7 @@ import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { v4 } from "uuid";
 import { formattedImageName } from "../User/Profile/BasicInfo";
 import ConfrimPopup from "../../components/ConfrimPopup";
-import { calculateTotalCost, checkForChange, isEmpty, roundTo } from "../../utils/sharedMethods";
+import { calculateTotalCost, checkForChange, isEmpty } from "../../utils/sharedMethods";
 import PaymentReceipt from "../../components/PaymentReciept";
 import PaypalCheckout from "../Payment/PaypalCheckout";
 import Paynow from "../Payment/PaymentPopup";
@@ -650,8 +650,11 @@ function CreateCustomer() {
       const payload = {};
       if (id) {
         payload.cid = id;
-      } else {
+      } else if(createdCustomerId){
         payload.cid = createdCustomerId;
+      } else {
+        setDuesError("Please Create a Customer First");
+        return;
       }
       const { success, data, error } = await post(
         "/payment/pay-with-referral",
