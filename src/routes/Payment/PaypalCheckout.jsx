@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { usePost } from "../../api/usePost";
 import { calculateTotalCost } from "../../utils/sharedMethods";
 
 const PaypalCheckout = ({ id, paymentDetails }) => {
     const [success, setSuccess] = useState(false);
-    const [{ options, isPending }, dispatch] = usePayPalScriptReducer()
+    const [{ options, isPending, isRejected }, dispatch] = usePayPalScriptReducer()
     const [orderID, setOrderID] = useState(false);
     const post = usePost()
     const paymentDetailsRef = useRef(paymentDetails);
@@ -56,10 +56,13 @@ const PaypalCheckout = ({ id, paymentDetails }) => {
         :
         <PayPalButtons
             disabled={total == 0}
+            className="paypal-buttons"
             style={{ layout: "vertical" }}
             createOrder={createOrder}
             onApprove={onApprove}
             onError={onError}
+            fundingSource={"paypal"}
+            // displayOnly={["paypal"]}
         />
 }
 
