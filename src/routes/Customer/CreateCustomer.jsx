@@ -1293,7 +1293,7 @@ export const PendingDuesDetails = ({
           onClick={onStripePay}
         >
           <img src="/assets/icons/apple.svg" alt="" className="h-5 md:h-8" />
-          Pay with credit or debit card
+          Pay with Debit or Credit Card
         </button>
         <PaypalCheckout id={id} paymentDetails={duesInfo} />
       </div>
