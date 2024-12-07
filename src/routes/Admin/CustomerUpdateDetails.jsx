@@ -273,7 +273,7 @@ function CustomerUpdateDetails() {
           mailingAddress={customer?.basicInfo?.mailingAddress}
         />
 
-        <AssociatedUsersInfo updatedBy={customer?.updatedBy || null} paidBy={customer?.paidBy || null} />
+        <AssociatedUsersInfo updatedBy={customer?.updatedBy || null} createdBy={customer?.user || null} paidBy={customer?.paidBy || null} />
       </div>
     </div >
   );

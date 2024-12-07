@@ -429,7 +429,7 @@ function Customer() {
         />
 
         {isAdmin &&
-          <AssociatedUsersInfo updatedBy={customer?.updatedBy} createdBy={customer?.createdBy || null} paidBy={customer?.paidBy || null} />
+          <AssociatedUsersInfo updatedBy={customer?.updatedBy} createdBy={customer?.user || null} paidBy={customer?.paidBy || null} />
         }
         {isAdmin && customer?.specialInstructionsFlag &&
           <NoteForAdmin noteForAdmin={customer?.specialInstructionsText} />
