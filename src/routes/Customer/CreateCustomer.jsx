@@ -32,6 +32,7 @@ import Paynow from "../Payment/PaymentPopup";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthContext } from "../../providers/AuthProvider";
 import { setCurrentUser } from "../../state/slices/userSlice";
+import { toast } from 'react-toastify';
 
 function CreateCustomer() {
   const dispatch = useDispatch();
@@ -253,6 +254,7 @@ function CreateCustomer() {
       //only for update
       if (checkForChange(updatedFields, currPhotos)) {
         setError("No changes made");
+        toast.error("No changes made");
         return;
       }
     }
@@ -338,8 +340,10 @@ function CreateCustomer() {
         });
         if (error?.message == "update pending") {
           setError("Previous update had to approved to make a new one");
+          toast.error("Previous update had to approved to make a new one");
         } else {
           setError("An unexpected error occurred");
+          toast.error("An unexpected error occurred");
         }
       }
     } else {
@@ -390,6 +394,7 @@ function CreateCustomer() {
         setLoading(false);
         setDuesInfo(dueInitiallState);
         setError("An expected error occured");
+        toast.error("An expected error occured");
         updateBtnRef.current.disabled = false;
         errorRef.current.scrollIntoView({
           behavior: "smooth",
@@ -592,6 +597,7 @@ function CreateCustomer() {
 
   const handleSubmitBtn = () => {
     setError("");
+    toast.error("");
     setDuesError("");
     setDone(false);
     if (id) {
@@ -599,6 +605,7 @@ function CreateCustomer() {
 
       if (checkForChange(updatedFields, currPhotos)) {
         setError("No changes made");
+        toast.error("No changes made");
         return;
       }
     }
@@ -606,6 +613,7 @@ function CreateCustomer() {
     for (const key in basicInfo) {
       if (basicInfoReqFieldMap[key] && isEmpty(basicInfo[key])) {
         setError("Fillout all the required fields");
+        toast.error("Fillout all the required fields");
         return;
       }
     }
@@ -614,6 +622,7 @@ function CreateCustomer() {
     // for (const key in personalityInfo) {
     //   if (isEmpty(personalityInfo[key])) {
     //     setError("Fillout all the required fields");
+    //     toast.error("Fillout all the required fields");
     //     return;
     //   }
     // }
@@ -636,7 +645,7 @@ function CreateCustomer() {
   const handlePaynow = () => {
     if (id) {
       navigate("/payment", { state: { cid: id, paymentDetails: duesInfo } });
-    } else if (createdCustomerId){
+    } else if (createdCustomerId) {
       navigate("/payment", {
         state: { cid: createdCustomerId, paymentDetails: duesInfo },
       });
@@ -650,7 +659,7 @@ function CreateCustomer() {
       const payload = {};
       if (id) {
         payload.cid = id;
-      } else if(createdCustomerId){
+      } else if (createdCustomerId) {
         payload.cid = createdCustomerId;
       } else {
         setDuesError("Please Create a Customer First");
@@ -677,12 +686,12 @@ function CreateCustomer() {
           console.log("error while getting user creds");
         }
         updateAuthInfo(authInfo);
-        
+
         setTimeout(() => {
           navigate(`/update-inmates`);
         }, 1000);
       }
-    } catch(err) {
+    } catch (err) {
 
     }
   };
@@ -742,11 +751,11 @@ function CreateCustomer() {
               onPaynow={handlePaynow}
               onReferralPay={handleReferralPay}
             />
-                      <div>
-            {duesError && (
-              <p className="text-fr-red w-fit text-sm md:text-base">{duesError}</p>
-            )}
-          </div>
+            <div>
+              {duesError && (
+                <p className="text-fr-red w-fit text-sm md:text-base">{duesError}</p>
+              )}
+            </div>
             <AddOns onClick={setDuesInfo} duesInfo={duesInfo} />
 
           </div>
@@ -1274,17 +1283,17 @@ export const PendingDuesDetails = ({
     <>
       <PaymentReceipt obj={duesInfo} pendingDuesSection={true} unBilledFields={unBilledFields} />
       <div className="flex flex-col gap-y-2">
-      {user?.referralBalance && user?.referralBalance > 0 && user?.referralBalance > total && (
-      <button
-      className={`py-2 md:py-2.5 w-full flex bg-fr-blue-100 items-center text-sm md:text-base justify-center gap-x-4 text-white  bg-black rounded-md cursor-pointer ${total == 0
-        && "opacity-50"
-        }`}
-      disabled={total == 0}
-      onClick={onReferralPay}
-    >
-      Pay with referral amount
-    </button>
-      )}
+        {user?.referralBalance && user?.referralBalance > 0 && user?.referralBalance > total && (
+          <button
+            className={`py-2 md:py-2.5 w-full flex bg-fr-blue-100 items-center text-sm md:text-base justify-center gap-x-4 text-white  bg-black rounded-md cursor-pointer ${total == 0
+              && "opacity-50"
+              }`}
+            disabled={total == 0}
+            onClick={onReferralPay}
+          >
+            Pay with referral amount
+          </button>
+        )}
         <button
           className={`py-2 md:py-2.5 w-full flex items-center text-sm md:text-base justify-center gap-x-4 text-white  bg-black rounded-md cursor-pointer ${total == 0
             && "opacity-50"

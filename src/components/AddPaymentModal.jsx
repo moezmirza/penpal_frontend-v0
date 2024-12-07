@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { popupBtnText } from "../utils/sharedState";
 import { InputField } from "./mainComponents/InputField";
+import { toast } from 'react-toastify';
 
 function AddPaymentPopup({
   onCloseClick,
@@ -12,24 +13,25 @@ function AddPaymentPopup({
   confirmBtnColor,
   loading
 }) {
-    const [amount, setAmount] = useState();
-    const [error, setError] = useState('');
+  const [amount, setAmount] = useState();
+  const [error, setError] = useState('');
 
-    const handleCloseClick = () => {
-        onCloseClick(false);
-    };
-    const popupRef = useRef();
+  const handleCloseClick = () => {
+    onCloseClick(false);
+  };
+  const popupRef = useRef();
 
-    const handleClick = () => {
-        if(!amount || amount <= 0) {
-            setError('Invalid amount, amount is required');
-            return;
-        } else {
-            onConfirm(amount);
-        }
+  const handleClick = () => {
+    if (!amount || amount <= 0) {
+      setError('Invalid amount, amount is required');
+      toast.error('Invalid amount, amount is required')
+      return;
+    } else {
+      onConfirm(amount);
     }
+  }
 
-    console.log('errro', error);
+  console.log('errro', error);
 
   return (
     <div
@@ -79,17 +81,17 @@ function AddPaymentPopup({
               />
             </svg>
             <div className="mt-3 mb-5">
-                <InputField
-                  key={"number"}
-                  labelText={"Enter Balance ($)"}
-                  type={"number"}
-                  placeholder={"Amount"}
-                  name={"payment"}
-                  value={amount}
-                  onChange={(e) => {setAmount(e.target.value);setError('');}}
-                  required={true}
-                />
-                {error && <p className="text-red-500 mt-1 text-center"> {error} </p>}
+              <InputField
+                key={"number"}
+                labelText={"Enter Balance ($)"}
+                type={"number"}
+                placeholder={"Amount"}
+                name={"payment"}
+                value={amount}
+                onChange={(e) => { setAmount(e.target.value); setError(''); toast.error(''); }}
+                required={true}
+              />
+              {error && <p className="text-red-500 mt-1 text-center"> {error} </p>}
             </div>
             <div className="flex flex-col gap-y-2 ">
               {continueBtnTxt && (

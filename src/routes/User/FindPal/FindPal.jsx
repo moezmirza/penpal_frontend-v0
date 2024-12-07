@@ -166,8 +166,8 @@ function FindPal() {
   };
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("user") ?? "");
-    if(userData && userData?.role == "admin") {
+    const userData = JSON.parse(localStorage.getItem("user") ?? "{}");
+    if (userData && userData?.role == "admin") {
       fetchUsers();
     }
   }, [userPage]);
@@ -175,7 +175,7 @@ function FindPal() {
 
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("user") ?? "");
+    const userData = JSON.parse(localStorage.getItem("user") ?? "{}");
     const fetchPurchases = async () => {
       setPurchaeLoading(true);
       const { success, data, error, responseData } = await get(
@@ -193,7 +193,7 @@ function FindPal() {
         console.log("error", error);
       }
     };
-    if(userData && userData?.role == "admin") {
+    if (userData && userData?.role == "admin") {
       fetchPurchases();
     }
   }, [purchasePage]);
@@ -446,7 +446,7 @@ function FindPal() {
       }
       {paymentPopup && (
         <AddPaymentPopup
-          onCloseClick={() => {setPaymentPopup(false); setSelectedUser(null)}}
+          onCloseClick={() => { setPaymentPopup(false); setSelectedUser(null) }}
           onConfirm={(amount) => handleAddReferral(amount)}
           confirmBtnTxt={"Add Balance"}
           infoText={'approve-profile'}

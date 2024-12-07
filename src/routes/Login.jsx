@@ -17,6 +17,9 @@ import { useGet } from "../api/useGet";
 import { AuthContext } from "../providers/AuthProvider";
 import Timeout from "../components/Timeout";
 import ConfrimPopup from "../components/ConfrimPopup";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -53,6 +56,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    toast.error("");
     console.log(formData);
     try {
       setLoading(true);
@@ -69,6 +73,7 @@ const Login = () => {
           setLoading(false);
           sendEmailVerification(user);
           setError("Email unverified, verification email sent!");
+          toast.error("Email unverified, verification email sent!");
           setResendEmail(true);
           return;
         }
@@ -99,7 +104,8 @@ const Login = () => {
           if (success) {
             dispatch(setCurrentUser(data));
           } else {
-            console.log("error while getting user creds");
+            // console.log("error while getting user creds");
+            toast.error("Error while getting user credentials!");
           }
           updateAuthInfo(authInfo);
           const redirectPath = redirectLocation?.pathname ? redirectLocation.pathname : "/"
@@ -119,6 +125,7 @@ const Login = () => {
       const errString = mapAuthCodeToMessage(err.code);
       setLoading(false);
       setError(errString);
+      toast.error(errString);
     }
   };
 
@@ -160,6 +167,7 @@ const Login = () => {
   const handleResendEmail = (e) => {
     if (!resendEmailStatus) {
       setError("");
+      toast.error("");
       setResendEmailStatus(true);
       sendEmailVerification(firebaseUser);
       setTimeout(() => {
@@ -169,10 +177,12 @@ const Login = () => {
   };
   const handlePasswordReset = () => {
     if (formData.email) {
-      sendPasswordResetEmail(auth, formData.email)
-      setError("Password reset email sent!")
+      sendPasswordResetEmail(auth, formData.email);
+      setError("Password reset email sent!");
+      toast.error("Password reset email sent!");
     } else {
-      setError("Fill out the email!")
+      setError("Fill out the email!");
+      toast.error("Fill out the email!");
     }
   }
   return (

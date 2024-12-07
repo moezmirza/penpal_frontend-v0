@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { setCurrentUserProfileStatus } from "../../../state/slices/userSlice";
 import { fieldOptionMap, fieldStateNameMap } from "../../../utils/sharedState";
 import ConfrimPopup from "../../../components/ConfrimPopup";
+import { toast } from "react-toastify";
 
 function Questionairre() {
   const personalityInfoState = useSelector(
@@ -39,10 +40,12 @@ function Questionairre() {
     for (const key in personalityInfo) {
       if (personalityInfo[key].length === 0) {
         setError("All fields are required!");
+        toast.error("All fields are required!");
         return;
       }
     }
     setError("");
+    toast.success("Update successful!");
     setLoading(true);
     setDone(false);
 
@@ -61,6 +64,7 @@ function Questionairre() {
     } else {
       console.log("errorMsg", error);
       setError(mapAuthCodeToMessage(error));
+      toast.error(mapAuthCodeToMessage(error));
     }
     setLoading(false);
   };
@@ -95,6 +99,7 @@ function Questionairre() {
         dispatch(setUserPersonality(data));
       } else {
         setError(mapAuthCodeToMessage(error));
+        toast.error(mapAuthCodeToMessage(error));
       }
       setLoading(false);
     };

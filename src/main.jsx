@@ -10,6 +10,7 @@ import { Navbar } from "./components/mainComponents/Navbar.jsx";
 import LayoutProvider from "./providers/LayoutProvider.jsx";
 import AuthProvider from "./providers/AuthProvider.jsx";
 import PayPalPaymentProvider from "./providers/PaypalPaymentProvider.jsx";
+import { ToastContainer } from 'react-toastify';
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   // <React.StrictMode>
@@ -18,6 +19,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <AuthProvider>
         <LayoutProvider>
           <PayPalPaymentProvider>
+            <ToastContainer />
             <App />
           </PayPalPaymentProvider>
         </LayoutProvider>

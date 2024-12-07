@@ -10,6 +10,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../services/firebase";
 import { usePost } from "../../api/usePost";
 import { useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Chat() {
   const [searchText, setSearchText] = useState("");
@@ -33,6 +34,7 @@ function Chat() {
     const fetchChat = async () => {
       setLoading(true);
       setError("");
+      toast.error("");
       const { success, data, error } = await get("/user/chat");
       if (success) {
         if (newCustomerChat) {
@@ -65,6 +67,7 @@ function Chat() {
 
         setLoading(false);
         setError("");
+        toast.error("");
       } else {
         setLoading(false);
         // setError("Error loading chats");
@@ -94,6 +97,7 @@ function Chat() {
   };
   const handleSendMsg = async (msg, chatIndex) => {
     setError("");
+    toast.error("");
     if (Object.keys(msg).length != 0) {
       const receiver = userChats[chatIndex].receiver;
       const newMsg = {
@@ -127,6 +131,7 @@ function Chat() {
         setUserChats(currChats);
       } else {
         setError("Error sending message");
+        toast.error("Error sending message");
       }
     }
   };
@@ -230,9 +235,8 @@ function ChatCell({ index, name, lastMsg, imageUrl, onChatClick }) {
   };
   return (
     <div
-      className={`flex border-b-2  cursor-pointer py-2 ${
-        index == 0 && "border-y-2 pt-2"
-      } ${unread && !haveSend ? "bg-blue-100 border-black" : ""}
+      className={`flex border-b-2  cursor-pointer py-2 ${index == 0 && "border-y-2 pt-2"
+        } ${unread && !haveSend ? "bg-blue-100 border-black" : ""}
   `}
       id="person"
       onClick={handleClick}
@@ -296,9 +300,8 @@ function Message({ haveSend, text, fileLink }) {
   };
   return (
     <div
-      className={`bg-${
-        haveSend ? "fr-blue-200 ml-auto text-white" : "gray-200 mr-auto"
-      } p-2 rounded w-fit md:max-w-[50%]  text-sm md:text-base px-3 rounded-lg`}
+      className={`bg-${haveSend ? "fr-blue-200 ml-auto text-white" : "gray-200 mr-auto"
+        } p-2 rounded w-fit md:max-w-[50%]  text-sm md:text-base px-3 rounded-lg`}
     >
       {text !== "" && <p>{text}</p>}
       {fileLink && (
@@ -382,9 +385,8 @@ text/plain"
         <img src="/assets/icons/file.svg" alt="" className="h-6" />
       </button>
       <button
-        className={`bg-fr-blue-200 text-white text-sm md:text-base px-${
-          sending ? "3 md:px-4" : "2 md:px-8"
-        } md:py-2 rounded w-fit `}
+        className={`bg-fr-blue-200 text-white text-sm md:text-base px-${sending ? "3 md:px-4" : "2 md:px-8"
+          } md:py-2 rounded w-fit `}
         title="send message"
         onClick={handleSendMsg}
         disabled={sending}

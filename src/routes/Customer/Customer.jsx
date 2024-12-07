@@ -17,6 +17,7 @@ import AddPaymentPopup from "../../components/AddPaymentModal";
 import { setCurrentUser } from "../../state/slices/userSlice";
 import { AuthContext } from "../../providers/AuthProvider";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 const LIMIT = 10;
 
 function Customer() {
@@ -46,7 +47,7 @@ function Customer() {
     window.scroll(0, 0);
   }, []);
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("user") ?? "");
+    const userData = JSON.parse(localStorage.getItem("user") ?? "{}");
     const fetchPurchases = async () => {
       setPurchaeLoading(true);
       const { success, data, error, responseData } = await get(
@@ -64,7 +65,7 @@ function Customer() {
         console.log("error", error);
       }
     };
-    if(userData && userData?.role == "admin") {
+    if (userData && userData?.role == "admin") {
       fetchPurchases();
     }
   }, [purchasePage]);
@@ -93,6 +94,7 @@ function Customer() {
       } else {
         setLoading(false);
         setError("");
+        toast.error("");
         console.log("error here", error);
       }
     };
@@ -189,7 +191,7 @@ function Customer() {
           navigate(`/update-inmates`);
         }, 1000);
       }
-    } catch(err) {
+    } catch (err) {
 
     }
   };
@@ -356,7 +358,7 @@ function Customer() {
                   ) : (!excludeBasinInfoFields.includes(field) && customer?.basicInfo[field] && basicInfoFieldLabelMap[field] &&
                     <p key={field} className="">
                       <span className="font-semibold mr-1">
-                        {basicInfoFieldLabelMap[field] == 'Orientation' ? 'Sexual Orientation': basicInfoFieldLabelMap[field]}:
+                        {basicInfoFieldLabelMap[field] == 'Orientation' ? 'Sexual Orientation' : basicInfoFieldLabelMap[field]}:
                       </span>
                       {customerFieldValue(field, customer?.basicInfo)}
                       {showUpdatedDetails(field) && (

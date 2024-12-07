@@ -6,6 +6,8 @@ import { LoadingSpinner } from "../components/LoadingSpinner";
 import { InputField } from "../components/mainComponents/InputField";
 import { MultiSelectField } from "../components/mainComponents/MultiSelectField";
 import { stateList } from "../utils/sharedState";
+import { toast } from 'react-toastify';
+
 const Register = () => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -63,18 +65,22 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    toast.error("");
     for (const key in formData) {
       console.log(key, formData[key], key == "terms", formData[key] == "false");
       if (key == "terms" && formData[key] == "false") {
         setError("All fields are required!");
+        toast.error("All fields are required!");
         return;
       }
       if (formData[key] === "") {
         setError("All fields are required!");
+        toast.error("All fields are required!");
         return;
       }
       if (passwordMismatchErr) {
         setError("Password's criteria not fulfilled!")
+        toast.error("Password's criteria not fulfilled!")
         return;
       }
     }
@@ -86,6 +92,7 @@ const Register = () => {
     } else {
       setLoading(false);
       setError(mapAuthCodeToMessage(error.message));
+      toast.error(mapAuthCodeToMessage(error.message));
     }
   };
 
@@ -116,7 +123,7 @@ const Register = () => {
     let updatedArr = formData[fieldKey];
     setFormData((updatedFields) => ({
       ...updatedFields,
-        [fieldKey]: true
+      [fieldKey]: true
     }))
     if (remove) {
       updatedArr = updatedArr.filter((item) => item != value);
@@ -220,33 +227,33 @@ const Register = () => {
             />
           </label>
           <label>
-          <div className="flex items-center gap-x-4">
+            <div className="flex items-center gap-x-4">
               Mailing Address
             </div>
-                <textarea
-                  name="mailingAddress"
-                  value={formData.mailingAddress}
-                  onChange={handleChange}
-                  placeholder={"123 Main St, Apt 4B"}
-                  maxRows={2}
-                  className={` resize-none bg-transparent block w-full my-1.5 rounded-md p-1.5 border focus:border-gray-700 border-gray-400 outline-none`}
-                ></textarea>
-              </label>
-              <label>
-              <div className="flex items-center gap-x-4">
-                State
-            </div>
-              <MultiSelectField
-                key={"state"}
-                placeholderText={stateList[0]}
-                dropdownOptions={stateList}
-                selectedOptions={formData.state}
-                onChange={handleBasicInfoOptionsFieldChange}
-              />
-            </label>
-            <label>
+            <textarea
+              name="mailingAddress"
+              value={formData.mailingAddress}
+              onChange={handleChange}
+              placeholder={"123 Main St, Apt 4B"}
+              maxRows={2}
+              className={` resize-none bg-transparent block w-full my-1.5 rounded-md p-1.5 border focus:border-gray-700 border-gray-400 outline-none`}
+            ></textarea>
+          </label>
+          <label>
             <div className="flex items-center gap-x-4">
-                City
+              State
+            </div>
+            <MultiSelectField
+              key={"state"}
+              placeholderText={stateList[0]}
+              dropdownOptions={stateList}
+              selectedOptions={formData.state}
+              onChange={handleBasicInfoOptionsFieldChange}
+            />
+          </label>
+          <label>
+            <div className="flex items-center gap-x-4">
+              City
             </div>
             <InputField
               key={"city"}
@@ -256,20 +263,20 @@ const Register = () => {
               value={formData.city}
               onChange={handleChange}
             />
-            </label>
-            <label>
+          </label>
+          <label>
             <div className="flex items-center gap-x-4">
-                Zip Code
+              Zip Code
             </div>
             <InputField
-                    key={"zipCode"}
-                    type={"text"}
-                    placeholder={"59499"}
-                    name={"zipCode"}
-                    value={formData.zipCode}
-                    onChange={handleChange}
-                  />
-            </label>
+              key={"zipCode"}
+              type={"text"}
+              placeholder={"59499"}
+              name={"zipCode"}
+              value={formData.zipCode}
+              onChange={handleChange}
+            />
+          </label>
           <label className="flex gap-x-4 cursor-pointer">
             <input
               type="checkbox"

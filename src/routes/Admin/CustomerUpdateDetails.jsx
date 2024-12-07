@@ -7,6 +7,7 @@ import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { basicInfoFieldLabelMap, capitlize, customerFieldValue } from "../../utils/sharedState";
 import ContactInfo from "../../components/ContactInfo";
 import AssociatedUsersInfo from "../../components/AssociatedUsersInfo";
+import { toast } from 'react-toastify';
 
 function CustomerUpdateDetails() {
   const { id } = useParams();
@@ -36,6 +37,7 @@ function CustomerUpdateDetails() {
       } else {
         setLoading(false);
         setError("");
+        toast.error("");
         console.log("error here", error);
       }
     };

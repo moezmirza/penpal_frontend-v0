@@ -9,6 +9,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../services/firebase";
 import { genderList } from "../../../utils/sharedState";
 import { v4 } from "uuid";
+import { toast } from "react-toastify";
 
 export const formattedImageName = (name) => {
   return `imageNameS${name}imageNameE`;
@@ -47,10 +48,12 @@ function BasicInfo({ onShowTab }) {
     for (const key in basicInfo) {
       if (!basicInfo[key] && key != "imageUrl") {
         setError("All fields are required!");
+        toast.error("All fields are required!");
         return;
       }
     }
     setError("");
+    toast.error("");
     setLoading(true);
     setDone(false);
     try {
@@ -90,12 +93,14 @@ function BasicInfo({ onShowTab }) {
       } else {
         console.log(error);
         setError(mapAuthCodeToMessage(error));
+        toast.error(mapAuthCodeToMessage(error));
       }
       setLoading(false);
     } catch (err) {
       console.log(err);
       setLoading(false);
       setError(mapAuthCodeToMessage(err));
+      toast.error(mapAuthCodeToMessage(err));
     }
   };
 
@@ -220,9 +225,8 @@ function BasicInfo({ onShowTab }) {
               name="gender"
               value={basicInfo.gender}
               onChange={handleChange}
-              className={`mt-1 w-full p-1.5 border border-gray-400  outline-none focus:border-gray-700 rounded-md bg-transparent cursor-pointer ${
-                basicInfo.gender == "" ? "text-[#a9a9a9]" : "text-black"
-              }`}
+              className={`mt-1 w-full p-1.5 border border-gray-400  outline-none focus:border-gray-700 rounded-md bg-transparent cursor-pointer ${basicInfo.gender == "" ? "text-[#a9a9a9]" : "text-black"
+                }`}
             >
               <option value="" disabled className="">
                 Select Gender
