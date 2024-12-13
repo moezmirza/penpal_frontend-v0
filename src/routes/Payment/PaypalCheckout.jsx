@@ -21,6 +21,9 @@ const PaypalCheckout = ({ id, paymentDetails }) => {
                 ...paymentDetailsRef.current,
             }
         );
+        console.log('error', error);
+        console.log('success', success);
+        console.log('result', result);
         const orderId = result.order.id
         setOrderID(orderId)
         return orderId
