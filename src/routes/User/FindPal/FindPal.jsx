@@ -446,11 +446,12 @@ function FindPal() {
       }
       {paymentPopup && (
         <AddPaymentPopup
-          onCloseClick={() => { setPaymentPopup(false); setSelectedUser(null) }}
+          onCloseClick={() => { setPaymentPopup(false); setSelectedUser(null); }}
           onConfirm={(amount) => handleAddReferral(amount)}
           confirmBtnTxt={"Add Balance"}
           infoText={'approve-profile'}
           loading={referralLoading}
+          listing={users}
         />
       )}
     </div>
