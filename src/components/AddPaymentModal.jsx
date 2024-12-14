@@ -46,14 +46,12 @@ function AddPaymentPopup({
     Users: "users",
   };
 
-  // Fixed handleFilterChange to support multiple selections
   const handleFilterChange = (key, value, remove) => {
     let stateKey = key.toLowerCase();
     if (key === "Other Options") {
       stateKey = "others";
     }
 
-    // Ensure we have an array to update
     setFilter((prevFilter) => {
       const updatedFilter = { ...prevFilter };
 
@@ -61,17 +59,14 @@ function AddPaymentPopup({
         updatedFilter[stateKey] = [];
       }
 
-      // Add or remove value from the array based on `remove` flag
       if (remove) {
         updatedFilter[stateKey] = updatedFilter[stateKey].filter((item) => item !== value);
       } else {
-        // Avoid duplicates (if you're not allowing duplicates)
         if (!updatedFilter[stateKey].includes(value)) {
           updatedFilter[stateKey].push(value);
         }
       }
 
-      // Check if any filter is applied
       updatedFilter.isApplied = Object.values(updatedFilter).some(
         (value) => Array.isArray(value) && value.length > 0
       );
@@ -140,7 +135,7 @@ function AddPaymentPopup({
               />
               {error && <p className="text-red-500 mt-1 text-center"> {error} </p>}
             </div>
-            <div id="filters" className="">
+            <div id="filters" className="mb-8">
               {Object.keys(updatedListing).map((key) => (
                 <MultiSelectField
                   key={key}

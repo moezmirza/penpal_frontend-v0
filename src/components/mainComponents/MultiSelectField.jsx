@@ -165,7 +165,7 @@ const Dropdown = ({ options, onSelect }) => {
         {filteredOptions.map((option) => (
           <li
             key={option.value}
-            className={`p-2 rounded cursor-pointer  ${
+            className={`flex p-2 rounded cursor-pointer  ${
               option.selected ? "bg-b-option" : "hover:bg-gray-100"
             }`}
             onClick={() => onSelect(option)}
