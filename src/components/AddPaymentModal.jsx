@@ -1,7 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { popupBtnText } from "../utils/sharedState";
 import { InputField } from "./mainComponents/InputField";
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 import { MultiSelectField } from "./mainComponents/MultiSelectField";
 
 function AddPaymentPopup({
@@ -17,6 +17,8 @@ function AddPaymentPopup({
 }) {
   const [amount, setAmount] = useState();
   const [error, setError] = useState('');
+  const [selectedCustomers, setSelectedCustomers] = useState([]);
+  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
 
   const handleCloseClick = () => {
     onCloseClick(false);
@@ -27,23 +29,14 @@ function AddPaymentPopup({
   const handleClick = () => {
     if (!amount || amount <= 0) {
       setError('Invalid amount, amount is required');
-      toast.error('Invalid amount, amount is required');
       return;
     } else {
-      onConfirm(amount);
+      onConfirm(amount, selectedCustomerIds);
     }
   };
 
   const updatedListing = {
     "Users": listing.map(item => `${item.firstName} ${item.lastName}`)
-  };
-
-  const [filter, setFilter] = useState({
-    users: [],
-  });
-
-  const filterStateNameMap = {
-    Users: "users",
   };
 
   const handleFilterChange = (key, value, remove) => {
@@ -52,26 +45,28 @@ function AddPaymentPopup({
       stateKey = "others";
     }
 
-    setFilter((prevFilter) => {
-      const updatedFilter = { ...prevFilter };
+    const selectedUser = listing.find(
+      (user) => `${user.firstName} ${user.lastName}` === value
+    );
 
-      if (!updatedFilter[stateKey]) {
-        updatedFilter[stateKey] = [];
-      }
-
+    setSelectedCustomers((prevCustomers) => {
+      let updatedCustomers;
       if (remove) {
-        updatedFilter[stateKey] = updatedFilter[stateKey].filter((item) => item !== value);
+        updatedCustomers = prevCustomers.filter((customer) => customer !== value);
       } else {
-        if (!updatedFilter[stateKey].includes(value)) {
-          updatedFilter[stateKey].push(value);
-        }
+        updatedCustomers = [...prevCustomers, value];
       }
+      return updatedCustomers;
+    });
 
-      updatedFilter.isApplied = Object.values(updatedFilter).some(
-        (value) => Array.isArray(value) && value.length > 0
-      );
-
-      return updatedFilter;
+    setSelectedCustomerIds((prevIds) => {
+      let updatedIds;
+      if (remove) {
+        updatedIds = prevIds.filter((id) => id !== selectedUser._id);
+      } else {
+        updatedIds = [...prevIds, selectedUser._id];
+      }
+      return updatedIds;
     });
   };
 
@@ -130,7 +125,7 @@ function AddPaymentPopup({
                 placeholder={"Amount"}
                 name={"payment"}
                 value={amount}
-                onChange={(e) => { setAmount(e.target.value); setError(''); toast.error(''); }}
+                onChange={(e) => { setAmount(e.target.value); setError(''); }}
                 required={true}
               />
               {error && <p className="text-red-500 mt-1 text-center"> {error} </p>}
@@ -142,7 +137,7 @@ function AddPaymentPopup({
                   labelText={key}
                   placeholderText={updatedListing[key][0]}
                   dropdownOptions={updatedListing[key]}
-                  selectedOptions={filter[filterStateNameMap[key]]}
+                  selectedOptions={selectedCustomers} // Display selected user names
                   onChange={handleFilterChange}
                 />
               ))}

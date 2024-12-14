@@ -198,12 +198,13 @@ function FindPal() {
     }
   }, [purchasePage]);
 
-  const handleAddReferral = async (amount) => {
+  const handleAddReferral = async (amount, selectedCustomerIds) => {
     const { success } = await post(
       "/admin/add-referral",
       {
         userId: selectedUser?._id,
         amount: parseFloat(amount),
+        customers: selectedCustomerIds,
       }
     );
     if (success) {
@@ -447,7 +448,7 @@ function FindPal() {
       {paymentPopup && (
         <AddPaymentPopup
           onCloseClick={() => { setPaymentPopup(false); setSelectedUser(null); }}
-          onConfirm={(amount) => handleAddReferral(amount)}
+          onConfirm={(amount, selectedCustomerIds) => handleAddReferral(amount, selectedCustomerIds)}
           confirmBtnTxt={"Add Balance"}
           infoText={'approve-profile'}
           loading={referralLoading}
