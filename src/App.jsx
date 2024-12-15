@@ -1,11 +1,11 @@
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import Login from "./routes/Login";
-import Register from "./routes/Register";
+import Register from "./routes/Register" ;
 
-import UserProfile from "./routes/User/Profile/Profile";
+import UserProfile from "./routes/User/Profile/Profile" ;
 
-import FindPal from "./routes/User/FindPal/FindPal";
+import FindPal from "./routes/User/FindPal/FindPal" ;
 import Customer from "./routes/Customer/Customer";
 import CreateCustomer from "./routes/Customer/CreateCustomer";
 import UpdateCustomer from "./routes/Customer/CreateCustomer";
