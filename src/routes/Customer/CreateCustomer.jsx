@@ -1285,7 +1285,7 @@ export const PendingDuesDetails = ({
       Pay with referral amount
     </button>
       )}
-        <button
+        {/* <button
           className={`py-2 md:py-2.5 w-full flex items-center text-sm md:text-base justify-center gap-x-4 text-white  bg-black rounded-md cursor-pointer ${total == 0
             && "opacity-50"
             }`}
@@ -1294,7 +1294,7 @@ export const PendingDuesDetails = ({
         >
           <img src="/assets/icons/apple.svg" alt="" className="h-5 md:h-8" />
           Pay with Debit or Credit Card
-        </button>
+        </button> */}
         <PaypalCheckout id={id} paymentDetails={duesInfo} />
       </div>
       {!renewal &&
